@@ -1,677 +1,314 @@
 #!/usr/bin/env python3
 """
-STM32F411 Discovery Board - Direct GPIO Control & Protocol Testing via ST-LINK & GDB
-Simple scripting interface for hardware register manipulation and communication protocols
+MIMIC Host Interface
+====================
+Python CLI for controlling STM32 via MIMIC firmware.
+
+Usage:
+    python Mimic.py                    # Interactive mode
+    python Mimic.py -c "PIN_HIGH D12"  # Single command
+    python Mimic.py --port /dev/ttyUSB1 --baud 115200
+
+Commands:
+    GPIO:  PIN_STATUS, PIN_SET_OUT, PIN_SET_IN, PIN_HIGH, PIN_LOW, 
+           PIN_READ, PIN_TOGGLE, PIN_MODE
+    UART:  UART_INIT, UART_SEND, UART_RECV, UART_STATUS
+    System: HELP, VERSION, STATUS, RESET
+
+Author: Mimic Project
 """
 
-import subprocess
-import os
+import serial
+import serial.tools.list_ports
 import sys
-import re
-from protocols.uart import UART
+import time
+import argparse
 
-# GPIO Port base addresses (STM32F411)
-PORTS = {
-    "A": {"base": 0x40020000, "rcc_bit": 0},
-    "B": {"base": 0x40020400, "rcc_bit": 1},
-    "C": {"base": 0x40020800, "rcc_bit": 2},
-    "D": {"base": 0x40020C00, "rcc_bit": 3},
-    "E": {"base": 0x40021000, "rcc_bit": 4},
-}
+# Try to import readline for command history (optional)
+try:
+    import readline
+except ImportError:
+    pass
 
-# Register offsets for GPIO
-GPIO_MODER = 0x00      # Mode register
-GPIO_OTYPER = 0x04    # Output type register
-GPIO_OSPEEDR = 0x08   # Output speed register
-GPIO_PUPDR = 0x0C     # Pull-up/pull-down register
-GPIO_IDR = 0x10       # Input data register
-GPIO_ODR = 0x14       # Output data register
-GPIO_BSRR = 0x18      # Bit set/reset register
-RCC_AHB1ENR = 0x40023830  # RCC AHB1 Enable Register
 
-def gdb_connect():
-    """Start GDB connection with OpenOCD"""
-    return """
-set confirm off
-target extended-remote :3333
-monitor reset halt
-"""
-
-def gdb_disconnect():
-    """Disconnect from GDB"""
-    return "quit\n"
-
-def gpio_configure_output(port, pin):
-    """Configure GPIO pin as output (push-pull, no pull)"""
-    if port.upper() not in PORTS:
-        return None
+class MimicHost:
+    """Host interface for MIMIC firmware on STM32"""
     
-    port_info = PORTS[port.upper()]
-    base = port_info["base"]
-    rcc_bit = port_info["rcc_bit"]
-    
-    # Enable clock: RCC_AHB1ENR |= (1 << rcc_bit)
-    enable_clock = f"set $temp = *(unsigned int*){hex(RCC_AHB1ENR)}\nset $temp = $temp | (1 << {rcc_bit})\nset *(unsigned int*){hex(RCC_AHB1ENR)} = $temp\n"
-    
-    # Configure as output: MODER |= (0x1 << (pin*2))
-    moder_offset = GPIO_MODER
-    config_pin = f"set $temp = *(unsigned int*){hex(base + moder_offset)}\nset $temp = ($temp & ~(3 << ({pin} * 2))) | (1 << ({pin} * 2))\nset *(unsigned int*){hex(base + moder_offset)} = $temp\n"
-    
-    return enable_clock + config_pin
-
-def gpio_configure_input(port, pin):
-    """Configure GPIO pin as input (no pull)"""
-    if port.upper() not in PORTS:
-        return None
-    
-    port_info = PORTS[port.upper()]
-    base = port_info["base"]
-    rcc_bit = port_info["rcc_bit"]
-    
-    # Enable clock: RCC_AHB1ENR |= (1 << rcc_bit)
-    enable_clock = f"set $temp = *(unsigned int*){hex(RCC_AHB1ENR)}\nset $temp = $temp | (1 << {rcc_bit})\nset *(unsigned int*){hex(RCC_AHB1ENR)} = $temp\n"
-    
-    # Configure as input: MODER &= ~(3 << (pin*2)) - clears the bits to 0 (input mode)
-    moder_offset = GPIO_MODER
-    config_pin = f"set $temp = *(unsigned int*){hex(base + moder_offset)}\nset $temp = $temp & ~(3 << ({pin} * 2))\nset *(unsigned int*){hex(base + moder_offset)} = $temp\n"
-    
-    return enable_clock + config_pin
-
-def gpio_set(port, pin):
-    """Set GPIO pin HIGH"""
-    if port.upper() not in PORTS:
-        return None
-    
-    base = PORTS[port.upper()]["base"]
-    # BSRR: write 1 to set pin
-    return f"set *(unsigned int*){hex(base + GPIO_BSRR)} = (1 << {pin})\n"
-
-def gpio_clear(port, pin):
-    """Set GPIO pin LOW"""
-    if port.upper() not in PORTS:
-        return None
-    
-    base = PORTS[port.upper()]["base"]
-    # BSRR: write 1 to bit [16+pin] to clear
-    return f"set *(unsigned int*){hex(base + GPIO_BSRR)} = (1 << ({pin} + 16))\n"
-
-def gpio_read(port, pin):
-    """Read GPIO pin value"""
-    if port.upper() not in PORTS:
-        return None
-    
-    base = PORTS[port.upper()]["base"]
-    return f"printf \"Pin value: %d\\n\", (*(unsigned int*){hex(base + GPIO_IDR)} >> {pin}) & 1"
-
-def gpio_toggle(port, pin):
-    """Toggle GPIO pin"""
-    if port.upper() not in PORTS:
-        return None
-    
-    base = PORTS[port.upper()]["base"]
-    # Read ODR, XOR with pin bit, write back
-    return f"set $temp = *(unsigned int*){hex(base + GPIO_ODR)}\nset $temp = $temp ^ (1 << {pin})\nset *(unsigned int*){hex(base + GPIO_ODR)} = $temp\n"
-
-def gpio_info(port, pin):
-    """Read GPIO pin configuration"""
-    if port.upper() not in PORTS:
-        return None
-    
-    port_upper = port.upper()
-    base = PORTS[port_upper]["base"]
-    
-    # Read MODER, OTYPER, OSPEEDR, PUPDR, ODR, IDR
-    gdb_script = f"""
-set $base = {hex(base)}
-set $moder = *(unsigned int*)($base + 0x00)
-set $otyper = *(unsigned int*)($base + 0x04)
-set $ospeedr = *(unsigned int*)($base + 0x08)
-set $pupdr = *(unsigned int*)($base + 0x0C)
-set $odr = *(unsigned int*)($base + 0x14)
-set $idr = *(unsigned int*)($base + 0x10)
-
-set $mode = ($moder >> ({pin} * 2)) & 3
-set $type = ($otyper >> {pin}) & 1
-set $speed = ($ospeedr >> ({pin} * 2)) & 3
-set $pull = ($pupdr >> ({pin} * 2)) & 3
-set $out = ($odr >> {pin}) & 1
-set $in = ($idr >> {pin}) & 1
-
-printf "GPIO {port_upper}{pin} Configuration:\\n"
-printf "Mode: %d", $mode
-printf "  Type: %d", $type
-printf "  Speed: %d", $speed
-printf "  Pull: %d", $pull
-printf "  Output: %d", $out
-printf "  Input: %d\\n", $in
-"""
-    return gdb_script
-
-def system_reset():
-    """Reset the STM32F411 system"""
-    return "monitor reset\nprintf \"System reset complete\\n\""
-
-def translate_command(cmd_str):
-    """Translate human-readable command to GDB script"""
-    parts = cmd_str.split()
-    
-    if len(parts) < 1:
-        return None
-    
-    action = parts[0].lower()
-    
-    # gpio_out A 5 - configure as output
-    if action == "gpio_out":
-        if len(parts) != 3:
-            return None
-        port, pin = parts[1], int(parts[2])
-        if pin < 0 or pin > 15:
-            return None
-        return gpio_configure_output(port, pin)
-    
-    # gpio_in A 5 - configure as input
-    elif action == "gpio_in":
-        if len(parts) != 3:
-            return None
-        port, pin = parts[1], int(parts[2])
-        if pin < 0 or pin > 15:
-            return None
-        return gpio_configure_input(port, pin)
-    
-    # gpio_on A 5 - set HIGH
-    elif action == "gpio_on":
-        if len(parts) != 3:
-            return None
-        port, pin = parts[1], int(parts[2])
-        if pin < 0 or pin > 15:
-            return None
-        return gpio_set(port, pin)
-    
-    # gpio_off A 5 - set LOW
-    elif action == "gpio_off":
-        if len(parts) != 3:
-            return None
-        port, pin = parts[1], int(parts[2])
-        if pin < 0 or pin > 15:
-            return None
-        return gpio_clear(port, pin)
-    
-    # gpio_read A 5 - read pin
-    elif action == "gpio_read" or action == "gpio_get":
-        if len(parts) != 3:
-            return None
-        port, pin = parts[1], int(parts[2])
-        if pin < 0 or pin > 15:
-            return None
-        return gpio_read(port, pin)
-    
-    # gpio_toggle A 5 - toggle pin
-    elif action == "gpio_toggle":
-        if len(parts) != 3:
-            return None
-        port, pin = parts[1], int(parts[2])
-        if pin < 0 or pin > 15:
-            return None
-        return gpio_toggle(port, pin)
-    
-    # gpio_info A 5 - read pin configuration
-    elif action == "gpio_info":
-        if len(parts) != 3:
-            return None
-        port, pin = parts[1], int(parts[2])
-        if pin < 0 or pin > 15:
-            return None
-        return gpio_info(port, pin)
-    
-    # system_reset - reset the board
-    elif action == "system_reset" or action == "reset":
-        return system_reset()
-    
-    # UART commands - return tuple (action, args) for special handling
-    elif action.startswith("uart_"):
-        return (action, parts)
-    
-    # help - show commands
-    elif action == "help":
-        return None  # Special case handled in main
-    
-    return None
-
-def parse_uart_config(args):
-    """
-    Parse UART command arguments and extract configuration
-    
-    Args:
-        args: List of arguments from command
+    def __init__(self, port='/dev/ttyUSB0', baud=9600, timeout=1):
+        self.port = port
+        self.baud = baud
+        self.timeout = timeout
+        self.ser = None
+        self.connected = False
+        self.char_delay = 0.005  # 5ms delay between characters for reliability
         
-    Returns:
-        tuple: (success, config_dict)
-    """
-    config = {
-        'baud': 9600,              # Default baud rate
-        'data_format': 'ascii',    # Default data format
-        'frame': 'standard',       # Default frame format
-        'timeout': 1000            # Default timeout in ms
-    }
+    def connect(self):
+        """Connect to STM32"""
+        try:
+            self.ser = serial.Serial(
+                port=self.port,
+                baudrate=self.baud,
+                bytesize=serial.EIGHTBITS,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE,
+                timeout=self.timeout
+            )
+            time.sleep(0.3)
+            self.ser.reset_input_buffer()
+            self.connected = True
+            return True
+        except serial.SerialException as e:
+            print(f"Error: Cannot connect to {self.port}: {e}")
+            return False
     
-    # Extract config parameters from args (key=value format)
-    for arg in args[3:]:  # Skip action, tx_port, tx_pin, rx_port, rx_pin
-        if '=' in arg:
-            key, value = arg.split('=', 1)
-            key = key.strip().lower()
-            value = value.strip()
-            
-            if key == 'baud':
-                try:
-                    config['baud'] = int(value)
-                except ValueError:
-                    return False, f"Invalid baud rate: {value}"
-            elif key == 'data_format' or key == 'format':
-                if value.lower() not in ['ascii', 'hex']:
-                    return False, f"Invalid format: {value}. Use 'ascii' or 'hex'"
-                config['data_format'] = value.lower()
-            elif key == 'frame':
-                config['frame'] = value.lower()
-            elif key == 'timeout':
-                try:
-                    config['timeout'] = int(value)
-                except ValueError:
-                    return False, f"Invalid timeout: {value}"
+    def disconnect(self):
+        """Disconnect from STM32"""
+        if self.ser and self.ser.is_open:
+            self.ser.close()
+        self.connected = False
     
-    return True, config
-
-def handle_uart_command(cmd_str):
-    """
-    Handle UART protocol commands
-    
-    Commands:
-        uart_send <TX_PORT> <TX_PIN> <data> [baud=9600] [format=ascii] [frame=standard]
-        uart_recv <RX_PORT> <RX_PIN> [timeout=1000] [baud=9600] [format=ascii]
-        uart_monitor <RX_PORT> <RX_PIN> [duration=10000] [interval=100] [baud=9600]
-        uart_config <TX_PORT> <TX_PIN> <RX_PORT> <RX_PIN>  - Show UART configuration
-    
-    Returns:
-        str: Output message
-    """
-    action = cmd_str[0].lower()
-    parts = cmd_str[1]  # Already a list from main()
-    
-    try:
-        if action == "uart_send":
-            # uart_send A 9 "Hello" baud=9600 format=ascii
-            if len(parts) < 4:
-                return "Usage: uart_send <TX_PORT> <TX_PIN> <data> [baud=9600] [format=ascii]"
-            
-            tx_port = parts[1]
-            try:
-                tx_pin = int(parts[2])
-            except ValueError:
-                return "Invalid TX pin"
-            
-            # Find the data - it's everything between pin and first key=value
-            data_start_idx = 3
-            data_parts = []
-            config_args = []
-            
-            for i, arg in enumerate(parts[3:], 3):
-                if '=' in arg:
-                    config_args = parts[i:]
-                    break
-                else:
-                    data_parts.append(arg)
-            
-            if not data_parts:
-                return "No data to send"
-            
-            data = ' '.join(data_parts)
-            
-            # Parse configuration
-            success, config = parse_uart_config(['uart_send', tx_port, str(tx_pin)] + config_args)
-            if not success:
-                return config
-            
-            # For send, we just need TX pin, so use same port for RX (won't be used)
-            try:
-                uart = UART(tx_port, tx_pin, tx_port, tx_pin, **config)
-            except Exception as e:
-                return f"Error creating UART: {str(e)}"
-            
-            # Remove quotes if present
-            data = data.strip('"\'')
-            
-            try:
-                if uart.send(data):
-                    return f"Sent ({config['data_format']}): {data}\nBaud: {config['baud']}, Format: {config['data_format']}"
-                else:
-                    return "Send failed"
-            except Exception as e:
-                return f"Send error: {str(e)}"
+    def send_command(self, cmd, wait_response=True):
+        """Send command and optionally wait for response"""
+        if not self.connected:
+            return None
         
-        elif action == "uart_recv":
-            # uart_recv A 10 baud=9600 format=ascii timeout=1000
-            if len(parts) < 3:
-                return "Usage: uart_recv <RX_PORT> <RX_PIN> [timeout=1000] [baud=9600] [format=ascii]"
-            
-            rx_port = parts[1]
-            try:
-                rx_pin = int(parts[2])
-            except ValueError:
-                return "Invalid RX pin"
-            
-            # Parse configuration
-            success, config = parse_uart_config(['uart_recv', rx_port, str(rx_pin)] + parts[3:])
-            if not success:
-                return config
-            
-            timeout = config.pop('timeout', 1000)
-            
-            # For recv, we just need RX pin, so use same port for TX (won't be used)
-            try:
-                uart = UART(rx_port, rx_pin, rx_port, rx_pin, **config)
-            except Exception as e:
-                return f"Error creating UART: {str(e)}"
-            
-            try:
-                data = uart.receive(timeout_ms=timeout)
-                
-                if data is None:
-                    return f"Timeout waiting for data ({timeout}ms)"
-                else:
-                    return f"Received ({config['data_format']}): {data}"
-            except Exception as e:
-                return f"Receive error: {str(e)}"
+        # Send character by character for reliability at low baud rates
+        for c in cmd:
+            self.ser.write(c.encode())
+            time.sleep(self.char_delay)
         
-        elif action == "uart_monitor":
-            # uart_monitor A 10 duration=10000 interval=100 baud=9600
-            if len(parts) < 3:
-                return "Usage: uart_monitor <RX_PORT> <RX_PIN> [duration=10000] [interval=100] [baud=9600]"
-            
-            rx_port = parts[1]
-            try:
-                rx_pin = int(parts[2])
-            except ValueError:
-                return "Invalid RX pin"
-            
-            # Extract monitor-specific parameters
-            duration = 10000
-            interval = 100
-            config_args = []
-            
-            for arg in parts[3:]:
-                if arg.startswith('duration='):
+        self.ser.write(b'\r\n')
+        
+        if wait_response:
+            # Check if this is a blocking UART_RECV command - need to wait longer
+            if cmd.upper().startswith('UART_RECV'):
+                # Parse timeout from command: UART_RECV <inst> <len> [timeout_ms]
+                parts = cmd.split()
+                timeout_ms = 1000  # default
+                if len(parts) >= 4:
                     try:
-                        duration = int(arg.split('=')[1])
-                    except ValueError:
+                        timeout_ms = int(parts[3])
+                    except:
                         pass
-                elif arg.startswith('interval='):
-                    try:
-                        interval = int(arg.split('=')[1])
-                    except ValueError:
-                        pass
-                else:
-                    config_args.append(arg)
-            
-            success, config = parse_uart_config(['uart_monitor', rx_port, str(rx_pin)] + config_args)
-            if not success:
-                return config
-            
-            uart = UART(rx_port, rx_pin, rx_port, rx_pin, **config)
-            
-            print(f"Monitoring RX{rx_port}{rx_pin} for {duration}ms (interval: {interval}ms)")
-            print(f"Baud: {config['baud']}, Format: {config['data_format']}")
-            print("Press Ctrl+C to stop\n")
-            
-            results = uart.monitor(duration_ms=duration, interval_ms=interval)
-            
-            if results:
-                return f"Captured {len(results)} message(s)"
+                # Wait for the timeout plus some buffer
+                wait_time = (timeout_ms / 1000.0) + 2.0
+                response = self._read_response(wait_time)
             else:
-                return "No data captured"
+                time.sleep(0.1)  # Wait for processing
+                response = self._read_response()
+            return response
+        return None
+    
+    def _read_response(self, max_wait=2.0):
+        """Read response from STM32"""
+        response = b''
+        start_time = time.time()
         
-        elif action == "uart_config":
-            # uart_config A 9 A 10 - Show UART configuration
-            if len(parts) < 5:
-                return "Usage: uart_config <TX_PORT> <TX_PIN> <RX_PORT> <RX_PIN> [baud=9600]"
-            
-            tx_port = parts[1]
+        # Wait for data with timeout
+        while (time.time() - start_time) < max_wait:
+            if self.ser.in_waiting:
+                response += self.ser.read(self.ser.in_waiting)
+                time.sleep(0.05)
+                # Check if we got the prompt (response complete)
+                if response.endswith(b'> ') or response.endswith(b'>\r\n'):
+                    break
+            else:
+                time.sleep(0.05)
+        
+        # Decode and clean response
+        try:
+            text = response.decode('utf-8', errors='ignore')
+            # Remove echo and prompt
+            lines = text.split('\r\n')
+            # Skip first line (echo) and filter empty/prompt lines
+            clean_lines = []
+            for line in lines[1:]:
+                line = line.strip()
+                if line and line != '>':
+                    clean_lines.append(line)
+            return '\n'.join(clean_lines)
+        except:
+            return response.hex()
+    
+    def interactive(self):
+        """Interactive command mode"""
+        print("""
+╔═══════════════════════════════════════════════════════════════╗
+║               MIMIC - Hardware Control Interface              ║
+║          Control STM32 peripherals via simple commands        ║
+╚═══════════════════════════════════════════════════════════════╝
+""")
+        
+        if not self.connect():
+            return
+        
+        print(f"Connected to {self.port} @ {self.baud} baud")
+        print("Type 'help' for commands, 'exit' to quit\n")
+        
+        # Get initial status
+        response = self.send_command("VERSION")
+        if response:
+            print(response)
+            print()
+        
+        while True:
             try:
-                tx_pin = int(parts[2])
-            except ValueError:
-                return "Invalid TX pin"
-            
-            rx_port = parts[3]
-            try:
-                rx_pin = int(parts[4])
-            except ValueError:
-                return "Invalid RX pin"
-            
-            success, config = parse_uart_config(['uart_config', tx_port, str(tx_pin), rx_port, str(rx_pin)] + parts[5:])
-            if not success:
-                return config
-            
-            uart = UART(tx_port, tx_pin, rx_port, rx_pin, **config)
-            uart_config = uart.get_config()
-            
-            output = "UART Configuration:\n"
-            output += f"  TX Pin: {uart_config['tx_pin']}\n"
-            output += f"  RX Pin: {uart_config['rx_pin']}\n"
-            output += f"  Baud Rate: {uart_config['baud']}\n"
-            output += f"  Data Format: {uart_config['data_format']}\n"
-            output += f"  Frame Format: {uart_config['frame']}\n"
-            output += f"  Bit Time: {uart_config['bit_time']*1000:.3f}ms\n"
-            output += f"  Timeout: {config['timeout']}ms"
-            
-            return output
+                cmd = input("\033[92mmimic>\033[0m ").strip()
+                
+                if not cmd:
+                    continue
+                
+                # Local commands (processed on host, not sent to MCU)
+                if cmd.lower() in ['exit', 'quit', 'q']:
+                    print("Goodbye!")
+                    break
+                elif cmd.lower() == 'clear':
+                    print("\033[2J\033[H", end='')
+                    continue
+                elif cmd.lower() == 'reconnect':
+                    self.disconnect()
+                    if self.connect():
+                        print("Reconnected!")
+                    continue
+                elif cmd.lower().startswith('port '):
+                    self.port = cmd.split()[1]
+                    self.disconnect()
+                    if self.connect():
+                        print(f"Connected to {self.port}")
+                    continue
+                elif cmd.lower().startswith('baud '):
+                    self.baud = int(cmd.split()[1])
+                    self.disconnect()
+                    if self.connect():
+                        print(f"Baud rate set to {self.baud}")
+                    continue
+                elif cmd.lower() == 'ports':
+                    ports = serial.tools.list_ports.comports()
+                    if ports:
+                        for p in ports:
+                            print(f"  {p.device}: {p.description}")
+                    else:
+                        print("  No serial ports found")
+                    continue
+                
+                # LED shortcuts
+                elif cmd.lower().startswith('led '):
+                    parts = cmd.lower().split()
+                    if len(parts) >= 2:
+                        action = parts[1]
+                        color = parts[2] if len(parts) > 2 else 'all'
+                        result = self._led_command(action, color)
+                        print(result)
+                    else:
+                        print("Usage: led <on|off> [green|orange|red|blue|all]")
+                    continue
+                
+                # Send command to STM32
+                response = self.send_command(cmd)
+                if response:
+                    print(response)
+                    
+            except KeyboardInterrupt:
+                print("\nUse 'exit' to quit")
+            except EOFError:
+                break
         
-        else:
-            return f"Unknown UART command: {action}"
+        self.disconnect()
     
-    except Exception as e:
-        return f"UART Error: {e}"
-
-def run_gdb_command(gdb_script):
-    """Execute GDB commands via OpenOCD"""
-    # Build command list with separate -ex arguments
-    cmd = ["arm-none-eabi-gdb", "-q", "-batch"]
-    
-    # Add connection - NO reset halt (it clears our GPIO config!)
-    cmd.extend(["-ex", "set confirm off"])
-    cmd.extend(["-ex", "target extended-remote :3333"])
-    
-    # Add user commands (split by lines and add as separate -ex args)
-    for line in gdb_script.strip().split('\n'):
-        line = line.strip()
-        if line:
-            cmd.extend(["-ex", line])
-    
-    try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=10
-        )
+    def _led_command(self, action, color):
+        """Control Discovery board LEDs"""
+        leds = {
+            'green': 'D12', 'orange': 'D13', 
+            'red': 'D14', 'blue': 'D15',
+            'all': ['D12', 'D13', 'D14', 'D15']
+        }
         
-        return result.stdout, result.stderr
-    except subprocess.TimeoutExpired:
-        return "", "ERROR: GDB command timeout (>10s) - check if OpenOCD is running"
-    except FileNotFoundError:
-        return "", "ERROR: arm-none-eabi-gdb not found. Install: sudo pacman -S arm-none-eabi-gdb"
+        pins = leds.get(color, [color])
+        if isinstance(pins, str):
+            pins = [pins]
+        
+        for pin in pins:
+            self.send_command(f"PIN_SET_OUT {pin}", wait_response=False)
+            time.sleep(0.1)
+            if action == 'on':
+                self.send_command(f"PIN_HIGH {pin}", wait_response=False)
+            else:
+                self.send_command(f"PIN_LOW {pin}", wait_response=False)
+            time.sleep(0.1)
+        
+        # Flush any responses
+        time.sleep(0.2)
+        if self.ser.in_waiting:
+            self.ser.read(self.ser.in_waiting)
+        
+        return f"LED(s) {'ON' if action == 'on' else 'OFF'}: {', '.join(pins)}"
 
-def show_help():
-    """Display help information"""
-    help_text = """
-STM32F411 Discovery - GPIO Control & Protocol Testing Shell
-Direct Hardware Control via ST-LINK & GDB
 
-=== GPIO CONTROL ===
-  gpio_out <PORT> <PIN>       - Configure pin as output
-  gpio_in <PORT> <PIN>        - Configure pin as input
-  gpio_on <PORT> <PIN>        - Set pin HIGH
-  gpio_off <PORT> <PIN>       - Set pin LOW
-  gpio_toggle <PORT> <PIN>    - Toggle pin state
-  gpio_read <PORT> <PIN>      - Read pin value
-  gpio_info <PORT> <PIN>      - Read pin configuration
+def list_ports():
+    """List available serial ports"""
+    ports = serial.tools.list_ports.comports()
+    if not ports:
+        print("No serial ports found")
+    else:
+        print("\nAvailable ports:")
+        for p in ports:
+            print(f"  {p.device}: {p.description}")
+    print()
 
-  Examples:
-    gpio_out D 12              - Configure PD12 as output
-    gpio_on D 12               - Turn on PD12
-    gpio_read A 0              - Read PA0 (button)
-
-=== UART COMMUNICATION (via GPIO Bit-Banging) ===
-  uart_send <TX_PORT> <TX_PIN> <data> [baud=9600] [format=ascii]
-  uart_recv <RX_PORT> <RX_PIN> [timeout=1000] [baud=9600] [format=ascii]
-  uart_monitor <RX_PORT> <RX_PIN> [duration=10000] [interval=100] [baud=9600]
-  uart_config <TX_PORT> <TX_PIN> <RX_PORT> <RX_PIN> [baud=9600]
-  
-  Parameters:
-    baud        - Baud rate: 9600, 19200, 38400, 57600, 115200, 230400 (default: 9600)
-    format      - Data format: 'ascii' or 'hex' (default: 'ascii')
-    timeout     - Receive timeout in milliseconds (default: 1000)
-    duration    - Monitor duration in milliseconds (default: 10000)
-    interval    - Monitor check interval in milliseconds (default: 100)
-  
-  Examples:
-    uart_config A 9 A 10 baud=9600
-                                - Show UART config for TX=PA9, RX=PA10
-    
-    uart_send A 9 "Hello" baud=9600
-                                - Send "Hello" via PA9 at 9600 baud
-    
-    uart_send A 9 "0xAA 0xBB" format=hex
-                                - Send hex data via PA9
-    
-    uart_recv A 10 timeout=5000 baud=9600
-                                - Receive on PA10, wait 5 seconds
-    
-    uart_monitor A 10 duration=30000 baud=9600
-                                - Monitor RX on PA10 for 30 seconds
-
-=== SYSTEM ===
-  reset                        - Reset the STM32F411 board
-  help                         - Show this help message
-  exit                         - Exit the shell
-
-=== PIN REFERENCE ===
-  PORTS: A, B, C, D, E (case-insensitive)
-  PINS:  0-15 (all GPIO pins)
-  
-  Common pins on STM32F411 Discovery:
-    LEDs:   PD12 (Green), PD13 (Orange), PD14 (Red), PD15 (Blue)
-    Button: PA0 (User Button)
-
-=== GPIO CONFIGURATION REFERENCE ===
-  Modes:  0=INPUT, 1=OUTPUT, 2=ALTERNATE, 3=ANALOG
-  Types:  0=PUSH-PULL, 1=OPEN-DRAIN
-  Speeds: 0=LOW, 1=MEDIUM, 2=FAST, 3=HIGH
-  Pulls:  0=NONE, 1=PULL-UP, 2=PULL-DOWN
-
-=== QUICK START ===
-  1. gpio_config A 9 A 10 baud=9600
-  2. uart_send A 9 "Test"
-  3. uart_recv A 10
-
-NOTES:
-  - You can use ANY GPIO pins for UART (TX and RX)
-  - Configuration parameters use defaults if not specified
-  - Bit-banging is suitable for low baud rates (≤115200)
-  - Format defaults to ASCII if not specified
-  - Multiple parameters can be combined
-"""
-    print(help_text)
 
 def main():
-    """Main interactive shell"""
-    print("\nSTM32F411 Discovery - GPIO Control & UART Testing Shell")
-    print("Direct Hardware Control via ST-LINK & GDB\n")
-    print("Type 'help' for commands, 'exit' to quit\n")
+    parser = argparse.ArgumentParser(
+        description='MIMIC Host Interface for STM32',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python Mimic.py                           # Interactive mode
+  python Mimic.py -c "PIN_HIGH D12"         # Single command  
+  python Mimic.py -c "UART_INIT 1 115200"   # Init UART1
+  python Mimic.py --list                    # List serial ports
+  python Mimic.py -p /dev/ttyUSB1 -b 115200 # Custom port/baud
+  python Mimic.py --led on                  # Turn all LEDs on
+  python Mimic.py --led off                 # Turn all LEDs off
+        """
+    )
     
-    while True:
-        try:
-            cmd = input("stm32> ").strip().replace('\r', '')
-            
-            # Handle empty input
-            if not cmd:
-                continue
-            
-            # Handle special commands
-            if cmd.lower() == "exit" or cmd.lower() == "quit":
-                print("Exiting.")
-                break
-            
-            if cmd.lower() == "help":
-                show_help()
-                continue
-            
-            # Normalize whitespace
-            cmd = " ".join(cmd.split())
-            
-            # Translate to GDB command
-            gdb_cmd = translate_command(cmd)
-            
-            if gdb_cmd is None:
-                print("ERROR: Invalid command. Type 'help' for usage.")
-                continue
-            
-            # Handle UART commands (returned as tuple)
-            if isinstance(gdb_cmd, tuple):
-                action, parts = gdb_cmd
-                output = handle_uart_command((action, parts))
-                print(output)
-                continue
-            
-            # Execute GDB command
-            stdout, stderr = run_gdb_command(gdb_cmd)
-            
-            # Check for errors
-            if "error" in stderr.lower() or "timeout" in stderr.lower():
-                print(f"ERROR: {stderr}")
-            elif "not found" in stderr.lower():
-                print(f"ERROR: {stderr}")
-            elif stderr and "Could not connect" in stderr:
-                print("ERROR: Cannot connect to OpenOCD")
-                print("Make sure OpenOCD is running:")
-                print("openocd -f board/st_stm32f4_discovery.cfg")
-            else:
-                # Show output if it's a read/info/reset operation
-                if "gpio_read" in cmd or "gpio_get" in cmd:
-                    # Extract pin value from GDB output
-                    for line in stdout.split('\n'):
-                        if "Pin value:" in line:
-                            print(line.strip())
-                            break
-                    else:
-                        # Fallback if output format changed
-                        if stdout.strip():
-                            print(stdout.strip())
-                        else:
-                            print("OK")
-                elif "gpio_info" in cmd:
-                    # Show GPIO configuration info
-                    if stdout.strip():
-                        print(stdout.strip())
-                    else:
-                        print("OK")
-                elif "reset" in cmd or "system_reset" in cmd:
-                    # Show reset confirmation
-                    for line in stdout.split('\n'):
-                        if "reset" in line.lower():
-                            print(line.strip())
-                            break
-                    else:
-                        print("System reset complete")
-                else:
-                    # Regular command, just show OK
-                    print("OK")
-        
-        except KeyboardInterrupt:
-            print("\nExiting.")
-            break
-        except EOFError:
-            print("\nExiting.")
-            break
-        except Exception as e:
-            print(f"ERROR: {e}")
+    parser.add_argument('-p', '--port', default='/dev/ttyUSB0',
+                        help='Serial port (default: /dev/ttyUSB0)')
+    parser.add_argument('-b', '--baud', type=int, default=9600,
+                        help='Baud rate (default: 9600)')
+    parser.add_argument('-c', '--command', 
+                        help='Execute single command and exit')
+    parser.add_argument('--list', action='store_true',
+                        help='List available serial ports')
+    parser.add_argument('--led', choices=['on', 'off'],
+                        help='Quick LED control (all LEDs)')
+    
+    args = parser.parse_args()
+    
+    if args.list:
+        list_ports()
+        return
+    
+    mimic = MimicHost(port=args.port, baud=args.baud)
+    
+    if args.led:
+        if mimic.connect():
+            result = mimic._led_command(args.led, 'all')
+            print(result)
+            mimic.disconnect()
+        return
+    
+    if args.command:
+        # Single command mode
+        if mimic.connect():
+            response = mimic.send_command(args.command)
+            if response:
+                print(response)
+            mimic.disconnect()
+    else:
+        # Interactive mode
+        mimic.interactive()
+
 
 if __name__ == "__main__":
     main()
