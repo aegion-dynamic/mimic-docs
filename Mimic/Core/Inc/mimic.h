@@ -31,7 +31,7 @@ extern "C" {
 
 /* ========================== CONFIGURATION ================================= */
 
-#define MIMIC_VERSION           "1.0.0"
+#define MIMIC_VERSION           "1.1.0"
 #define MIMIC_MAX_CMD_LEN       128
 #define MIMIC_MAX_ARGS          8
 #define MIMIC_MAX_ARG_LEN       32
@@ -67,11 +67,33 @@ typedef struct {
     GPIO_TypeDef *port;
 } Mimic_PortMap_t;
 
+/* SPI CS pin tracking */
+typedef struct {
+    GPIO_TypeDef *port;
+    uint16_t pin;
+    uint8_t configured;
+} Mimic_SPI_CS_t;
+
+typedef struct {
+    uint8_t is_slave;  // 0=Master, 1=Slave
+} Mimic_I2C_State_t;
+
 /* ========================== EXTERN VARIABLES ============================== */
 
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;
+
+extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi2;
+extern SPI_HandleTypeDef hspi3;
+extern SPI_HandleTypeDef hspi4;
+extern SPI_HandleTypeDef hspi5;
+
+extern I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef hi2c2;
+extern I2C_HandleTypeDef hi2c3;
+
 extern Mimic_CmdState_t mimic_state;
 
 /* ========================== FUNCTION PROTOTYPES =========================== */
@@ -102,6 +124,22 @@ void Mimic_CMD_UART_SEND(Mimic_Command_t *cmd);
 void Mimic_CMD_UART_RECV(Mimic_Command_t *cmd);
 void Mimic_CMD_UART_STATUS(Mimic_Command_t *cmd);
 void Mimic_CMD_UART_TEST(Mimic_Command_t *cmd);
+
+/* SPI Commands */
+void Mimic_CMD_SPI_INIT(Mimic_Command_t *cmd);
+void Mimic_CMD_SPI_SEND(Mimic_Command_t *cmd);
+void Mimic_CMD_SPI_RECV(Mimic_Command_t *cmd);
+void Mimic_CMD_SPI_TRANSFER(Mimic_Command_t *cmd);
+void Mimic_CMD_SPI_CS(Mimic_Command_t *cmd);
+void Mimic_CMD_SPI_STATUS(Mimic_Command_t *cmd);
+
+/* I2C Command Handlers */
+void Mimic_CMD_I2C_INIT(Mimic_Command_t *cmd);
+void Mimic_CMD_I2C_SCAN(Mimic_Command_t *cmd);
+void Mimic_CMD_I2C_WRITE(Mimic_Command_t *cmd);
+void Mimic_CMD_I2C_READ(Mimic_Command_t *cmd);
+void Mimic_CMD_I2C_WRITE_READ(Mimic_Command_t *cmd);
+void Mimic_CMD_I2C_STATUS(Mimic_Command_t *cmd);
 
 /* System Commands */
 void Mimic_CMD_HELP(Mimic_Command_t *cmd);
