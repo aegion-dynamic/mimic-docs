@@ -19,7 +19,8 @@ PIN_set_Type    PIN -> setting the pin Type
 [Commands for UART]
 UART_INIT INSTANCE(UART1 | UART2 | UART6) BAUDRATE  -> for initializing the uart with Baudrate
 UART_SEND INSTANCE DATA -> for sending the data via uart
-UART_RECEIVE INSTANCE LENGTH -> for receiving the data via uart
+UART_RECEIVE INSTANCE LENGTH [TIMEOUT] -> for receiving the data via uart.
+  Note: If TIMEOUT (ms) is reached before LENGTH bytes are received, it will return the PARTIAL data received so far.
 
 [Commands for SPI]
 SPI_INIT INSTANCE(1-5) MODE(MASTER|SLAVE) SPEED [CPOL] [CPHA] [DATASIZE] [BITORDER] -> Initialize SPI

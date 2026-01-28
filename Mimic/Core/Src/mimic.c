@@ -971,39 +971,74 @@ void Mimic_CMD_UART_RECV(Mimic_Command_t *cmd)
                         huart->gState, huart->RxState, huart->ErrorCode);
     while (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_TC) == RESET) {}
     
+    /* Live Polling Strategy:
+       1. Loop until 'length' bytes received OR 'timeout' expires.
+       2. Read byte-by-byte with a short timeout to check for data.
+       3. Echo received characters immediately ("Live Polling").
+       4. Return full/partial buffer at the end.
+    */
+    
     uint8_t buffer[65] = {0};
+    uint16_t rx_count = 0;
     uint32_t start_time = HAL_GetTick();
-    HAL_StatusTypeDef status = HAL_UART_Receive(huart, buffer, length, timeout);
+    
+    Mimic_SendResponse("LIVE: "); // Prefix for live stream
+    
+    while (rx_count < length)
+    {
+        /* Check for total timeout */
+        if ((HAL_GetTick() - start_time) > timeout)
+        {
+            break;
+        }
+        
+        /* Try to read 1 byte with short timeout (10ms) 
+           10ms allows checking 'timeout' frequently enough 
+        */
+        uint8_t byte = 0;
+        if (HAL_UART_Receive(huart, &byte, 1, 10) == HAL_OK)
+        {
+            buffer[rx_count++] = byte;
+            
+            /* Live Echo: Print char if printable, else dot */
+            if (byte >= 32 && byte <= 126)
+                Mimic_SendResponseF("%c", byte);
+            else if (byte == '\r' || byte == '\n')
+                 Mimic_SendResponseF("%c", byte); // Pass newlines
+            else
+                Mimic_SendResponse(".");
+        }
+    }
+    
+    Mimic_SendResponse("\r\n"); // End live line
+    
     uint32_t elapsed = HAL_GetTick() - start_time;
     
-    Mimic_SendResponseF("(waited %lu ms, status=%d)\r\n", elapsed, status);
-    
-    if (status == HAL_OK)
+    /* Output Final Summary */
+    if (rx_count > 0)
     {
-        buffer[length] = '\0';
+        buffer[rx_count] = '\0';
+        
+        if (rx_count < length)
+             Mimic_SendResponseF("PARTIAL (Time: %lu ms, %d/%d bytes): ", elapsed, rx_count, length);
+        else
+             Mimic_SendResponseF("DONE (Time: %lu ms, %d/%d bytes): ", elapsed, rx_count, length);
+             
         Mimic_SendResponse("DATA: ");
         Mimic_SendResponse((char*)buffer);
         Mimic_SendResponse("\r\n");
         
         /* Also show hex */
         Mimic_SendResponse("HEX: ");
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < rx_count; i++)
         {
             Mimic_SendResponseF("%02X ", buffer[i]);
         }
         Mimic_SendResponse("\r\n");
     }
-    else if (status == HAL_TIMEOUT)
-    {
-        Mimic_SendResponse("TIMEOUT: No data received\r\n");
-    }
-    else if (status == HAL_BUSY)
-    {
-        Mimic_SendResponse("ERROR: UART busy\r\n");
-    }
     else
     {
-        Mimic_SendResponseF("ERROR: Receive failed (status=%d)\r\n", status);
+        Mimic_SendResponse("TIMEOUT: No data received\r\n");
     }
 }
 
