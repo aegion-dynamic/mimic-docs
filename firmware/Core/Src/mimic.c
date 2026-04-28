@@ -58,11 +58,23 @@ static Mimic_SPI_CS_t spi_cs_pins[5] = {0};  // One for each SPI instance
 
 /* I2C handles for dynamic configuration */
 I2C_HandleTypeDef hi2c1;
+void Mimic_SPI_Sync(void);
 I2C_HandleTypeDef hi2c2;
 I2C_HandleTypeDef hi2c3;
 
 /* I2C State tracking */
 static Mimic_I2C_State_t i2c_states[3] = {0}; // 0=I2C1, 1=I2C2, 2=I2C3
+static uint8_t i2c_slave_rx_buffer[64];
+
+/* Shadow Register Map for fast sensor emulation */
+static uint8_t i2c_register_map[256] = {0};
+static uint8_t current_reg_addr = 0;
+
+/* SPI Slave Buffers */
+static uint8_t spi_tx_buf[2] = {0};
+static uint8_t spi_rx_buf[2] = {0};
+volatile uint8_t spi_state = 0;
+volatile uint8_t spi_active = 0;
 
 /* ========================== INTERRUPT HANDLERS ============================ */
 
@@ -112,19 +124,41 @@ static uint8_t Mimic_RxGet(void)
   */
 void Mimic_Init(void)
 {
-    memset(&mimic_state, 0, sizeof(Mimic_CmdState_t));
+    // POWER UP ALL PINS IMMEDIATELY
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
     
+    // Ensure LED pin is output
+    GPIO_InitTypeDef GPIO_Led = {0};
+    GPIO_Led.Pin = GPIO_PIN_13;
+    GPIO_Led.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_Led.Pull = GPIO_NOPULL;
+    GPIO_Led.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOC, &GPIO_Led);
+
+    memset(&mimic_state, 0, sizeof(Mimic_CmdState_t));
+    memset(i2c_register_map, 0, 256);
+    
+    // Seed standard sensor IDs for instant hardware handshake
+    i2c_register_map[0x75] = 0x68; // MPU6050 WHO_AM_I
+    i2c_register_map[0xD0] = 0x58; // BMP280 Chip ID
+    
+    /* Manual PC13 (LED) Init to be 100% sure */
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = GPIO_PIN_13;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
     /* Start interrupt-based reception */
     HAL_UART_Receive_IT(&MIMIC_HOST_UART, (uint8_t*)&rx_byte, 1);
     
     /* Send welcome message */
     Mimic_SendResponse("\r\n");
-    Mimic_SendResponse("========================================\r\n");
-    Mimic_SendResponse("  MIMIC - Hardware Control Interface\r\n");
-    Mimic_SendResponseF("  Version: %s\r\n", MIMIC_VERSION);
-    Mimic_SendResponse("  Type 'HELP' for commands\r\n");
-    Mimic_SendResponse("========================================\r\n");
-    Mimic_SendResponse("READY\r\n> ");
+    Mimic_SendResponse("MIMIC FIRMWARE STARTING...\r\n");
 }
 
 /**
@@ -132,13 +166,17 @@ void Mimic_Init(void)
   */
 void Mimic_Process(void)
 {
+    // HEARTBEAT: Simple blink
+    static uint32_t last_blink = 0;
+    if (HAL_GetTick() - last_blink > 500) {
+        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+        last_blink = HAL_GetTick();
+    }
+
     /* Process all available bytes from interrupt buffer */
     while (Mimic_RxAvailable())
     {
         uint8_t rx = Mimic_RxGet();
-        
-        /* Echo back */
-        HAL_UART_Transmit(&MIMIC_HOST_UART, &rx, 1, 10);
         
         /* Handle special characters */
         if (rx == '\r' || rx == '\n')
@@ -168,6 +206,8 @@ void Mimic_Process(void)
             }
         }
     }
+    
+    Mimic_SPI_Sync();
 }
 
 /**
@@ -175,7 +215,7 @@ void Mimic_Process(void)
   */
 void Mimic_SendResponse(const char *response)
 {
-    HAL_UART_Transmit(&MIMIC_HOST_UART, (uint8_t*)response, strlen(response), 100);
+    HAL_UART_Transmit(&MIMIC_HOST_UART, (uint8_t*)response, strlen(response), 1);
 }
 
 /**
@@ -227,6 +267,8 @@ uint8_t Mimic_ParseCommand(const char *cmd_line, Mimic_Command_t *cmd)
 
 /* Forward declarations for command handlers */
 void Mimic_CMD_UART_POLL(Mimic_Command_t *cmd);
+void Mimic_CMD_I2C_REG_SET(Mimic_Command_t *cmd);
+void Mimic_CMD_I2C_REG_DATA(Mimic_Command_t *cmd);
 
 /**
   * @brief  Process a command line
@@ -348,6 +390,14 @@ void Mimic_ProcessCommand(const char *cmd_line)
     {
         Mimic_CMD_I2C_WRITE_READ(&cmd);
     }
+    else if (strcmp(cmd.command, "I2C_REG_SET") == 0 || strcmp(cmd.command, "IRS") == 0)
+    {
+        Mimic_CMD_I2C_REG_SET(&cmd);
+    }
+    else if (strcmp(cmd.command, "I2C_REG_DATA") == 0 || strcmp(cmd.command, "IRD") == 0)
+    {
+        Mimic_CMD_I2C_REG_DATA(&cmd);
+    }
     else if (strcmp(cmd.command, "I2C_STATUS") == 0)
     {
         Mimic_CMD_I2C_STATUS(&cmd);
@@ -410,10 +460,16 @@ uint8_t Mimic_ParsePin(const char *pin_str, GPIO_TypeDef **port, uint16_t *pin)
 {
     if (strlen(pin_str) < 2) return 0;
     
-    *port = Mimic_GetPort(pin_str[0]);
+    // Support "PA4" style by skipping the 'P' prefix if present
+    const char *ptr = pin_str;
+    if ((*ptr == 'P' || *ptr == 'p') && strlen(ptr) >= 3) {
+        ptr++;
+    }
+    
+    *port = Mimic_GetPort(*ptr);
     if (*port == NULL) return 0;
     
-    uint8_t pin_num = atoi(&pin_str[1]);
+    uint8_t pin_num = atoi(ptr + 1);
     *pin = Mimic_GetPin(pin_num);
     if (*pin == 0 && pin_str[1] != '0') return 0;
     
@@ -1233,9 +1289,9 @@ static void Mimic_ConfigureSPIGPIO(SPI_TypeDef *instance)
     
     if (instance == SPI1)
     {
-        /* SPI1: PA5 (SCK), PA6 (MISO), PA7 (MOSI) */
+        /* SPI1: PA4 (NSS), PA5 (SCK), PA6 (MISO), PA7 (MOSI) */
         __HAL_RCC_GPIOA_CLK_ENABLE();
-        GPIO_InitStruct.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
+        GPIO_InitStruct.Pin = GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -1356,95 +1412,104 @@ void Mimic_CMD_SPI_INIT(Mimic_Command_t *cmd)
         Mimic_ConfigureSPIGPIO(SPI5);
     }
     
+    /* SAFETY CHECK: Ensure we have at least 2 arguments (SPI_INIT + MODE) */
+    if (cmd->argc < 2 || cmd->args[1][0] == '\0')
+    {
+        Mimic_SendResponse("ERROR: Missing Mode (MASTER/SLAVE)\r\n");
+        return;
+    }
+    
     /* Configure SPI parameters */
-    if (strcmp(cmd->args[1], "MASTER") == 0)
+    if (strcmp(cmd->args[1], "SLAVE") == 0)
+    {
+        /* HARDWARE SPI1 SLAVE CONFIG (SUPER FAST) */
+        if (hspi->Instance == SPI1)
+        {
+            __HAL_RCC_SPI1_CLK_ENABLE();
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+            
+            GPIO_InitTypeDef GPIO_Init = {0};
+            // SCK(PA5), MISO(PA6), MOSI(PA7)
+            GPIO_Init.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
+            GPIO_Init.Mode = GPIO_MODE_AF_PP;
+            GPIO_Init.Pull = GPIO_NOPULL;
+            GPIO_Init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+            GPIO_Init.Alternate = GPIO_AF5_SPI1;
+            HAL_GPIO_Init(GPIOA, &GPIO_Init);
+            
+            // NSS(PA4)
+            GPIO_Init.Pin = GPIO_PIN_4;
+            GPIO_Init.Mode = GPIO_MODE_AF_PP;
+            GPIO_Init.Alternate = GPIO_AF5_SPI1;
+            HAL_GPIO_Init(GPIOA, &GPIO_Init);
+
+            hspi->Instance = SPI1;
+            hspi->Init.Mode = SPI_MODE_SLAVE;
+            hspi->Init.Direction = SPI_DIRECTION_2LINES;
+            hspi->Init.DataSize = SPI_DATASIZE_8BIT;
+            hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
+            hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
+            hspi->Init.NSS = SPI_NSS_HARD_INPUT;
+            hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
+            HAL_SPI_Init(hspi);
+
+            /* BMP280 Calibration Data (Mapped to 7-bit SPI addresses) */
+            // Chip ID at 0xD0 (7-bit 0x50)
+            i2c_register_map[0x50] = 0x58;
+            
+            // Calibration T1-T3 (0x88-0x8D -> 0x08-0x0D)
+            // Calibration P1-P9 (0x8E-0x9F -> 0x0E-0x1F)
+            uint8_t cal[] = {
+                0x70, 0x6B, 0x43, 0x67, 0x18, 0xFC, // T1-T3
+                0x7D, 0x8D, 0x4B, 0xD6, 0xD0, 0x0B, // P1-P3
+                0x27, 0x0B, 0xF9, 0xFF, 0x8C, 0x3C, // P4-P6
+                0xF8, 0xF9, 0xAC, 0x26, 0x0A, 0xD1  // P7-P9
+            };
+            for(int i=0; i<24; i++) i2c_register_map[0x08+i] = cal[i];
+
+            // Data Registers (0xF7-0xFC -> 0x77-0x7C)
+            i2c_register_map[0x77] = 0x50; i2c_register_map[0x78] = 0xC3; i2c_register_map[0x79] = 0x00; // Pressure
+            i2c_register_map[0x7A] = 0x80; i2c_register_map[0x7B] = 0x00; i2c_register_map[0x7C] = 0x00; // Temp
+            
+            spi_active = 1;
+            
+            HAL_NVIC_SetPriority(SPI1_IRQn, 5, 0); 
+            HAL_NVIC_EnableIRQ(SPI1_IRQn);
+            HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0); 
+            HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+
+            // Chamber the ID immediately for zero latency
+            spi_tx_buf[0] = 0x58;
+            HAL_SPI_TransmitReceive_IT(hspi, (uint8_t*)&spi_tx_buf[0], (uint8_t*)&spi_rx_buf[0], 1);
+            Mimic_SendResponse("OK: SPI1 SLAVE MODE 0 READY\r\n");
+            return;
+        }
+        else
+        {
+            hspi->Init.Mode = SPI_MODE_SLAVE;
+            hspi->Init.NSS = SPI_NSS_SOFT;
+        }
+    }
+    else if (strcmp(cmd->args[1], "MASTER") == 0)
+    {
         hspi->Init.Mode = SPI_MODE_MASTER;
-    else if (strcmp(cmd->args[1], "SLAVE") == 0)
-        hspi->Init.Mode = SPI_MODE_SLAVE;
+        hspi->Init.NSS = SPI_NSS_SOFT;
+    }
     else
     {
         Mimic_SendResponse("ERROR: Mode must be MASTER or SLAVE\r\n");
         return;
     }
-    
+
+    /* MASTER MODE CONFIG (Regular SPI) */
     hspi->Init.Direction = SPI_DIRECTION_2LINES;
     hspi->Init.DataSize = SPI_DATASIZE_8BIT;
     hspi->Init.CLKPolarity = SPI_POLARITY_LOW;
     hspi->Init.CLKPhase = SPI_PHASE_1EDGE;
-    hspi->Init.NSS = SPI_NSS_SOFT;
     hspi->Init.FirstBit = SPI_FIRSTBIT_MSB;
-    hspi->Init.TIMode = SPI_TIMODE_DISABLE;
-    hspi->Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-    hspi->Init.CRCPolynomial = 10;
-    
-    /* Parse optional CPOL */
-    if (cmd->argc >= 4)
-    {
-        if (cmd->args[3][0] == '1')
-            hspi->Init.CLKPolarity = SPI_POLARITY_HIGH;
-    }
-    
-    /* Parse optional CPHA */
-    if (cmd->argc >= 5)
-    {
-        if (cmd->args[4][0] == '1')
-            hspi->Init.CLKPhase = SPI_PHASE_2EDGE;
-    }
-    
-    /* Parse optional data size */
-    if (cmd->argc >= 6)
-    {
-        if (strcmp(cmd->args[5], "16") == 0)
-            hspi->Init.DataSize = SPI_DATASIZE_16BIT;
-    }
-    
-    /* Parse optional bit order */
-    if (cmd->argc >= 7)
-    {
-        if (strcmp(cmd->args[6], "LSB") == 0)
-            hspi->Init.FirstBit = SPI_FIRSTBIT_LSB;
-    }
-    
-    /* Parse optional CS pin */
-    if (cmd->argc >= 8)
-    {
-        GPIO_TypeDef *cs_port;
-        uint16_t cs_pin;
-        
-        if (Mimic_ParsePin(cmd->args[7], &cs_port, &cs_pin))
-        {
-            // Enable GPIO clock
-            if (cs_port == GPIOA) __HAL_RCC_GPIOA_CLK_ENABLE();
-            else if (cs_port == GPIOB) __HAL_RCC_GPIOB_CLK_ENABLE();
-            else if (cs_port == GPIOC) __HAL_RCC_GPIOC_CLK_ENABLE();
-            else if (cs_port == GPIOD) __HAL_RCC_GPIOD_CLK_ENABLE();
-            else if (cs_port == GPIOE) __HAL_RCC_GPIOE_CLK_ENABLE();
-            
-            // Configure CS pin as output, initially HIGH (inactive)
-            GPIO_InitTypeDef GPIO_InitStruct = {0};
-            GPIO_InitStruct.Pin = cs_pin;
-            GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-            GPIO_InitStruct.Pull = GPIO_NOPULL;
-            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-            HAL_GPIO_Init(cs_port, &GPIO_InitStruct);
-            HAL_GPIO_WritePin(cs_port, cs_pin, GPIO_PIN_SET);  // CS HIGH (inactive)
-            
-            // Store CS pin configuration
-            spi_cs_pins[spi_idx].port = cs_port;
-            spi_cs_pins[spi_idx].pin = cs_pin;
-            spi_cs_pins[spi_idx].configured = 1;
-        }
-        else
-        {
-            Mimic_SendResponseF("WARNING: Invalid CS pin '%s', CS control disabled\r\n", cmd->args[7]);
-        }
-    }
-    
-    /* Calculate prescaler for desired speed */
+
     uint32_t pclk = (hspi->Instance == SPI1) ? HAL_RCC_GetPCLK2Freq() : HAL_RCC_GetPCLK1Freq();
     uint32_t prescaler = SPI_BAUDRATEPRESCALER_256;
-    
-    // Select the largest prescaler that gives speed >= requested
     if (pclk / 256 >= speed) prescaler = SPI_BAUDRATEPRESCALER_256;
     else if (pclk / 128 >= speed) prescaler = SPI_BAUDRATEPRESCALER_128;
     else if (pclk / 64 >= speed) prescaler = SPI_BAUDRATEPRESCALER_64;
@@ -1452,38 +1517,11 @@ void Mimic_CMD_SPI_INIT(Mimic_Command_t *cmd)
     else if (pclk / 16 >= speed) prescaler = SPI_BAUDRATEPRESCALER_16;
     else if (pclk / 8 >= speed) prescaler = SPI_BAUDRATEPRESCALER_8;
     else if (pclk / 4 >= speed) prescaler = SPI_BAUDRATEPRESCALER_4;
-    else prescaler = SPI_BAUDRATEPRESCALER_2;  // Fastest possible
+    else prescaler = SPI_BAUDRATEPRESCALER_2;
     
     hspi->Init.BaudRatePrescaler = prescaler;
-    
-    if (HAL_SPI_Init(hspi) != HAL_OK)
-    {
-        Mimic_SendResponse("ERROR: SPI init failed\r\n");
-        return;
-    }
-    
-    /* Calculate actual speed */
-    uint32_t div = 2 << ((prescaler >> 3) & 0x07);
-    uint32_t actual_speed = pclk / div;
-    
-    Mimic_SendResponseF("OK: SPI%s initialized\r\n", cmd->args[0]);
-    Mimic_SendResponseF("  Mode: %s\r\n", cmd->args[1]);
-    Mimic_SendResponseF("  Speed: %lu Hz (requested: %lu Hz)\r\n", actual_speed, speed);
-    Mimic_SendResponseF("  CPOL: %d, CPHA: %d\r\n", 
-                        hspi->Init.CLKPolarity == SPI_POLARITY_HIGH ? 1 : 0,
-                        hspi->Init.CLKPhase == SPI_PHASE_2EDGE ? 1 : 0);
-    Mimic_SendResponseF("  Data size: %d-bit, Bit order: %s\r\n",
-                        hspi->Init.DataSize == SPI_DATASIZE_16BIT ? 16 : 8,
-                        hspi->Init.FirstBit == SPI_FIRSTBIT_MSB ? "MSB" : "LSB");
-    
-    if (spi_cs_pins[spi_idx].configured)
-    {
-        Mimic_SendResponseF("  CS: %s (automatic control enabled)\r\n", cmd->args[7]);
-    }
-    else
-    {
-        Mimic_SendResponse("  CS: Manual control (use SPI_CS command)\r\n");
-    }
+    HAL_SPI_Init(hspi);
+    Mimic_SendResponseF("OK: SPI %s Initialized\r\n", cmd->args[0]);
 }
 
 /**
@@ -1812,15 +1850,32 @@ void Mimic_ConfigureI2CGPIO(I2C_TypeDef *instance)
     
     if (instance == I2C1)
     {
-        /* I2C1: PB8 (SCL), PB9 (SDA) */
+        /* I2C1: PB6 (SCL), PB7 (SDA) */
         __HAL_RCC_GPIOB_CLK_ENABLE();
-        GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+        GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
         GPIO_InitStruct.Pull = GPIO_PULLUP;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+        
+        /* Disable Analog and Digital filters for maximum signal sensitivity */
+        uint32_t *cr1 = (uint32_t*)((uint8_t*)I2C1 + 0x00);
+        *cr1 &= ~(1 << 12); // Disable PEC (usually default)
+        // Note: F4 series analog filter is in control registers if supported, 
+        // older F401 might not have software-controllable analog filters 
+        // depending on revision, but we reach for the manual bits.
     }
+}
+
+void Mimic_InitMPU6050Registers(void)
+{
+    memset(i2c_register_map, 0, 256);
+    i2c_register_map[0x75] = 0x68; // WHO_AM_I
+    i2c_register_map[0x6B] = 0x40; // Sleep mode enabled (Standard MPU6050 state)
+    i2c_register_map[0x3B] = 0x00; // Accel X High
+    i2c_register_map[0x3C] = 0x01; // Accel X Low
+    i2c_register_map[0x3F] = 0x40; // Z-axis ~1g
 }
 
 /**
@@ -1888,36 +1943,52 @@ void Mimic_CMD_I2C_INIT(Mimic_Command_t *cmd)
         Mimic_ConfigureI2CGPIO(I2C3);
     }
     
-    /* Common Config */
+    /* Common Config - Optimized for No-Resistor/Weak Pull-up */
+    HAL_I2C_DeInit(hi2c);
+    
+    hi2c->Init.ClockSpeed = 100000;
     hi2c->Init.DutyCycle = I2C_DUTYCYCLE_2;
     hi2c->Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
     hi2c->Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
     hi2c->Init.OwnAddress2 = 0;
     hi2c->Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-    hi2c->Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+    hi2c->Init.NoStretchMode = I2C_NOSTRETCH_DISABLE; // Allow stretching (Master will wait if needed)
     
     /* Mode Specific Config */
     if (is_slave) {
-        hi2c->Init.ClockSpeed = 100000; // Dummy value for slave
-        hi2c->Init.OwnAddress1 = (val << 1); // Shift address for HAL
+        hi2c->Init.OwnAddress1 = (val << 1); 
+        memset(i2c_register_map, 0, 256); // Clear map for new sensor
     } else {
         hi2c->Init.ClockSpeed = val;
         hi2c->Init.OwnAddress1 = 0;
-    }
-    
-    /* Optional Addressing Mode */
-    if (cmd->argc >= 4)
-    {
-        if (strcmp(cmd->args[3], "10") == 0)
-        {
-            hi2c->Init.AddressingMode = I2C_ADDRESSINGMODE_10BIT;
-        }
     }
     
     if (HAL_I2C_Init(hi2c) != HAL_OK)
     {
         Mimic_SendResponse("ERROR: I2C init failed\r\n");
         return;
+    }
+    
+    if (is_slave) {
+        HAL_I2C_EnableListen_IT(hi2c);
+        Mimic_SendResponseF("OK: I2C %d SLEEPING AS SLAVE 0x%02lX\r\n", idx+1, val);
+    } else {
+        Mimic_SendResponseF("OK: I2C %d MASTER AT %lu Hz\r\n", idx+1, val);
+    }
+    
+    /* Disable Filters for better sensitivity with weak pull-ups */
+    HAL_I2CEx_ConfigAnalogFilter(hi2c, I2C_ANALOGFILTER_DISABLE);
+    HAL_I2CEx_ConfigDigitalFilter(hi2c, 0);
+    
+    /* Enable Interrupts for Slave Mode with Lower Priority than UART */
+    if (is_slave) {
+        HAL_NVIC_SetPriority(I2C1_EV_IRQn, 1, 0); 
+        HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+        HAL_NVIC_SetPriority(I2C1_ER_IRQn, 1, 0); 
+        HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
+        
+        // Start listening for master immediately
+        HAL_I2C_EnableListen_IT(hi2c);
     }
     
     /* Save State */
@@ -2079,28 +2150,64 @@ void Mimic_CMD_I2C_READ(Mimic_Command_t *cmd)
     
     if (i2c_states[idx].is_slave)
     {
-        Mimic_SendResponse("Wait for Master to write...\r\n");
-        /* In Slave mode, we receive when master transmits */
-        status = HAL_I2C_Slave_Receive(hi2c, buffer, length, 5000);
+        /* In Slave mode, we listen for Master events */
+        if (HAL_I2C_EnableListen_IT(hi2c) != HAL_OK)
+        {
+            Mimic_SendResponse("ERROR: I2C listen failed\r\n");
+            return;
+        }
+        Mimic_SendResponse("OK: Slave listening on bus...\r\n");
     }
     else
     {
         status = HAL_I2C_Master_Receive(hi2c, (uint16_t)(addr << 1), buffer, length, 1000);
+        if (status == HAL_OK)
+        {
+            Mimic_SendResponseF("OK: Read %d bytes: ", length);
+            for (int i = 0; i < length; i++)
+            {
+                Mimic_SendResponseF("%02X ", buffer[i]);
+            }
+            Mimic_SendResponse("\r\n");
+        }
+        else
+        {
+            Mimic_SendResponseF("ERROR: Read failed (Status: %d)\r\n", status);
+        }
+    }
+}
+
+/**
+  * @brief  I2C_SLAVE_DATA <INSTANCE> <HEX>
+  *         Pre-load the buffer that will be sent when a Master Reads from us.
+  */
+void Mimic_CMD_I2C_REG_SET(Mimic_Command_t *cmd)
+{
+    if (cmd->argc < 2)
+    {
+        Mimic_SendResponse("Usage: I2C_REG_SET <ADDR> <VAL>\r\n");
+        return;
     }
     
-    if (status == HAL_OK)
+    uint8_t addr = (uint8_t)strtoul(cmd->args[0], NULL, 0);
+    uint8_t val = (uint8_t)strtoul(cmd->args[1], NULL, 0);
+    
+    i2c_register_map[addr] = val;
+    Mimic_SendResponseF("OK: Reg[0x%02X] = 0x%02X\r\n", addr, val);
+}
+
+void Mimic_CMD_I2C_REG_DATA(Mimic_Command_t *cmd)
+{
+    if (cmd->argc < 2)
     {
-        Mimic_SendResponseF("OK: Read %d bytes: ", length);
-        for (int i = 0; i < length; i++)
-        {
-            Mimic_SendResponseF("%02X ", buffer[i]);
-        }
-        Mimic_SendResponse("\r\n");
+        Mimic_SendResponse("Usage: I2C_REG_DATA <START_ADDR> <HEX>\r\n");
+        return;
     }
-    else
-    {
-        Mimic_SendResponseF("ERROR: Read failed (Status: %d)\r\n", status);
-    }
+    
+    uint8_t addr = (uint8_t)strtoul(cmd->args[0], NULL, 0);
+    uint16_t len = Mimic_ParseHexData(cmd->args[1], &i2c_register_map[addr], 256 - addr);
+    
+    Mimic_SendResponseF("OK: Loaded %d bytes starting at 0x%02X\r\n", len, addr);
 }
 
 /**
@@ -2373,6 +2480,131 @@ void Mimic_CMD_UART_POLL(Mimic_Command_t *cmd)
     }
     
     Mimic_SendResponseF("OK: Sent %lu messages\r\n", sent);
+}
+/* ========================== I2C CALLBACKS ================================ */
+
+static uint8_t i2c_first_byte_received = 0;
+
+void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
+{
+    if (TransferDirection == I2C_DIRECTION_TRANSMIT)
+    {
+        /* Master is writing. Prepare to receive the register pointer. */
+        i2c_first_byte_received = 0;
+        HAL_I2C_Slave_Sequential_Receive_IT(hi2c, i2c_slave_rx_buffer, 1, I2C_FIRST_FRAME);
+    }
+    else
+    {
+        /* Master is reading. Send from the register map. */
+        uint16_t len = 256 - current_reg_addr;
+        HAL_I2C_Slave_Sequential_Transmit_IT(hi2c, &i2c_register_map[current_reg_addr], len, I2C_LAST_FRAME);
+    }
+}
+
+void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (i2c_first_byte_received == 0)
+    {
+        /* Capture register address and move to data reception */
+        current_reg_addr = i2c_slave_rx_buffer[0];
+        i2c_first_byte_received = 1;
+        
+        // Prepare to receive data if the master continues to write
+        HAL_I2C_Slave_Sequential_Receive_IT(hi2c, &i2c_register_map[current_reg_addr], 1, I2C_NEXT_FRAME);
+    }
+    else
+    {
+        /* Continuing data write: update map and increment pointer */
+        current_reg_addr++;
+        HAL_I2C_Slave_Sequential_Receive_IT(hi2c, &i2c_register_map[current_reg_addr], 1, I2C_NEXT_FRAME);
+    }
+}
+
+void HAL_I2C_SlaveTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    /* Transmission complete. I2C peripheral is automatically ready for next AddrCallback. */
+}
+
+void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    HAL_I2C_EnableListen_IT(hi2c);
+}
+
+void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
+{
+    HAL_I2C_EnableListen_IT(hi2c);
+}
+
+/* ========================== SPI CALLBACKS ================================ */
+
+// ACCURATE BMP280 SPI SLAVE CALLBACK
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+    if (hspi->Instance == SPI1)
+    {
+        uint8_t rx_byte = spi_rx_buf[0];
+        
+        if (spi_state == 0) // Address Byte received
+        {
+            // BMP280 SPI: Bit 7 is 1 for Read, 0 for Write. 
+            // Register addresses are 7-bit (0x00-0x7F).
+            current_reg_addr = rx_byte & 0x7F; 
+            spi_state = 1;
+            
+            // Prepare the FIRST data byte for the NEXT transfer
+            // We use the 7-bit address for our internal map
+            spi_tx_buf[0] = i2c_register_map[current_reg_addr];
+        }
+        else // Data Byte (Master is reading or writing)
+        {
+            // Auto-increment for burst reads
+            current_reg_addr = (current_reg_addr + 1) & 0x7F;
+            spi_tx_buf[0] = i2c_register_map[current_reg_addr];
+            
+            // HEARTBEAT: Slightly increment temperature for simulation
+            if (current_reg_addr == 0x7A) { // 0xFA & 0x7F = 0x7A
+                i2c_register_map[0x7A]++;
+            }
+        }
+        
+        HAL_SPI_TransmitReceive_IT(hspi, (uint8_t*)&spi_tx_buf[0], (uint8_t*)&spi_rx_buf[0], 1);
+    }
+}
+
+// Reset SPI on CS Falling Edge (via EXTI)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin == GPIO_PIN_4) // CS (PA4)
+    {
+        if (!(GPIOA->IDR & GPIO_PIN_4)) // Falling edge (CS Active)
+        {
+            spi_state = 0;
+            spi_tx_buf[0] = 0x00; 
+            HAL_SPI_Abort(&hspi1);
+            HAL_SPI_TransmitReceive_IT(&hspi1, (uint8_t*)&spi_tx_buf[0], (uint8_t*)&spi_rx_buf[0], 1);
+        }
+    }
+}
+
+// Check CS (PA4) in the main loop to reset sync
+void Mimic_SPI_Sync(void)
+{
+    if (GPIOA->IDR & GPIO_PIN_4) // CS is HIGH (Idle)
+    {
+        spi_state = 0;
+        // Pre-load the ID register into tx_buf for the next burst
+        spi_tx_buf[0] = i2c_register_map[0xD0];
+    }
+}
+
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
+{
+    if (hspi->Instance == SPI1)
+    {
+        // Reset SPI Slave state on error
+        HAL_SPI_Abort_IT(hspi);
+        HAL_SPI_TransmitReceive_IT(hspi, spi_tx_buf, spi_rx_buf, 1);
+    }
 }
 
 /* ========================== END OF FILE =================================== */

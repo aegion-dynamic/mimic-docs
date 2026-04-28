@@ -11,6 +11,7 @@ except ImportError:
 
 from mimic import MimicBridge
 from mimic.sensors.mpu6050 import MPU6050Simulator
+from mimic.sensors.bmp280 import BMP280Simulator
 
 # --- Gruvbox Color Theme (High-End 256-Color ANSI) ---
 class Colors:
@@ -69,8 +70,9 @@ def start_interactive_shell(bridge: MimicBridge):
 
 def main():
     parser = argparse.ArgumentParser(description="Mimic Firmware: Simulation & Control Tool")
-    parser.add_argument("sensor", nargs="?", choices=["mpu6050"], help="Sensor to simulate")
+    parser.add_argument("sensor", nargs="?", choices=["mpu6050", "bmp280"], help="Sensor to simulate")
     parser.add_argument("--port", help="Specify serial port (default: auto-detect)")
+    parser.add_argument("--protocol", choices=["i2c", "spi"], help="Force a specific protocol")
     
     args = parser.parse_args()
     
@@ -86,7 +88,17 @@ def main():
         if args.sensor == "mpu6050":
             sim = MPU6050Simulator(bridge)
             print(f"\n{Colors.SUCCESS}{Colors.BOLD}Starting MPU6050 simulation on {bridge.port}{Colors.END}")
-            print(f"{Colors.INFO}SCL -> PB8, SDA -> PB9.{Colors.END}")
+            print(f"{Colors.INFO}SCL -> PB6, SDA -> PB7.{Colors.END}")
+            print(f"{Colors.PROMPT}Press Ctrl+C to exit.{Colors.END}")
+            sim.start()
+        elif args.sensor == "bmp280":
+            protocol = args.protocol if args.protocol else "spi"
+            sim = BMP280Simulator(bridge, protocol=protocol)
+            print(f"\n{Colors.SUCCESS}{Colors.BOLD}Starting BMP280 simulation on {bridge.port}{Colors.END}")
+            if protocol == "spi":
+                print(f"{Colors.INFO}SPI: CS->PA4, SCK->PA5, MISO->PA6, MOSI->PA7{Colors.END}")
+            else:
+                print(f"{Colors.INFO}I2C: SCL->PB6, SDA->PB7 (Address 0x76).{Colors.END}")
             print(f"{Colors.PROMPT}Press Ctrl+C to exit.{Colors.END}")
             sim.start()
     else:

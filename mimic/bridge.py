@@ -88,17 +88,60 @@ class I2CSlave:
         return any("OK" in r for r in resp)
 
     def wait_for_write(self, length: int = 1) -> Optional[List[int]]:
-        resp = self.bridge.execute(f"I2C_READ {self.instance} 0x00 {length}")
-        for r in resp:
-            if "OK: Read" in r and "bytes:" in r:
-                try:
-                    data_str = r.split("bytes:")[1].strip()
-                    return [int(x, 16) for x in data_str.split()]
-                except (IndexError, ValueError):
-                    pass
+        """Wait for the Master to write to us (Interrupt-driven support)."""
+        # Start the listen mode if not already active
+        self.bridge.send_command(f"I2C_READ {self.instance} 0x00 {length}")
+        
+        timeout = 1.0 # Short polling timeout
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            resp = self.bridge.read_response()
+            for r in resp:
+                if "I2C_EVENT: WRITE" in r:
+                    try:
+                        data_str = r.split("WRITE")[1].strip()
+                        return [int(data_str, 16)]
+                    except (IndexError, ValueError):
+                        pass
+            time.sleep(0.01)
         return None
 
+    def set_register(self, reg: int, val: int) -> bool:
+        """Set a single register value in the STM32 shadow map."""
+        resp = self.bridge.execute(f"I2C_REG_SET 0x{reg:02X} 0x{val:02X}")
+        return any("OK" in r for r in resp)
+
+    def set_registers(self, start_reg: int, data: List[int]) -> bool:
+        """Set a block of registers in the STM32 shadow map."""
+        data_str = "".join([f"{x:02X}" for x in data])
+        resp = self.bridge.execute(f"I2C_REG_DATA 0x{start_reg:02X} {data_str}")
+        return any("OK" in r for r in resp)
+
     def respond(self, data: List[int]) -> bool:
-        hex_str = " ".join([f"{x:02X}" for x in data])
-        resp = self.bridge.execute(f"I2C_WRITE {self.instance} 0x00 {hex_str}")
+        """Pre-load data for the next Master READ request. (Compatibility wrapper)"""
+        # Default to dumping at 0x3B (standard MPU6050 data start) if not otherwise specified
+        return self.set_registers(0x3B, data)
+
+class SPISlave:
+    """SPI Slave helper."""
+    def __init__(self, bridge: MimicBridge, instance: int = 1):
+        self.bridge = bridge
+        self.instance = instance
+
+    def init(self, speed: int = 1000000, cpol: int = 0, cpha: int = 0) -> bool:
+        """Initialize Mimic as an SPI Slave."""
+        cmd = f"SPI_INIT {self.instance} SLAVE {speed} {cpol} {cpha}"
+        resp = self.bridge.execute(cmd)
+        return any("OK" in r for r in resp)
+
+    def set_register(self, reg: int, val: int) -> bool:
+        """Set a single register in the shared map."""
+        # SPI and I2C share the same underlying register map in firmware
+        resp = self.bridge.execute(f"I2C_REG_SET 0x{reg:02X} 0x{val:02X}")
+        return any("OK" in r for r in resp)
+
+    def set_registers(self, start_reg: int, data: List[int]) -> bool:
+        """Set a block of registers in the shared map."""
+        data_str = "".join([f"{x:02X}" for x in data])
+        resp = self.bridge.execute(f"I2C_REG_DATA 0x{start_reg:02X} {data_str}")
         return any("OK" in r for r in resp)

@@ -33,20 +33,34 @@ class MPU6050Simulator:
             logger.error("Failed to initialize I2C Slave")
             return
 
-        active_reg = 0x00
+        # Seed the shadow register map so the STM32 can answer handshakes instantly
+        logger.info("Seeding MPU6050 register map...")
+        self.i2c.set_register(self.WHO_AM_I_REG, 0x68)
+        self.i2c.set_register(self.PWR_MGMT_1_REG, 0x00) # Wake up!
+
+        import time
+        import math
+        
+        logger.info("Initializing MPU6050 simulation...")
+        
+        t = 0
         while True:
             try:
-                received = self.i2c.wait_for_write(1)
-                if received:
-                    active_reg = received[0]
-                    if len(received) > 1:
-                        self.registers[active_reg] = received[1:]
-                        logger.info(f"Master wrote to Reg 0x{active_reg:02X}")
-                        continue
-                    
-                    data_to_send = self._get_reg_data(active_reg)
-                    if data_to_send:
-                        self.i2c.respond(data_to_send)
+                # Generate some dynamic fake accelerometer data
+                t += 0.1
+                self.accel_data[0] = int(math.sin(t) * 8192)
+                self.accel_data[1] = int(math.cos(t) * 8192)
+                self.accel_data[2] = 16384 # 1g Z-axis
+                
+                # We simply push the ACCEL, GYRO and TEMP data as a 14-byte continuous block
+                # This matches what Adafruit_MPU6050 normally reads in getEvent()
+                data_to_send = []
+                data_to_send.extend(self._to_16bit_list(self.accel_data))
+                data_to_send.extend([(self.temp_raw >> 8) & 0xFF, self.temp_raw & 0xFF])
+                data_to_send.extend(self._to_16bit_list(self.gyro_data))
+                
+                self.i2c.respond(data_to_send)
+                time.sleep(0.1) # 10Hz tick - Back to full speed!
             except KeyboardInterrupt:
                 break
 

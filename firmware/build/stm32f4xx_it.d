@@ -26,7 +26,8 @@ build/stm32f4xx_it.o: Core/Src/stm32f4xx_it.c Core/Inc/main.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- Core/Inc/stm32f4xx_it.h Core/Inc/usart.h Core/Inc/main.h
+ Core/Inc/stm32f4xx_it.h Core/Inc/usart.h Core/Inc/main.h \
+ Core/Inc/mimic.h
 Core/Inc/main.h:
 Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 Core/Inc/stm32f4xx_hal_conf.h:
@@ -60,3 +61,4 @@ Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 Core/Inc/stm32f4xx_it.h:
 Core/Inc/usart.h:
 Core/Inc/main.h:
+Core/Inc/mimic.h:
