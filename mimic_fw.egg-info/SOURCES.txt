@@ -5,6 +5,7 @@ mimic/bridge.py
 mimic/cli.py
 mimic/sensors/__init__.py
 mimic/sensors/bmp280.py
+mimic/sensors/gps.py
 mimic/sensors/mpu6050.py
 mimic_fw.egg-info/PKG-INFO
 mimic_fw.egg-info/SOURCES.txt

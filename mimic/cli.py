@@ -12,6 +12,7 @@ except ImportError:
 from mimic import MimicBridge
 from mimic.sensors.mpu6050 import MPU6050Simulator
 from mimic.sensors.bmp280 import BMP280Simulator
+from mimic.sensors.gps import GPSSimulator
 
 # --- Gruvbox Color Theme (High-End 256-Color ANSI) ---
 class Colors:
@@ -70,9 +71,9 @@ def start_interactive_shell(bridge: MimicBridge):
 
 def main():
     parser = argparse.ArgumentParser(description="Mimic Firmware: Simulation & Control Tool")
-    parser.add_argument("sensor", nargs="?", choices=["mpu6050", "bmp280"], help="Sensor to simulate")
+    parser.add_argument("sensor", nargs="?", choices=["mpu6050", "bmp280", "gps"], help="Sensor to simulate")
     parser.add_argument("--port", help="Specify serial port (default: auto-detect)")
-    parser.add_argument("--protocol", choices=["i2c", "spi"], help="Force a specific protocol")
+    parser.add_argument("--protocol", choices=["i2c", "spi", "uart"], help="Force a specific protocol")
     
     args = parser.parse_args()
     
@@ -99,6 +100,12 @@ def main():
                 print(f"{Colors.INFO}SPI: CS->PA4, SCK->PA5, MISO->PA6, MOSI->PA7{Colors.END}")
             else:
                 print(f"{Colors.INFO}I2C: SCL->PB6, SDA->PB7 (Address 0x76).{Colors.END}")
+            print(f"{Colors.PROMPT}Press Ctrl+C to exit.{Colors.END}")
+            sim.start()
+        elif args.sensor == "gps":
+            sim = GPSSimulator(bridge)
+            print(f"\n{Colors.SUCCESS}{Colors.BOLD}Starting GPS simulation (NMEA UART) on {bridge.port}{Colors.END}")
+            print(f"{Colors.INFO}UART6 (9600 Baud): TX->PA11, RX->PA12{Colors.END}")
             print(f"{Colors.PROMPT}Press Ctrl+C to exit.{Colors.END}")
             sim.start()
     else:

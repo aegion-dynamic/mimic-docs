@@ -166,12 +166,7 @@ void Mimic_Init(void)
   */
 void Mimic_Process(void)
 {
-    // HEARTBEAT: Simple blink
-    static uint32_t last_blink = 0;
-    if (HAL_GetTick() - last_blink > 500) {
-        HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-        last_blink = HAL_GetTick();
-    }
+
 
     /* Process all available bytes from interrupt buffer */
     while (Mimic_RxAvailable())
@@ -853,6 +848,12 @@ void Mimic_CMD_UART_INIT(Mimic_Command_t *cmd)
         __HAL_RCC_USART1_CLK_ENABLE();
         huart->Instance = USART1;
         Mimic_ConfigureUARTGPIO(USART1);
+    }
+    else if (huart == &huart6)
+    {
+        __HAL_RCC_USART6_CLK_ENABLE();
+        huart->Instance = USART6;
+        Mimic_ConfigureUARTGPIO(USART6);
     }
     
     huart->Init.BaudRate = baudrate;
