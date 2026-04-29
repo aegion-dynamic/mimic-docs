@@ -1,4 +1,4 @@
-# 🛸 Mimic v1: The hardware Bridge & Mocking Engine
+#  Mimic v1: The hardware Bridge & Mocking Engine
 
 **Mimic** is a high-performance hardware bridge designed for developers who need to write firmware, drivers, or software **before** their hardware arrives. By utilizing an STM32 BlackPill as a versatile "chameleon," Mimic allows you to simulate high-speed sensors, control peripherals, and bridge complex protocols like RS485 directly from your PC.
 
@@ -7,7 +7,7 @@
 
 ---
 
-## 🏗 Implementation Architecture
+## Implementation Architecture
 
 Mimic consists of two synchronized layers:
 1.  **The Core (Firmware)**: A highly optimized C/HAL engine running on the **STM32F411CEU6**. It manages real-time interrupts for high-speed UART, I2C Master/Slave logic, and SPI DMA transfers.
@@ -15,7 +15,7 @@ Mimic consists of two synchronized layers:
 
 ---
 
-## 🔌 Hardware Setup: STM32 BlackPill
+##  Hardware Setup: STM32 BlackPill
 
 ### Pinout Reference (CEU6 48-pin)
 
@@ -29,7 +29,7 @@ Mimic consists of two synchronized layers:
 
 ---
 
-## 🚀 Installation
+##  Installation
 
 Install the entire suite (Library + Simulator CLI) globally:
 
@@ -41,7 +41,7 @@ sudo pip install .
 
 ---
 
-## 🕹 Usage Modes
+## Usage Modes
 
 Mimic is designed to be versatile, supporting three distinct workflows:
 
@@ -74,7 +74,7 @@ Connect via any serial terminal (Baud: 115200) to type commands directly for deb
 
 ---
 
-## 📜 Command Encyclopedia
+## Command Encyclopedia
 
 | Command | Usage | Description |
 | :--- | :--- | :--- |
@@ -91,14 +91,14 @@ Connect via any serial terminal (Baud: 115200) to type commands directly for deb
 
 ---
 
-## ⚠️ Limitations & Scope
+## Limitations & Scope
 *   **Real-time Constraints**: In Pirate/Bridge mode, the I2C/SPI latency is limited by the Host UART speed (115.2k). It is not suitable for 400kHz+ I2C logic that requires sub-millisecond slave responses unless implemented directly in C.
 *   **Voltage**: This is a 3.3V system. **Do not connect 5V logic** directly to PA9/PA10 or other non-5V tolerant pins.
 *   **Buffer Size**: Command arguments are limited to 64 bytes per transaction.
 
 ---
 
-## 🛠 Setup & Contribution
+## Setup & Contribution
 1. **STM32 Preparation**: Flash the binary in `firmware/` using `make flash`.
 2. **Platform Permissions**: On Linux, ensure your user is in the `dialout` group to avoid `sudo`.
 
