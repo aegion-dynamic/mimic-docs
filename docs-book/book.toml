@@ -1,0 +1,19 @@
+[book]
+authors = ["Mimic Project"]
+language = "en"
+multilingual = false
+src = "src"
+title = "MIMIC Documentation"
+
+[build]
+build-dir = "../landing-page/docs"
+
+[output.html]
+theme = "theme"
+additional-css = ["theme/css/general.css"]
+git-repository-url = "https://github.com/Karthik-Sarvan/Mimic"
+logo = "logo.svg"
+
+[output.html.search]
+limit-results = 30
+copy-js = true

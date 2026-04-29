@@ -1,0 +1,189 @@
+/* MIMIC Custom Documentation Theme - FROM SCRATCH */
+
+:root {
+    --bg: #000000;
+    --fg: #ffffff;
+    --accent: #ffffff;
+    --border: #333333;
+    --sidebar-width: 300px;
+    --top-bar-height: 70px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-radius: 0 !important;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+    display: flex;
+}
+
+#container {
+    display: flex;
+    width: 100%;
+}
+
+/* SIDEBAR */
+#sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--bg);
+    border-right: 2px solid var(--border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-header img {
+    width: 180px;
+    height: auto;
+    display: block;
+}
+
+.sidebar-scrollbox {
+    padding: 20px;
+}
+
+/* TOC Styling */
+.chapter {
+    list-style: none;
+    margin: 10px 0;
+}
+
+.chapter li a {
+    color: #888;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    display: block;
+    padding: 8px 0;
+    border-left: 3px solid transparent;
+    padding-left: 15px;
+}
+
+.chapter li a:hover, .chapter li a.active {
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+}
+
+/* MAIN CONTENT */
+#main {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease;
+}
+
+/* TOP BAR */
+.top-bar {
+    height: var(--top-bar-height);
+    background: rgba(0, 0, 0, 0.95);
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 500;
+}
+
+.top-bar-title {
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.icon-button {
+    background: #111;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 8px 15px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.icon-button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* CONTENT STYLING */
+#content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 30px;
+    flex: 1;
+}
+
+h1 { font-size: 3rem; color: var(--accent); text-transform: uppercase; margin-bottom: 40px; }
+h2 { font-size: 1.8rem; color: var(--accent); text-transform: uppercase; margin-top: 50px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+p { margin-bottom: 20px; color: #ccc; }
+
+/* NAVIGATION ARROWS */
+.nav-wrapper {
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-chapters {
+    font-size: 2rem;
+    color: var(--border);
+    text-decoration: none;
+}
+
+.nav-chapters:hover {
+    color: var(--accent);
+}
+
+/* TOGGLE LOGIC */
+body.sidebar-hidden #sidebar {
+    transform: translateX(-100%);
+}
+
+body.sidebar-hidden #main {
+    margin-left: 0;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 1080px) {
+    #sidebar {
+        z-index: 2000;
+    }
+    
+    #main {
+        margin-left: 0 !important;
+    }
+    
+    /* When sidebar is visible on mobile, it should be an overlay */
+    body:not(.sidebar-hidden) #sidebar {
+        transform: translateX(0);
+        box-shadow: 10px 0 50px rgba(0,0,0,1);
+    }
+}
+
+@media (max-width: 600px) {
+    h1 { font-size: 2rem; }
+    .top-bar-title { display: none; }
+}
