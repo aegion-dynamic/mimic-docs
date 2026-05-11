@@ -15,8 +15,8 @@
     --sidebar-fg: var(--text-muted);
     --sidebar-active: var(--accent-orange);
     --sidebar-spacer: var(--border-color);
-    --link-color: var(--accent-orange);
-    --links: var(--accent-orange);
+    --link-color: #ffffff;
+    --links: #ffffff;
     
     /* Code Blocks */
     --code-bg: #000000;

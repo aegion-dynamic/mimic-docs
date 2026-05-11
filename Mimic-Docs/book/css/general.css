@@ -12,6 +12,7 @@
     --border-color: #333333;
 }
 
+
 body {
     font-family: 'Space Mono', monospace !important;
     background-color: var(--bg-pitch-black);
@@ -19,6 +20,7 @@ body {
     letter-spacing: 0.5px;
     line-height: 1.7;
 }
+
 
 /* Sidebar Styling */
 .sidebar {

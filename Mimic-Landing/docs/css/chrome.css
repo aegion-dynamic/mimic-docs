@@ -6,8 +6,11 @@ html {
 #searchresults a,
 .content a:link,
 a:visited,
+a:link,
+a:-webkit-any-link,
+a,
 a > .hljs {
-    color: var(--links);
+    color: #ffffff !important;
 }
 
 /*
