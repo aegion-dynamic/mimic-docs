@@ -67,7 +67,7 @@ body {
 }
 
 .chapter li a {
-    color: #888;
+    color: #ffffff !important;
     text-decoration: none;
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -78,7 +78,7 @@ body {
 }
 
 .chapter li a:hover, .chapter li a.active {
-    color: var(--accent);
+    color: #ffffff !important;
     border-left: 3px solid var(--accent);
 }
 
