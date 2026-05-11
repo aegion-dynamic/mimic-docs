@@ -142,7 +142,7 @@ p { margin-bottom: 20px; color: #ccc; }
 
 /* Link Styling */
 a, a:link, a:visited, a:hover, a:active, a:-webkit-any-link {
-    color: #ffffff !important;
+    color: #fb7b5a !important;
     text-decoration: none;
 }
 
