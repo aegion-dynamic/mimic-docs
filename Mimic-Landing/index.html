@@ -16,13 +16,18 @@
             <img src="assets/logo.svg" alt="Aegion Logo" onerror="this.style.display='none'">
         </div>
         <nav>
-            <ul>
+            <ul id="navMenu">
                 <li><a href="#about">About</a></li>
                 <li><a href="#maintainers">Maintainers</a></li>
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="docs/index.html">Documentation</a></li>
             </ul>
         </nav>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </header>
 
     <main>
@@ -147,6 +152,28 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            
+            // Close menu when a link is clicked
+            const navLinks = navMenu.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+    </script>
 </body>
 
 </html>
