@@ -11,7 +11,7 @@ build-dir = "book"
 [output.html]
 theme = "theme"
 additional-css = ["theme/css/general.css"]
-git-repository-url = "https://github.com/aegion-dynamic/mimic-docs-Docs"
+git-repository-url = "https://github.com/aegion-dynamic/mimic-Docs"
 logo = "logo.svg"
 
 [output.html.search]
