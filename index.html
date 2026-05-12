@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIMIC | Aegion Dynamics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="grid-overlay"></div>
+
+    <header>
+        <div class="logo">
+            <img src="assets/logo.svg" alt="Aegion Logo" onerror="this.style.display='none'">
+        </div>
+        <nav>
+            <ul id="navMenu">
+                <li><a href="#about">About</a></li>
+                <li><a href="#maintainers">Maintainers</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="docs/index.html">Documentation</a></li>
+            </ul>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-tag">DEEP TECH // R&D DIVISION</div>
+                <h1>MIMIC<span>_</span></h1>
+                <p>Hardware Emulation Suite for High-Fidelity Aerospace and IoT Prototyping.</p>
+                <div class="hero-btns">
+                    <a href="docs/index.html" class="btn">Launch Technical Docs</a>
+                    <a href="https://github.com/aegion-dynamic/mimic-docs" class="btn btn-outline">Github</a>
+                </div>
+            </div>
+            <div class="hero-split">
+                <div class="split-row purple">
+                    <div class="col-content">
+                        <span class="num">01_</span>
+                        <h3>MIMIC CORE EMULATOR</h3>
+                        <p>Real-time hardware-in-the-loop simulation core for I2C, SPI, and UART protocols.</p>
+                        <span class="arrow-large">→</span>
+                    </div>
+                </div>
+                <div class="split-row orange">
+                    <div class="col-content">
+                        <span class="num">02_</span>
+                        <h3>PYTHON BRIDGE API</h3>
+                        <p>High-level automation framework for scripting hardware test sequences.</p>
+                        <span class="arrow-large">→</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Mimic Section -->
+        <section id="about" class="about-mimic">
+            <h2 class="section-title">The Mimic Ecosystem</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>Hardware Bridge</h3>
+                    <p>Connect your desktop environment directly to physical MCU pins. Mimic acts as a transparent bridge, allowing high-level control of low-level signals.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Sensor Mocking</h3>
+                    <p>Simulate complex I2C/SPI sensors without having the physical hardware. Perfect for developing firmware drivers and application logic in parallel.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Open Architecture</h3>
+                    <p>Built for the community. Add your own protocol drivers or sensor models using our extensible Python framework.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Maintainers Section -->
+        <section id="maintainers" class="maintainers">
+            <h2 class="section-title">Project Maintainers</h2>
+            <div class="maintainers-list">
+                <div class="person-card">
+                    <div class="avatar">KS</div>
+                    <div class="info">
+                        <h3>Karthik Sarvan</h3>
+                        <p>Project Maintainer</p>
+                    </div>
+                </div>
+            </div>
+            <div class="contributors-cta">
+                <p>Join the Mimic project! We're looking for developers to help with protocol implementations and sensor modeling.</p>
+                <a href="https://github.com/aegion-dynamic/mimic-docs" class="btn btn-outline">View on GitHub</a>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="faq">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <h3>What hardware do I need?</h3>
+                    <p>Currently, Mimic is optimized for the STM32F411 BlackPill. You'll also need a USB-TTL adapter for the host connection.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is it really zero-latency?</h3>
+                    <p>While serial communication has some overhead, the core firmware handles protocol timing at hardware speeds, ensuring high-fidelity emulation.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I add my own sensors?</h3>
+                    <p>Yes. Mimic is designed to be extensible. You can define new sensor behaviors in Python and have them mapped to hardware pins instantly.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Which protocols are supported?</h3>
+                    <p>Mimic supports I2C (Master/Slave), SPI (Master/Slave), UART (including RS485), and general-purpose GPIO control.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I use Mimic for CI/CD?</h3>
+                    <p>Absolutely. The Python Bridge API is built for automation, allowing you to run hardware-in-the-loop tests as part of your integration pipeline.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What is the logic voltage?</h3>
+                    <p>Mimic operates at 3.3V logic. While some pins on the STM32 are 5V tolerant, we recommend using level shifters when interfacing with 5V systems.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is there a GUI available?</h3>
+                    <p>Mimic is intentionally CLI and API-first to ensure maximum speed and ease of integration into developer workflows and automated scripts.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-info">
+                <h2>Contact Us</h2>
+                <p>hello@aegiondynamic.com</p>
+                <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">&copy; 2026 Aegion Dynamic Solutions LLP</p>
+            </div>
+            <div class="footer-links">
+                <h4>Location</h4>
+                <ul>
+                    <li>Meity Nasscom Center</li>
+                    <li>Andhra University North Campus</li>
+                    <li>Visakhapatnam - 530003 India</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            
+            // Close menu when a link is clicked
+            const navLinks = navMenu.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en" class="sidebar-visible no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MIMIC Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="theme/css/general.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+</head>
+
+<body>
+    <div id="container">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-header">
+                <img src="logo.svg" alt="Logo">
+            </div>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">1.</strong> System Architecture</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">2.</strong> Environment Setup</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">3.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">4.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.</strong> Build System</a></li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> CLI Structure</a></li><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">7.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">8.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">9.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="GPIO_INTERRUPTS.html"><strong aria-hidden="true">10.</strong> GPIO Interrupts</a></li><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">11.</strong> I2C Timing</a></li><li class="chapter-item expanded "><a href="I2C_REGISTERS.html"><strong aria-hidden="true">12.</strong> I2C Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">13.</strong> SPI Logic</a></li><li class="chapter-item expanded "><a href="SPI_DMA.html"><strong aria-hidden="true">14.</strong> SPI DMA Transfers</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">15.</strong> UART Flow Control</a></li><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">16.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">17.</strong> MPU6050: Motion Fusion</a></li><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">18.</strong> MPU6050: Register Map</a></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">19.</strong> BMP280: Pressure Models</a></li><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">20.</strong> BMP280: Calibration</a></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">21.</strong> GPS: NMEA Generation</a></li><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">22.</strong> GPS: Trajectories</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">23.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">24.</strong> Real-Time Diagnostics</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">25.</strong> System Limitations</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">26.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">27.</strong> Troubleshooting</a></li></ol>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main">
+            <div class="top-bar">
+                <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
+                    <span>☰</span>
+                </button>
+                <div class="top-bar-title">MIMIC Documentation</div>
+                <div class="top-bar-links">
+                    <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
+                </div>
+            </div>
+
+            <div id="content" class="content">
+                <h1 id="arch"><a class="header" href="#arch">ARCH</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>The Overview for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
+<p>The Requirements for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
+<p>The Implementation of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping"><a class="header" href="#hardware-mapping">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics"><a class="header" href="#performance-metrics">Performance Metrics</a></h2>
+<p>The Performance Metrics of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols"><a class="header" href="#communication-protocols">Communication Protocols</a></h2>
+<p>The Communication Protocols of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states"><a class="header" href="#error-states">Error States</a></h2>
+<p>The Error States for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example"><a class="header" href="#integration-example">Integration Example</a></h2>
+<p>The Integration Example for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations"><a class="header" href="#constraints--limitations">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap"><a class="header" href="#roadmap">Roadmap</a></h2>
+<p>The Roadmap for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="setup"><a class="header" href="#setup">SETUP</a></h1>
+<h2 id="overview-1"><a class="header" href="#overview-1">Overview</a></h2>
+<p>The Overview for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-1"><a class="header" href="#requirements-1">Requirements</a></h2>
+<p>The Requirements for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-1"><a class="header" href="#implementation-1">Implementation</a></h2>
+<p>The Implementation of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-1"><a class="header" href="#hardware-mapping-1">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-1"><a class="header" href="#performance-metrics-1">Performance Metrics</a></h2>
+<p>The Performance Metrics of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-1"><a class="header" href="#communication-protocols-1">Communication Protocols</a></h2>
+<p>The Communication Protocols of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-1"><a class="header" href="#error-states-1">Error States</a></h2>
+<p>The Error States for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-1"><a class="header" href="#integration-example-1">Integration Example</a></h2>
+<p>The Integration Example for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-1"><a class="header" href="#constraints--limitations-1">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-1"><a class="header" href="#roadmap-1">Roadmap</a></h2>
+<p>The Roadmap for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="fw-interrupts"><a class="header" href="#fw-interrupts">FW INTERRUPTS</a></h1>
+<h2 id="overview-2"><a class="header" href="#overview-2">Overview</a></h2>
+<p>The Overview for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-2"><a class="header" href="#requirements-2">Requirements</a></h2>
+<p>The Requirements for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-2"><a class="header" href="#implementation-2">Implementation</a></h2>
+<p>The Implementation of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-2"><a class="header" href="#hardware-mapping-2">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-2"><a class="header" href="#performance-metrics-2">Performance Metrics</a></h2>
+<p>The Performance Metrics of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-2"><a class="header" href="#communication-protocols-2">Communication Protocols</a></h2>
+<p>The Communication Protocols of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-2"><a class="header" href="#error-states-2">Error States</a></h2>
+<p>The Error States for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-2"><a class="header" href="#integration-example-2">Integration Example</a></h2>
+<p>The Integration Example for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-2"><a class="header" href="#constraints--limitations-2">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-2"><a class="header" href="#roadmap-2">Roadmap</a></h2>
+<p>The Roadmap for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="fw-memory"><a class="header" href="#fw-memory">FW MEMORY</a></h1>
+<h2 id="overview-3"><a class="header" href="#overview-3">Overview</a></h2>
+<p>The Overview for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-3"><a class="header" href="#requirements-3">Requirements</a></h2>
+<p>The Requirements for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-3"><a class="header" href="#implementation-3">Implementation</a></h2>
+<p>The Implementation of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-3"><a class="header" href="#hardware-mapping-3">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-3"><a class="header" href="#performance-metrics-3">Performance Metrics</a></h2>
+<p>The Performance Metrics of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-3"><a class="header" href="#communication-protocols-3">Communication Protocols</a></h2>
+<p>The Communication Protocols of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-3"><a class="header" href="#error-states-3">Error States</a></h2>
+<p>The Error States for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-3"><a class="header" href="#integration-example-3">Integration Example</a></h2>
+<p>The Integration Example for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-3"><a class="header" href="#constraints--limitations-3">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-3"><a class="header" href="#roadmap-3">Roadmap</a></h2>
+<p>The Roadmap for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="build-system"><a class="header" href="#build-system">BUILD SYSTEM</a></h1>
+<h2 id="overview-4"><a class="header" href="#overview-4">Overview</a></h2>
+<p>The Overview for BUILD_SYSTEM focuses on providing a stable and extensible framework for build_system operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-4"><a class="header" href="#requirements-4">Requirements</a></h2>
+<p>The Requirements for BUILD_SYSTEM focuses on providing a stable and extensible framework for build_system operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-4"><a class="header" href="#implementation-4">Implementation</a></h2>
+<p>The Implementation of the BUILD_SYSTEM module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-4"><a class="header" href="#hardware-mapping-4">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the BUILD_SYSTEM module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-4"><a class="header" href="#performance-metrics-4">Performance Metrics</a></h2>
+<p>The Performance Metrics of the BUILD_SYSTEM module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-4"><a class="header" href="#communication-protocols-4">Communication Protocols</a></h2>
+<p>The Communication Protocols of the BUILD_SYSTEM module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-4"><a class="header" href="#error-states-4">Error States</a></h2>
+<p>The Error States for BUILD_SYSTEM focuses on providing a stable and extensible framework for build_system operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-4"><a class="header" href="#integration-example-4">Integration Example</a></h2>
+<p>The Integration Example for BUILD_SYSTEM focuses on providing a stable and extensible framework for build_system operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-4"><a class="header" href="#constraints--limitations-4">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for BUILD_SYSTEM focuses on providing a stable and extensible framework for build_system operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-4"><a class="header" href="#roadmap-4">Roadmap</a></h2>
+<p>The Roadmap for BUILD_SYSTEM focuses on providing a stable and extensible framework for build_system operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cli-struct"><a class="header" href="#cli-struct">CLI STRUCT</a></h1>
+<h2 id="overview-5"><a class="header" href="#overview-5">Overview</a></h2>
+<p>The Overview for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-5"><a class="header" href="#requirements-5">Requirements</a></h2>
+<p>The Requirements for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-5"><a class="header" href="#implementation-5">Implementation</a></h2>
+<p>The Implementation of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-5"><a class="header" href="#hardware-mapping-5">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-5"><a class="header" href="#performance-metrics-5">Performance Metrics</a></h2>
+<p>The Performance Metrics of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-5"><a class="header" href="#communication-protocols-5">Communication Protocols</a></h2>
+<p>The Communication Protocols of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-5"><a class="header" href="#error-states-5">Error States</a></h2>
+<p>The Error States for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-5"><a class="header" href="#integration-example-5">Integration Example</a></h2>
+<p>The Integration Example for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-5"><a class="header" href="#constraints--limitations-5">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-5"><a class="header" href="#roadmap-5">Roadmap</a></h2>
+<p>The Roadmap for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bridge-serial"><a class="header" href="#bridge-serial">BRIDGE SERIAL</a></h1>
+<h2 id="overview-6"><a class="header" href="#overview-6">Overview</a></h2>
+<p>The Overview for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-6"><a class="header" href="#requirements-6">Requirements</a></h2>
+<p>The Requirements for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-6"><a class="header" href="#implementation-6">Implementation</a></h2>
+<p>The Implementation of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-6"><a class="header" href="#hardware-mapping-6">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-6"><a class="header" href="#performance-metrics-6">Performance Metrics</a></h2>
+<p>The Performance Metrics of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-6"><a class="header" href="#communication-protocols-6">Communication Protocols</a></h2>
+<p>The Communication Protocols of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-6"><a class="header" href="#error-states-6">Error States</a></h2>
+<p>The Error States for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-6"><a class="header" href="#integration-example-6">Integration Example</a></h2>
+<p>The Integration Example for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-6"><a class="header" href="#constraints--limitations-6">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-6"><a class="header" href="#roadmap-6">Roadmap</a></h2>
+<p>The Roadmap for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bridge-async"><a class="header" href="#bridge-async">BRIDGE ASYNC</a></h1>
+<h2 id="overview-7"><a class="header" href="#overview-7">Overview</a></h2>
+<p>The Overview for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-7"><a class="header" href="#requirements-7">Requirements</a></h2>
+<p>The Requirements for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-7"><a class="header" href="#implementation-7">Implementation</a></h2>
+<p>The Implementation of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-7"><a class="header" href="#hardware-mapping-7">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-7"><a class="header" href="#performance-metrics-7">Performance Metrics</a></h2>
+<p>The Performance Metrics of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-7"><a class="header" href="#communication-protocols-7">Communication Protocols</a></h2>
+<p>The Communication Protocols of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-7"><a class="header" href="#error-states-7">Error States</a></h2>
+<p>The Error States for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-7"><a class="header" href="#integration-example-7">Integration Example</a></h2>
+<p>The Integration Example for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-7"><a class="header" href="#constraints--limitations-7">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-7"><a class="header" href="#roadmap-7">Roadmap</a></h2>
+<p>The Roadmap for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gpio-mapping"><a class="header" href="#gpio-mapping">GPIO MAPPING</a></h1>
+<h2 id="overview-8"><a class="header" href="#overview-8">Overview</a></h2>
+<p>The Overview for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-8"><a class="header" href="#requirements-8">Requirements</a></h2>
+<p>The Requirements for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-8"><a class="header" href="#implementation-8">Implementation</a></h2>
+<p>The Implementation of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-8"><a class="header" href="#hardware-mapping-8">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-8"><a class="header" href="#performance-metrics-8">Performance Metrics</a></h2>
+<p>The Performance Metrics of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-8"><a class="header" href="#communication-protocols-8">Communication Protocols</a></h2>
+<p>The Communication Protocols of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-8"><a class="header" href="#error-states-8">Error States</a></h2>
+<p>The Error States for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-8"><a class="header" href="#integration-example-8">Integration Example</a></h2>
+<p>The Integration Example for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-8"><a class="header" href="#constraints--limitations-8">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-8"><a class="header" href="#roadmap-8">Roadmap</a></h2>
+<p>The Roadmap for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gpio-interrupts"><a class="header" href="#gpio-interrupts">GPIO INTERRUPTS</a></h1>
+<h2 id="overview-9"><a class="header" href="#overview-9">Overview</a></h2>
+<p>The Overview for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-9"><a class="header" href="#requirements-9">Requirements</a></h2>
+<p>The Requirements for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-9"><a class="header" href="#implementation-9">Implementation</a></h2>
+<p>The Implementation of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-9"><a class="header" href="#hardware-mapping-9">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-9"><a class="header" href="#performance-metrics-9">Performance Metrics</a></h2>
+<p>The Performance Metrics of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-9"><a class="header" href="#communication-protocols-9">Communication Protocols</a></h2>
+<p>The Communication Protocols of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-9"><a class="header" href="#error-states-9">Error States</a></h2>
+<p>The Error States for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-9"><a class="header" href="#integration-example-9">Integration Example</a></h2>
+<p>The Integration Example for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-9"><a class="header" href="#constraints--limitations-9">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-9"><a class="header" href="#roadmap-9">Roadmap</a></h2>
+<p>The Roadmap for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="i2c-timing"><a class="header" href="#i2c-timing">I2C TIMING</a></h1>
+<h2 id="overview-10"><a class="header" href="#overview-10">Overview</a></h2>
+<p>The Overview for I2C_TIMING focuses on providing a stable and extensible framework for i2c_timing operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-10"><a class="header" href="#requirements-10">Requirements</a></h2>
+<p>The Requirements for I2C_TIMING focuses on providing a stable and extensible framework for i2c_timing operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-10"><a class="header" href="#implementation-10">Implementation</a></h2>
+<p>The Implementation of the I2C_TIMING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-10"><a class="header" href="#hardware-mapping-10">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the I2C_TIMING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-10"><a class="header" href="#performance-metrics-10">Performance Metrics</a></h2>
+<p>The Performance Metrics of the I2C_TIMING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-10"><a class="header" href="#communication-protocols-10">Communication Protocols</a></h2>
+<p>The Communication Protocols of the I2C_TIMING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-10"><a class="header" href="#error-states-10">Error States</a></h2>
+<p>The Error States for I2C_TIMING focuses on providing a stable and extensible framework for i2c_timing operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-10"><a class="header" href="#integration-example-10">Integration Example</a></h2>
+<p>The Integration Example for I2C_TIMING focuses on providing a stable and extensible framework for i2c_timing operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-10"><a class="header" href="#constraints--limitations-10">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for I2C_TIMING focuses on providing a stable and extensible framework for i2c_timing operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-10"><a class="header" href="#roadmap-10">Roadmap</a></h2>
+<p>The Roadmap for I2C_TIMING focuses on providing a stable and extensible framework for i2c_timing operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="i2c-registers"><a class="header" href="#i2c-registers">I2C REGISTERS</a></h1>
+<h2 id="overview-11"><a class="header" href="#overview-11">Overview</a></h2>
+<p>The Overview for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-11"><a class="header" href="#requirements-11">Requirements</a></h2>
+<p>The Requirements for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-11"><a class="header" href="#implementation-11">Implementation</a></h2>
+<p>The Implementation of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-11"><a class="header" href="#hardware-mapping-11">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-11"><a class="header" href="#performance-metrics-11">Performance Metrics</a></h2>
+<p>The Performance Metrics of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-11"><a class="header" href="#communication-protocols-11">Communication Protocols</a></h2>
+<p>The Communication Protocols of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-11"><a class="header" href="#error-states-11">Error States</a></h2>
+<p>The Error States for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-11"><a class="header" href="#integration-example-11">Integration Example</a></h2>
+<p>The Integration Example for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-11"><a class="header" href="#constraints--limitations-11">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-11"><a class="header" href="#roadmap-11">Roadmap</a></h2>
+<p>The Roadmap for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="spi-logic"><a class="header" href="#spi-logic">SPI LOGIC</a></h1>
+<h2 id="overview-12"><a class="header" href="#overview-12">Overview</a></h2>
+<p>The Overview for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-12"><a class="header" href="#requirements-12">Requirements</a></h2>
+<p>The Requirements for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-12"><a class="header" href="#implementation-12">Implementation</a></h2>
+<p>The Implementation of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-12"><a class="header" href="#hardware-mapping-12">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-12"><a class="header" href="#performance-metrics-12">Performance Metrics</a></h2>
+<p>The Performance Metrics of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-12"><a class="header" href="#communication-protocols-12">Communication Protocols</a></h2>
+<p>The Communication Protocols of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-12"><a class="header" href="#error-states-12">Error States</a></h2>
+<p>The Error States for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-12"><a class="header" href="#integration-example-12">Integration Example</a></h2>
+<p>The Integration Example for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-12"><a class="header" href="#constraints--limitations-12">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-12"><a class="header" href="#roadmap-12">Roadmap</a></h2>
+<p>The Roadmap for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="spi-dma"><a class="header" href="#spi-dma">SPI DMA</a></h1>
+<h2 id="overview-13"><a class="header" href="#overview-13">Overview</a></h2>
+<p>The Overview for SPI_DMA focuses on providing a stable and extensible framework for spi_dma operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-13"><a class="header" href="#requirements-13">Requirements</a></h2>
+<p>The Requirements for SPI_DMA focuses on providing a stable and extensible framework for spi_dma operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-13"><a class="header" href="#implementation-13">Implementation</a></h2>
+<p>The Implementation of the SPI_DMA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-13"><a class="header" href="#hardware-mapping-13">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the SPI_DMA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-13"><a class="header" href="#performance-metrics-13">Performance Metrics</a></h2>
+<p>The Performance Metrics of the SPI_DMA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-13"><a class="header" href="#communication-protocols-13">Communication Protocols</a></h2>
+<p>The Communication Protocols of the SPI_DMA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-13"><a class="header" href="#error-states-13">Error States</a></h2>
+<p>The Error States for SPI_DMA focuses on providing a stable and extensible framework for spi_dma operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-13"><a class="header" href="#integration-example-13">Integration Example</a></h2>
+<p>The Integration Example for SPI_DMA focuses on providing a stable and extensible framework for spi_dma operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-13"><a class="header" href="#constraints--limitations-13">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for SPI_DMA focuses on providing a stable and extensible framework for spi_dma operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-13"><a class="header" href="#roadmap-13">Roadmap</a></h2>
+<p>The Roadmap for SPI_DMA focuses on providing a stable and extensible framework for spi_dma operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="uart-flow"><a class="header" href="#uart-flow">UART FLOW</a></h1>
+<h2 id="overview-14"><a class="header" href="#overview-14">Overview</a></h2>
+<p>The Overview for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-14"><a class="header" href="#requirements-14">Requirements</a></h2>
+<p>The Requirements for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-14"><a class="header" href="#implementation-14">Implementation</a></h2>
+<p>The Implementation of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-14"><a class="header" href="#hardware-mapping-14">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-14"><a class="header" href="#performance-metrics-14">Performance Metrics</a></h2>
+<p>The Performance Metrics of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-14"><a class="header" href="#communication-protocols-14">Communication Protocols</a></h2>
+<p>The Communication Protocols of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-14"><a class="header" href="#error-states-14">Error States</a></h2>
+<p>The Error States for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-14"><a class="header" href="#integration-example-14">Integration Example</a></h2>
+<p>The Integration Example for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-14"><a class="header" href="#constraints--limitations-14">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-14"><a class="header" href="#roadmap-14">Roadmap</a></h2>
+<p>The Roadmap for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="sensor-base"><a class="header" href="#sensor-base">SENSOR BASE</a></h1>
+<h2 id="overview-15"><a class="header" href="#overview-15">Overview</a></h2>
+<p>The Overview for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-15"><a class="header" href="#requirements-15">Requirements</a></h2>
+<p>The Requirements for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-15"><a class="header" href="#implementation-15">Implementation</a></h2>
+<p>The Implementation of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-15"><a class="header" href="#hardware-mapping-15">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-15"><a class="header" href="#performance-metrics-15">Performance Metrics</a></h2>
+<p>The Performance Metrics of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-15"><a class="header" href="#communication-protocols-15">Communication Protocols</a></h2>
+<p>The Communication Protocols of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-15"><a class="header" href="#error-states-15">Error States</a></h2>
+<p>The Error States for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-15"><a class="header" href="#integration-example-15">Integration Example</a></h2>
+<p>The Integration Example for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-15"><a class="header" href="#constraints--limitations-15">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-15"><a class="header" href="#roadmap-15">Roadmap</a></h2>
+<p>The Roadmap for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mpu-motion"><a class="header" href="#mpu-motion">MPU MOTION</a></h1>
+<h2 id="overview-16"><a class="header" href="#overview-16">Overview</a></h2>
+<p>The Overview for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-16"><a class="header" href="#requirements-16">Requirements</a></h2>
+<p>The Requirements for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-16"><a class="header" href="#implementation-16">Implementation</a></h2>
+<p>The Implementation of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-16"><a class="header" href="#hardware-mapping-16">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-16"><a class="header" href="#performance-metrics-16">Performance Metrics</a></h2>
+<p>The Performance Metrics of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-16"><a class="header" href="#communication-protocols-16">Communication Protocols</a></h2>
+<p>The Communication Protocols of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-16"><a class="header" href="#error-states-16">Error States</a></h2>
+<p>The Error States for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-16"><a class="header" href="#integration-example-16">Integration Example</a></h2>
+<p>The Integration Example for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-16"><a class="header" href="#constraints--limitations-16">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-16"><a class="header" href="#roadmap-16">Roadmap</a></h2>
+<p>The Roadmap for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mpu-registers"><a class="header" href="#mpu-registers">MPU REGISTERS</a></h1>
+<h2 id="overview-17"><a class="header" href="#overview-17">Overview</a></h2>
+<p>The Overview for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-17"><a class="header" href="#requirements-17">Requirements</a></h2>
+<p>The Requirements for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-17"><a class="header" href="#implementation-17">Implementation</a></h2>
+<p>The Implementation of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-17"><a class="header" href="#hardware-mapping-17">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-17"><a class="header" href="#performance-metrics-17">Performance Metrics</a></h2>
+<p>The Performance Metrics of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-17"><a class="header" href="#communication-protocols-17">Communication Protocols</a></h2>
+<p>The Communication Protocols of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-17"><a class="header" href="#error-states-17">Error States</a></h2>
+<p>The Error States for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-17"><a class="header" href="#integration-example-17">Integration Example</a></h2>
+<p>The Integration Example for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-17"><a class="header" href="#constraints--limitations-17">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-17"><a class="header" href="#roadmap-17">Roadmap</a></h2>
+<p>The Roadmap for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bmp-pressure"><a class="header" href="#bmp-pressure">BMP PRESSURE</a></h1>
+<h2 id="overview-18"><a class="header" href="#overview-18">Overview</a></h2>
+<p>The Overview for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-18"><a class="header" href="#requirements-18">Requirements</a></h2>
+<p>The Requirements for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-18"><a class="header" href="#implementation-18">Implementation</a></h2>
+<p>The Implementation of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-18"><a class="header" href="#hardware-mapping-18">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-18"><a class="header" href="#performance-metrics-18">Performance Metrics</a></h2>
+<p>The Performance Metrics of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-18"><a class="header" href="#communication-protocols-18">Communication Protocols</a></h2>
+<p>The Communication Protocols of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-18"><a class="header" href="#error-states-18">Error States</a></h2>
+<p>The Error States for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-18"><a class="header" href="#integration-example-18">Integration Example</a></h2>
+<p>The Integration Example for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-18"><a class="header" href="#constraints--limitations-18">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-18"><a class="header" href="#roadmap-18">Roadmap</a></h2>
+<p>The Roadmap for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bmp-calibration"><a class="header" href="#bmp-calibration">BMP CALIBRATION</a></h1>
+<h2 id="overview-19"><a class="header" href="#overview-19">Overview</a></h2>
+<p>The Overview for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-19"><a class="header" href="#requirements-19">Requirements</a></h2>
+<p>The Requirements for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-19"><a class="header" href="#implementation-19">Implementation</a></h2>
+<p>The Implementation of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-19"><a class="header" href="#hardware-mapping-19">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-19"><a class="header" href="#performance-metrics-19">Performance Metrics</a></h2>
+<p>The Performance Metrics of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-19"><a class="header" href="#communication-protocols-19">Communication Protocols</a></h2>
+<p>The Communication Protocols of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-19"><a class="header" href="#error-states-19">Error States</a></h2>
+<p>The Error States for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-19"><a class="header" href="#integration-example-19">Integration Example</a></h2>
+<p>The Integration Example for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-19"><a class="header" href="#constraints--limitations-19">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-19"><a class="header" href="#roadmap-19">Roadmap</a></h2>
+<p>The Roadmap for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gps-nmea"><a class="header" href="#gps-nmea">GPS NMEA</a></h1>
+<h2 id="overview-20"><a class="header" href="#overview-20">Overview</a></h2>
+<p>The Overview for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-20"><a class="header" href="#requirements-20">Requirements</a></h2>
+<p>The Requirements for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-20"><a class="header" href="#implementation-20">Implementation</a></h2>
+<p>The Implementation of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-20"><a class="header" href="#hardware-mapping-20">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-20"><a class="header" href="#performance-metrics-20">Performance Metrics</a></h2>
+<p>The Performance Metrics of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-20"><a class="header" href="#communication-protocols-20">Communication Protocols</a></h2>
+<p>The Communication Protocols of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-20"><a class="header" href="#error-states-20">Error States</a></h2>
+<p>The Error States for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-20"><a class="header" href="#integration-example-20">Integration Example</a></h2>
+<p>The Integration Example for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-20"><a class="header" href="#constraints--limitations-20">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-20"><a class="header" href="#roadmap-20">Roadmap</a></h2>
+<p>The Roadmap for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gps-trajectory"><a class="header" href="#gps-trajectory">GPS TRAJECTORY</a></h1>
+<h2 id="overview-21"><a class="header" href="#overview-21">Overview</a></h2>
+<p>The Overview for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-21"><a class="header" href="#requirements-21">Requirements</a></h2>
+<p>The Requirements for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-21"><a class="header" href="#implementation-21">Implementation</a></h2>
+<p>The Implementation of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-21"><a class="header" href="#hardware-mapping-21">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-21"><a class="header" href="#performance-metrics-21">Performance Metrics</a></h2>
+<p>The Performance Metrics of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-21"><a class="header" href="#communication-protocols-21">Communication Protocols</a></h2>
+<p>The Communication Protocols of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-21"><a class="header" href="#error-states-21">Error States</a></h2>
+<p>The Error States for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-21"><a class="header" href="#integration-example-21">Integration Example</a></h2>
+<p>The Integration Example for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-21"><a class="header" href="#constraints--limitations-21">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-21"><a class="header" href="#roadmap-21">Roadmap</a></h2>
+<p>The Roadmap for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="hil-sync"><a class="header" href="#hil-sync">HIL SYNC</a></h1>
+<h2 id="overview-22"><a class="header" href="#overview-22">Overview</a></h2>
+<p>The Overview for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-22"><a class="header" href="#requirements-22">Requirements</a></h2>
+<p>The Requirements for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-22"><a class="header" href="#implementation-22">Implementation</a></h2>
+<p>The Implementation of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-22"><a class="header" href="#hardware-mapping-22">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-22"><a class="header" href="#performance-metrics-22">Performance Metrics</a></h2>
+<p>The Performance Metrics of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-22"><a class="header" href="#communication-protocols-22">Communication Protocols</a></h2>
+<p>The Communication Protocols of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-22"><a class="header" href="#error-states-22">Error States</a></h2>
+<p>The Error States for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-22"><a class="header" href="#integration-example-22">Integration Example</a></h2>
+<p>The Integration Example for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-22"><a class="header" href="#constraints--limitations-22">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-22"><a class="header" href="#roadmap-22">Roadmap</a></h2>
+<p>The Roadmap for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="diagnostics"><a class="header" href="#diagnostics">DIAGNOSTICS</a></h1>
+<h2 id="overview-23"><a class="header" href="#overview-23">Overview</a></h2>
+<p>The Overview for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-23"><a class="header" href="#requirements-23">Requirements</a></h2>
+<p>The Requirements for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-23"><a class="header" href="#implementation-23">Implementation</a></h2>
+<p>The Implementation of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-23"><a class="header" href="#hardware-mapping-23">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-23"><a class="header" href="#performance-metrics-23">Performance Metrics</a></h2>
+<p>The Performance Metrics of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-23"><a class="header" href="#communication-protocols-23">Communication Protocols</a></h2>
+<p>The Communication Protocols of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-23"><a class="header" href="#error-states-23">Error States</a></h2>
+<p>The Error States for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-23"><a class="header" href="#integration-example-23">Integration Example</a></h2>
+<p>The Integration Example for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-23"><a class="header" href="#constraints--limitations-23">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-23"><a class="header" href="#roadmap-23">Roadmap</a></h2>
+<p>The Roadmap for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="limitations"><a class="header" href="#limitations">LIMITATIONS</a></h1>
+<h2 id="overview-24"><a class="header" href="#overview-24">Overview</a></h2>
+<p>The Overview for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-24"><a class="header" href="#requirements-24">Requirements</a></h2>
+<p>The Requirements for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-24"><a class="header" href="#implementation-24">Implementation</a></h2>
+<p>The Implementation of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-24"><a class="header" href="#hardware-mapping-24">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-24"><a class="header" href="#performance-metrics-24">Performance Metrics</a></h2>
+<p>The Performance Metrics of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-24"><a class="header" href="#communication-protocols-24">Communication Protocols</a></h2>
+<p>The Communication Protocols of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-24"><a class="header" href="#error-states-24">Error States</a></h2>
+<p>The Error States for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-24"><a class="header" href="#integration-example-24">Integration Example</a></h2>
+<p>The Integration Example for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-24"><a class="header" href="#constraints--limitations-24">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-24"><a class="header" href="#roadmap-24">Roadmap</a></h2>
+<p>The Roadmap for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wiring"><a class="header" href="#wiring">WIRING</a></h1>
+<h2 id="overview-25"><a class="header" href="#overview-25">Overview</a></h2>
+<p>The Overview for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-25"><a class="header" href="#requirements-25">Requirements</a></h2>
+<p>The Requirements for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-25"><a class="header" href="#implementation-25">Implementation</a></h2>
+<p>The Implementation of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-25"><a class="header" href="#hardware-mapping-25">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-25"><a class="header" href="#performance-metrics-25">Performance Metrics</a></h2>
+<p>The Performance Metrics of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-25"><a class="header" href="#communication-protocols-25">Communication Protocols</a></h2>
+<p>The Communication Protocols of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-25"><a class="header" href="#error-states-25">Error States</a></h2>
+<p>The Error States for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-25"><a class="header" href="#integration-example-25">Integration Example</a></h2>
+<p>The Integration Example for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-25"><a class="header" href="#constraints--limitations-25">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-25"><a class="header" href="#roadmap-25">Roadmap</a></h2>
+<p>The Roadmap for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="troubleshooting"><a class="header" href="#troubleshooting">TROUBLESHOOTING</a></h1>
+<h2 id="overview-26"><a class="header" href="#overview-26">Overview</a></h2>
+<p>The Overview for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="requirements-26"><a class="header" href="#requirements-26">Requirements</a></h2>
+<p>The Requirements for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="implementation-26"><a class="header" href="#implementation-26">Implementation</a></h2>
+<p>The Implementation of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="hardware-mapping-26"><a class="header" href="#hardware-mapping-26">Hardware Mapping</a></h2>
+<p>The Hardware Mapping of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="performance-metrics-26"><a class="header" href="#performance-metrics-26">Performance Metrics</a></h2>
+<p>The Performance Metrics of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="communication-protocols-26"><a class="header" href="#communication-protocols-26">Communication Protocols</a></h2>
+<p>The Communication Protocols of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
+<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
+<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
+<h2 id="error-states-26"><a class="header" href="#error-states-26">Error States</a></h2>
+<p>The Error States for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="integration-example-26"><a class="header" href="#integration-example-26">Integration Example</a></h2>
+<p>The Integration Example for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="constraints--limitations-26"><a class="header" href="#constraints--limitations-26">Constraints &amp; Limitations</a></h2>
+<p>The Constraints &amp; Limitations for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<h2 id="roadmap-26"><a class="header" href="#roadmap-26">Roadmap</a></h2>
+<p>The Roadmap for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+
+            </div>
+
+            <!-- Navigation -->
+            <nav class="nav-wrapper" aria-label="Page navigation">
+            </nav>
+        </main>
+    </div>
+
+    <script>
+        // Simple Sidebar Toggle
+        const toggle = document.getElementById('sidebar-toggle');
+        const body = document.body;
+
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('sidebar-hidden');
+        });
+
+        // Handle Mobile Auto-hide
+        if (window.innerWidth < 1080) {
+            body.classList.add('sidebar-hidden');
+        }
+    </script>
+</body>
+
+</html>
