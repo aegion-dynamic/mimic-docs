@@ -11,6 +11,7 @@ build-dir = "book"
 [output.html]
 theme = "theme"
 additional-css = ["theme/css/general.css"]
+additional-js = ["theme/mermaid-init.js"]
 git-repository-url = "https://github.com/aegion-dynamic/mimic-Docs"
 logo = "logo.svg"
 

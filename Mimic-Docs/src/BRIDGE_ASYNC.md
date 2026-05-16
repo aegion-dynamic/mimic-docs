@@ -1,60 +1,37 @@
-# BRIDGE ASYNC
+# Python Bridge: Async
 
 ## Overview
 
-The Overview for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+For applications requiring high-frequency data logging or simultaneous control of multiple peripherals, Mimic provides an asynchronous API based on Python's `asyncio` library.
 
-## Requirements
+## Why Use Async?
 
-The Requirements for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Traditional serial communication is synchronous, meaning the program waits for a response after every command. This can limit performance during complex simulations. The Async Bridge allows you to:
+- Send multiple commands without waiting for immediate responses.
+- Continuously stream sensor data in the background.
+- Build responsive user interfaces that don't freeze during hardware I/O.
 
-## Implementation
+## Usage Example
 
-The Implementation of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+```python
+import asyncio
+from mimic import AsyncMimicBridge
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+async def main():
+    bridge = AsyncMimicBridge(port='/dev/ttyUSB0')
+    await bridge.connect()
+    
+    # Task 1: Blink an LED
+    asyncio.create_task(bridge.blink('PC13', interval=0.5))
+    
+    # Task 2: Read sensor data
+    while True:
+        data = await bridge.read_sensor('mpu6050')
+        print(f"Accel: {data}")
+        await asyncio.sleep(0.1)
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the BRIDGE_ASYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for BRIDGE_ASYNC focuses on providing a stable and extensible framework for bridge_async operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+asyncio.run(main())
+```
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

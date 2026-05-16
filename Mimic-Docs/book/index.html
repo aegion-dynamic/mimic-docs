@@ -1,241 +1,112 @@
-<!DOCTYPE HTML>
-<html lang="en" class="light" dir="ltr">
-    <head>
-        <!-- Book generated using mdBook -->
-        <meta charset="UTF-8">
-        <title>Introduction - MIMIC Documentation</title>
+<!DOCTYPE html>
+<html lang="en" class="sidebar-visible no-js">
 
+<head>
+    <meta charset="UTF-8">
+    <title>Introduction - MIMIC Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="theme/css/general.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var blocks = document.querySelectorAll("pre code.language-mermaid");
+          blocks.forEach(function(block) {
+              var pre = block.parentNode;
+              var div = document.createElement("div");
+              div.className = "mermaid";
+              div.textContent = block.textContent;
+              pre.parentNode.replaceChild(div, pre);
+          });
+          mermaid.initialize({
+              startOnLoad: true,
+              theme: "base",
+              themeVariables: {
+                  primaryColor: '#1a1a2e',
+                  primaryTextColor: '#ffffff',
+                  primaryBorderColor: '#3a3a5c',
+                  lineColor: '#5a5a7a',
+                  fontFamily: 'Space Mono, monospace',
+                  fontSize: '13px'
+              },
+              flowchart: { curve: 'basis' }
+          });
+      });
+    </script>
+</head>
 
-        <!-- Custom HTML head -->
-        
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff">
-
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
-
-        <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
-
-        <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
-
-        <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="theme/css/variables.css">
-        <link rel="stylesheet" href="theme/css/general.css">
-
-    </head>
-    <body class="sidebar-visible no-js">
-    <div id="body-container">
-        <!-- Provide site root to javascript -->
-        <script>
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
-        </script>
-
-        <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script>
-            try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
-
-                if (theme.startsWith('"') && theme.endsWith('"')) {
-                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
-                }
-
-                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
-                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
-                }
-            } catch (e) { }
-        </script>
-
-        <!-- Set the theme before any content is loaded, prevents flash -->
-        <script>
-            var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
-            if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('light')
-            html.classList.add(theme);
-            var body = document.querySelector('body');
-            body.classList.remove('no-js')
-            body.classList.add('js');
-        </script>
-
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
-
-        <!-- Hide / unhide sidebar before it is displayed -->
-        <script>
-            var body = document.querySelector('body');
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
-            if (document.body.clientWidth >= 1080) {
-                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
-                sidebar = sidebar || 'visible';
-            } else {
-                sidebar = 'hidden';
-            }
-            sidebar_toggle.checked = sidebar === 'visible';
-            body.classList.remove('sidebar-visible');
-            body.classList.add("sidebar-" + sidebar);
-        </script>
-
+<body>
+    <div id="container">
+        <!-- Sidebar -->
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html" class="active">Introduction</a></li><li class="chapter-item expanded "><a href="USER_START_GUIDE.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="ARCHITECTURE.html"><strong aria-hidden="true">2.</strong> Architecture Overview</a></li><li class="chapter-item expanded "><a href="COMMANDS.html"><strong aria-hidden="true">3.</strong> Command Reference</a></li><li class="chapter-item expanded "><a href="HARDWARE_GUIDE.html"><strong aria-hidden="true">4.</strong> Hardware Guide</a></li><li class="chapter-item expanded "><a href="WIRING_GUIDE.html"><strong aria-hidden="true">5.</strong> Wiring Diagrams</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Peripherals</li><li class="chapter-item expanded "><a href="GPIO_GUIDE.html"><strong aria-hidden="true">6.</strong> GPIO Manipulation</a></li><li class="chapter-item expanded "><a href="PROTOCOLS.html"><strong aria-hidden="true">7.</strong> Communication Protocols</a></li><li class="chapter-item expanded "><a href="SENSORS_API.html"><strong aria-hidden="true">8.</strong> Sensors API</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Advanced</li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> Limitations</a></li><li class="chapter-item expanded "><a href="ARCHITECTURE.html"><strong aria-hidden="true">10.</strong> System Architecture</a></li></ol>
+            <div class="sidebar-header">
+                <a href="../index.html" class="sidebar-logo">Mimic<span>_</span></a>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
-                <div class="sidebar-resize-indicator"></div>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">2.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">3.</strong> Getting Started & Requirements</a></li><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">4.</strong> System Architecture</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Firmware</li><li class="chapter-item expanded "><a href="FW_OVERVIEW.html"><strong aria-hidden="true">5.</strong> Firmware Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">5.1.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">5.2.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">5.3.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.4.</strong> Build System</a></li><li class="chapter-item expanded "><a href="PERIPHERALS.html"><strong aria-hidden="true">5.5.</strong> Peripheral Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">5.5.1.</strong> I2C Timing & Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">5.5.2.</strong> SPI Logic & DMA</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">5.5.3.</strong> UART Data Flow</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Bridge</li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> Bridge Overview & CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">6.1.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">6.2.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">6.3.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">6.4.</strong> Real-Time Diagnostics</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Sensors & Contribution</li><li class="chapter-item expanded "><a href="SENSORS_OVERVIEW.html"><strong aria-hidden="true">7.</strong> Sensors Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">7.1.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">7.2.</strong> MPU6050 Motion Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">7.2.1.</strong> MPU6050 Registers</a></li></ol></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">7.3.</strong> BMP280 Environment Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">7.3.1.</strong> BMP280 Calibration</a></li></ol></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">7.4.</strong> GPS Module</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">7.4.1.</strong> GPS Trajectory</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">8.</strong> Troubleshooting</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> System Limitations</a></li></ol>
             </div>
         </nav>
 
-        <!-- Track and set sidebar scroll position -->
-        <script>
-            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
-            sidebarScrollbox.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
-                }
-            }, { passive: true });
-            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
-            sessionStorage.removeItem('sidebar-scroll');
-            if (sidebarScrollTop) {
-                // preserve sidebar scroll position when navigating via links within sidebar
-                sidebarScrollbox.scrollTop = sidebarScrollTop;
-            } else {
-                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
-                var activeSection = document.querySelector('#sidebar .active');
-                if (activeSection) {
-                    activeSection.scrollIntoView({ block: 'center' });
-                }
-            }
-        </script>
-
-        <div id="page-wrapper" class="page-wrapper">
-
-            <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
-                    <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
-                        </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
-                        </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                        </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-
-                    <h1 class="menu-title">MIMIC Documentation</h1>
-
-                    <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
-                        </a>
-                        <a href="https://github.com/aegion-dynamic/mimic-docs" title="Git repository" aria-label="Git repository">
-                            <i id="git-repository-button" class="fa fa-github"></i>
-                        </a>
-
-                    </div>
-                </div>
-
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                    </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
-                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
-                    });
-                </script>
-
-                <div id="content" class="content">
-                    <main>
-                        <h1 id="mimic-system"><a class="header" href="#mimic-system">MIMIC System</a></h1>
-<div class="hero">
-  <h1 id="revolutionizing-peripheral-emulation"><a class="header" href="#revolutionizing-peripheral-emulation">Revolutionizing Peripheral Emulation</a></h1>
-  <p>An Applied Sciences R&D project for Deep Tech hardware validation.</p>
-</div>
-<p>MIMIC is a hardware-in-the-loop (HIL) emulation system that allows developers to simulate complex sensors and peripherals using standard STM32 hardware.</p>
-<h3 id="core-capabilities"><a class="header" href="#core-capabilities">Core Capabilities</a></h3>
-<ul>
-<li><strong>Zero-Latency Emulation</strong>: High-speed SPI and I2C slave simulation.</li>
-<li><strong>Protocol Bridge</strong>: Transparent UART to hardware peripheral mapping.</li>
-<li><strong>Deep Diagnostics</strong>: Real-time pin state and protocol analysis.</li>
-<li><strong>Extensible API</strong>: Python-based sensor modeling.</li>
-</ul>
-<hr />
-<p><a href="USER_START_GUIDE.html">Get Started</a> | <a href="COMMANDS.html">Command Reference</a> | <a href="HARDWARE_GUIDE.html">Hardware Guide</a></p>
-
-                    </main>
-
-                    <nav class="nav-wrapper" aria-label="Page navigation">
-                        <!-- Mobile navigation buttons -->
-
-                            <a rel="next prefetch" href="USER_START_GUIDE.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-
-                        <div style="clear: both"></div>
-                    </nav>
+        <!-- Main Content -->
+        <main id="main">
+            <div class="top-bar">
+                <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
+                    <span>☰</span>
+                </button>
+                <div class="top-bar-title">Introduction - MIMIC Documentation</div>
+                <div class="top-bar-links">
+                    <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
                 </div>
             </div>
 
-            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <div id="content" class="content">
+                <h1 id="welcome-to-mimic"><a class="header" href="#welcome-to-mimic">Welcome to MIMIC</a></h1>
+<p>Mimic is a framework designed to bridge the gap between software development and physical hardware by emulating sensor behavior. It allows a host computer to interact with a microcontroller that "mimics" the protocols and data streams of actual hardware peripherals.</p>
+<h2 id="core-concept"><a class="header" href="#core-concept">Core Concept</a></h2>
+<p>The primary purpose of Mimic is to provide a functional replacement for sensors during development or when hardware is unavailable. The system uses a dedicated microcontroller to act as a sensor proxy, supporting multiple communication protocols including <strong>I2C, SPI, UART, RS485, and RS232</strong>.</p>
+<h3 id="hardware-platform"><a class="header" href="#hardware-platform">Hardware Platform</a></h3>
+<p>Mimic Firmware is developed specifically for the <strong>STM32F411CEU6 (Black Pill)</strong> development board. It is designed to run exclusively on this platform to ensure consistent peripheral timing and protocol accuracy.</p>
+<h2 id="system-architecture"><a class="header" href="#system-architecture">System Architecture</a></h2>
+<p>The framework is divided into three distinct layers:</p>
+<h3 id="1-mimic-firmware"><a class="header" href="#1-mimic-firmware">1. Mimic Firmware</a></h3>
+<p>Written in C, the firmware resides on the STM32 MCU. It is responsible for parsing commands received from the host computer and executing them on the hardware level. It manages the low-level peripheral configuration required to emulate different sensor interfaces.</p>
+<h3 id="2-mimic-bridge--cli"><a class="header" href="#2-mimic-bridge--cli">2. Mimic Bridge &amp; CLI</a></h3>
+<p>The <strong>Mimic Bridge</strong> is a Domain Specific Language (DSL) implemented in Python. It provides the interface for the computer to communicate with and program the Mimic MCU in real-time.</p>
+<p>Accompanying the bridge is the <strong>Mimic CLI</strong>, which allows for direct hardware interaction. You can use the CLI to:</p>
+<ul>
+<li>Manually control the MCU pinout.</li>
+<li>Query the real-time status of GPIO pins.</li>
+<li>Execute protocol commands directly from the terminal.</li>
+</ul>
+<h3 id="3-mimic-sensors"><a class="header" href="#3-mimic-sensors">3. Mimic Sensors</a></h3>
+<p><strong>Mimic Sensors</strong> contains the actual emulation logic for specific hardware. This is where the behavior of a sensor (such as an MPU6050 or BMP280) is defined. This layer is designed for community contribution, allowing users to write and add new sensor profiles to the ecosystem.</p>
+<hr />
+<p><em>Select a topic from the sidebar to explore the documentation for each specific module.</em></p>
 
-                    <a rel="next prefetch" href="USER_START_GUIDE.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <a href="WIRING.html" class="nav-chapters next">→</a>
             </nav>
-
-        </div>
-
-
-
-
-        <script>
-            window.playground_copyable = true;
-        </script>
-
-
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
-
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
-
-        <!-- Custom JS scripts -->
-
-
+        </main>
     </div>
-    </body>
+
+    <script>
+        // Sidebar Toggle
+        const toggle = document.getElementById('sidebar-toggle');
+        const body = document.body;
+
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('sidebar-hidden');
+        });
+
+        // Mobile: auto-hide sidebar
+        if (window.innerWidth < 1080) {
+            body.classList.add('sidebar-hidden');
+        }
+    </script>
+</body>
+
 </html>

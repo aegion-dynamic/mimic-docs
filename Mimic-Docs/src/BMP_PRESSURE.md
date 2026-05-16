@@ -1,60 +1,30 @@
-# BMP PRESSURE
+# BMP280 Environment Sensor
 
 ## Overview
 
-The Overview for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The BMP280 is an absolute barometric pressure sensor designed for mobile applications. Mimic provides a highly accurate emulation of its SPI and I2C interfaces, supporting both pressure and temperature readings.
 
-## Requirements
+## Emulated Features
 
-The Requirements for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Pressure Sensing:** Supports various oversampling modes to simulate different levels of noise and resolution.
+- **Temperature Sensing:** Integrated temperature register for thermal compensation logic testing.
+- **Protocol Support:** Can be configured to respond over either I2C or SPI depending on your test requirements.
 
-## Implementation
+## Pin Mapping (SPI Mode)
 
-The Implementation of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+- **SCK:** PA5
+- **MISO:** PA6
+- **MOSI:** PA7
+- **CS:** PA4
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+## Usage
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+Start the BMP280 emulation in SPI mode:
+```bash
+mimic simulate bmp280 --protocol spi
+```
 
-## Hardware Mapping
-
-The Hardware Mapping of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the BMP_PRESSURE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for BMP_PRESSURE focuses on providing a stable and extensible framework for bmp_pressure operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The emulation includes the factory calibration registers, ensuring that your driver's compensation formulas can be fully validated.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

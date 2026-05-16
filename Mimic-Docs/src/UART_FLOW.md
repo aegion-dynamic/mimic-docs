@@ -1,60 +1,23 @@
-# UART FLOW
+# UART Data Flow
 
 ## Overview
 
-The Overview for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The UART interface is used for both host communication (USB CDC) and peripheral emulation (e.g., GPS sentences). Mimic manages the flow of data to ensure that serial buffers do not overflow.
 
-## Requirements
+## Host Communication
 
-The Requirements for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Data from the host can be received via:
+1. **USB-C Port:** Using the USB CDC protocol.
+2. **UART2 (TTL):** Using PA2 (TX) and PA3 (RX) for external TTL control.
 
-## Implementation
+The firmware uses a circular buffer to store incoming characters until they can be parsed by the command engine.
 
-The Implementation of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+## Peripheral Emulation
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the UART_FLOW module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for UART_FLOW focuses on providing a stable and extensible framework for uart_flow operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+When emulating a UART device like a GPS module:
+- The firmware generates data packets (e.g., NMEA sentences).
+- These packets are transmitted via **UART1** using the physical TX pin (**PA9**).
+- A background process ensures that data is streamed at the correct baud rate (typically 9600 for GPS).
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

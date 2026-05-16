@@ -1,60 +1,21 @@
-# HIL SYNC
+# HIL Synchronization
 
 ## Overview
 
-The Overview for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Hardware-in-the-Loop (HIL) synchronization ensures that the simulation time on the host computer is aligned with the physical clock on the Mimic hardware. This is crucial for accurate sensor emulation and control system testing.
 
-## Requirements
+## Mechanism
 
-The Requirements for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic uses a heartbeat-based synchronization protocol:
+1. The hardware MCU generates a stable clock signal or heartbeat packet.
+2. The Python bridge monitors this heartbeat to adjust its internal timing.
+3. If the host falls behind (e.g., due to system load), it can request a state synchronization from the MCU to catch up.
 
-## Implementation
+## Key Features
 
-The Implementation of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the HIL_SYNC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for HIL_SYNC focuses on providing a stable and extensible framework for hil_sync operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Drift Correction:** Automatically compensates for the small differences between the host and MCU oscillators.
+- **Timestamping:** Every packet sent from the hardware includes a high-resolution timestamp (in microseconds) relative to the system boot.
+- **Latency Monitoring:** The bridge measures the round-trip time of commands to provide an estimate of the communication latency.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

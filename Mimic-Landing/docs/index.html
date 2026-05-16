@@ -1,92 +1,112 @@
 <!DOCTYPE html>
 <html lang="en" class="sidebar-visible no-js">
-    <head>
-        <meta charset="UTF-8">
-        <title>System Architecture - MIMIC Documentation</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="theme/css/general.css">
-        <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-        
-    </head>
-    <body>
-        <div id="container">
-            <!-- Sidebar -->
-            <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-                <div class="sidebar-header">
-                    <a href="/"> Mimic_ </a>
-                </div>
-                <div class="sidebar-scrollbox">
-                    <ol class="chapter"><li class="chapter-item expanded "><a href="ARCH.html" class="active"><strong aria-hidden="true">1.</strong> System Architecture</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">2.</strong> Environment Setup</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">3.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">4.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.</strong> Build System</a></li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> CLI Structure</a></li><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">7.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">8.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">9.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="GPIO_INTERRUPTS.html"><strong aria-hidden="true">10.</strong> GPIO Interrupts</a></li><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">11.</strong> I2C Timing</a></li><li class="chapter-item expanded "><a href="I2C_REGISTERS.html"><strong aria-hidden="true">12.</strong> I2C Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">13.</strong> SPI Logic</a></li><li class="chapter-item expanded "><a href="SPI_DMA.html"><strong aria-hidden="true">14.</strong> SPI DMA Transfers</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">15.</strong> UART Flow Control</a></li><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">16.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">17.</strong> MPU6050: Motion Fusion</a></li><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">18.</strong> MPU6050: Register Map</a></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">19.</strong> BMP280: Pressure Models</a></li><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">20.</strong> BMP280: Calibration</a></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">21.</strong> GPS: NMEA Generation</a></li><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">22.</strong> GPS: Trajectories</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">23.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">24.</strong> Real-Time Diagnostics</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">25.</strong> System Limitations</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">26.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">27.</strong> Troubleshooting</a></li></ol>
-                </div>
-            </nav>
 
-            <!-- Main Content -->
-            <main id="main">
-                <div class="top-bar">
-                    <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
-                        <span>☰</span>
-                    </button>
-                    <div class="top-bar-title">System Architecture - MIMIC Documentation</div>
-                    <div class="top-bar-links">
-                        <a href="https://github.com/aegion-dynamic/mimic-docs" class="icon-button">GitHub</a>
-                    </div>
-                </div>
+<head>
+    <meta charset="UTF-8">
+    <title>Introduction - MIMIC Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="theme/css/general.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var blocks = document.querySelectorAll("pre code.language-mermaid");
+          blocks.forEach(function(block) {
+              var pre = block.parentNode;
+              var div = document.createElement("div");
+              div.className = "mermaid";
+              div.textContent = block.textContent;
+              pre.parentNode.replaceChild(div, pre);
+          });
+          mermaid.initialize({
+              startOnLoad: true,
+              theme: "base",
+              themeVariables: {
+                  primaryColor: '#1a1a2e',
+                  primaryTextColor: '#ffffff',
+                  primaryBorderColor: '#3a3a5c',
+                  lineColor: '#5a5a7a',
+                  fontFamily: 'Space Mono, monospace',
+                  fontSize: '13px'
+              },
+              flowchart: { curve: 'basis' }
+          });
+      });
+    </script>
+</head>
 
-                <div id="content" class="content">
-                    <h1 id="arch"><a class="header" href="#arch">ARCH</a></h1>
-<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
-<p>The Overview for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
-<p>The Requirements for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
-<p>The Implementation of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="hardware-mapping"><a class="header" href="#hardware-mapping">Hardware Mapping</a></h2>
-<p>The Hardware Mapping of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="performance-metrics"><a class="header" href="#performance-metrics">Performance Metrics</a></h2>
-<p>The Performance Metrics of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="communication-protocols"><a class="header" href="#communication-protocols">Communication Protocols</a></h2>
-<p>The Communication Protocols of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="error-states"><a class="header" href="#error-states">Error States</a></h2>
-<p>The Error States for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="integration-example"><a class="header" href="#integration-example">Integration Example</a></h2>
-<p>The Integration Example for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="constraints--limitations"><a class="header" href="#constraints--limitations">Constraints &amp; Limitations</a></h2>
-<p>The Constraints &amp; Limitations for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="roadmap"><a class="header" href="#roadmap">Roadmap</a></h2>
-<p>The Roadmap for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
+<body>
+    <div id="container">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-header">
+                <a href="../index.html" class="sidebar-logo">Mimic<span>_</span></a>
+            </div>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">2.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">3.</strong> Getting Started & Requirements</a></li><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">4.</strong> System Architecture</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Firmware</li><li class="chapter-item expanded "><a href="FW_OVERVIEW.html"><strong aria-hidden="true">5.</strong> Firmware Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">5.1.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">5.2.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">5.3.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.4.</strong> Build System</a></li><li class="chapter-item expanded "><a href="PERIPHERALS.html"><strong aria-hidden="true">5.5.</strong> Peripheral Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">5.5.1.</strong> I2C Timing & Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">5.5.2.</strong> SPI Logic & DMA</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">5.5.3.</strong> UART Data Flow</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Bridge</li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> Bridge Overview & CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">6.1.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">6.2.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">6.3.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">6.4.</strong> Real-Time Diagnostics</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Sensors & Contribution</li><li class="chapter-item expanded "><a href="SENSORS_OVERVIEW.html"><strong aria-hidden="true">7.</strong> Sensors Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">7.1.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">7.2.</strong> MPU6050 Motion Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">7.2.1.</strong> MPU6050 Registers</a></li></ol></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">7.3.</strong> BMP280 Environment Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">7.3.1.</strong> BMP280 Calibration</a></li></ol></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">7.4.</strong> GPS Module</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">7.4.1.</strong> GPS Trajectory</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">8.</strong> Troubleshooting</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> System Limitations</a></li></ol>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main">
+            <div class="top-bar">
+                <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
+                    <span>☰</span>
+                </button>
+                <div class="top-bar-title">Introduction - MIMIC Documentation</div>
+                <div class="top-bar-links">
+                    <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
+                </div>
+            </div>
+
+            <div id="content" class="content">
+                <h1 id="welcome-to-mimic"><a class="header" href="#welcome-to-mimic">Welcome to MIMIC</a></h1>
+<p>Mimic is a framework designed to bridge the gap between software development and physical hardware by emulating sensor behavior. It allows a host computer to interact with a microcontroller that "mimics" the protocols and data streams of actual hardware peripherals.</p>
+<h2 id="core-concept"><a class="header" href="#core-concept">Core Concept</a></h2>
+<p>The primary purpose of Mimic is to provide a functional replacement for sensors during development or when hardware is unavailable. The system uses a dedicated microcontroller to act as a sensor proxy, supporting multiple communication protocols including <strong>I2C, SPI, UART, RS485, and RS232</strong>.</p>
+<h3 id="hardware-platform"><a class="header" href="#hardware-platform">Hardware Platform</a></h3>
+<p>Mimic Firmware is developed specifically for the <strong>STM32F411CEU6 (Black Pill)</strong> development board. It is designed to run exclusively on this platform to ensure consistent peripheral timing and protocol accuracy.</p>
+<h2 id="system-architecture"><a class="header" href="#system-architecture">System Architecture</a></h2>
+<p>The framework is divided into three distinct layers:</p>
+<h3 id="1-mimic-firmware"><a class="header" href="#1-mimic-firmware">1. Mimic Firmware</a></h3>
+<p>Written in C, the firmware resides on the STM32 MCU. It is responsible for parsing commands received from the host computer and executing them on the hardware level. It manages the low-level peripheral configuration required to emulate different sensor interfaces.</p>
+<h3 id="2-mimic-bridge--cli"><a class="header" href="#2-mimic-bridge--cli">2. Mimic Bridge &amp; CLI</a></h3>
+<p>The <strong>Mimic Bridge</strong> is a Domain Specific Language (DSL) implemented in Python. It provides the interface for the computer to communicate with and program the Mimic MCU in real-time.</p>
+<p>Accompanying the bridge is the <strong>Mimic CLI</strong>, which allows for direct hardware interaction. You can use the CLI to:</p>
+<ul>
+<li>Manually control the MCU pinout.</li>
+<li>Query the real-time status of GPIO pins.</li>
+<li>Execute protocol commands directly from the terminal.</li>
+</ul>
+<h3 id="3-mimic-sensors"><a class="header" href="#3-mimic-sensors">3. Mimic Sensors</a></h3>
+<p><strong>Mimic Sensors</strong> contains the actual emulation logic for specific hardware. This is where the behavior of a sensor (such as an MPU6050 or BMP280) is defined. This layer is designed for community contribution, allowing users to write and add new sensor profiles to the ecosystem.</p>
 <hr />
-<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<p><em>Select a topic from the sidebar to explore the documentation for each specific module.</em></p>
 
-                </div>
+            </div>
 
-                <!-- Navigation -->
-                <nav class="nav-wrapper" aria-label="Page navigation">
-                        <a href="SETUP.html" class="nav-chapters next">→</a>
-                </nav>
-            </main>
-        </div>
+            <!-- Navigation -->
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <a href="WIRING.html" class="nav-chapters next">→</a>
+            </nav>
+        </main>
+    </div>
 
-        <script>
-            // Simple Sidebar Toggle
-            const toggle = document.getElementById('sidebar-toggle');
-            const body = document.body;
-            
-            toggle.addEventListener('click', () => {
-                body.classList.toggle('sidebar-hidden');
-            });
+    <script>
+        // Sidebar Toggle
+        const toggle = document.getElementById('sidebar-toggle');
+        const body = document.body;
 
-            // Handle Mobile Auto-hide
-            if (window.innerWidth < 1080) {
-                body.classList.add('sidebar-hidden');
-            }
-        </script>
-    </body>
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('sidebar-hidden');
+        });
+
+        // Mobile: auto-hide sidebar
+        if (window.innerWidth < 1080) {
+            body.classList.add('sidebar-hidden');
+        }
+    </script>
+</body>
+
 </html>

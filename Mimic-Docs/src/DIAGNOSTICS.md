@@ -1,60 +1,30 @@
-# DIAGNOSTICS
+# Real-Time Diagnostics
 
 ## Overview
 
-The Overview for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic includes a diagnostic layer that monitors the health and performance of the system in real-time. This helps in identifying communication issues, protocol errors, or hardware failures during development.
 
-## Requirements
+## Monitored Metrics
 
-The Requirements for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Bus Load:** The percentage of available bandwidth being used on the I2C or SPI bus.
+- **Packet Loss:** The number of commands sent by the host that failed to receive a valid acknowledgement.
+- **Timing Jitter:** Variations in the execution time of periodic tasks (e.g., sensor data updates).
+- **MCU Temperature:** The internal temperature of the STM32 chip.
 
-## Implementation
+## Diagnostic Commands
 
-The Implementation of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+You can query the diagnostic state using the CLI:
+```bash
+# Get a summary of the system health
+mimic diagnostics status
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+# Monitor bus activity in real-time
+mimic diagnostics monitor --bus i2c1
+```
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+## Logging
 
-## Hardware Mapping
-
-The Hardware Mapping of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the DIAGNOSTICS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for DIAGNOSTICS focuses on providing a stable and extensible framework for diagnostics operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Diagnostic data can be exported to a CSV file or streamed to a dashboard for long-term analysis of hardware stability.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

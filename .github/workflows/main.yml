@@ -21,7 +21,7 @@ jobs:
       - run: (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.4" mdbook)
       - run: |
           cd Mimic-Docs
-          mdbook build
+          mdbook build && mdbook test
           cd ..
           mkdir -p public
           cp -r Mimic-Landing/* public/

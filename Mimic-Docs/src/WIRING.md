@@ -1,60 +1,58 @@
-# WIRING
+# Wiring & Connectivity
 
-## Overview
+This chapter details the physical connections required to interface the STM32F411 (Black Pill) with your host machine and external hardware master devices.
 
-The Overview for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+## 1. Hardware Overview
 
-## Requirements
+The **STM32F411CEU6 Black Pill** is the core processing unit for Mimic. Below is a real-world view of the board's top side, showing the MCU, crystal, and breakout pins.
 
-The Requirements for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+![STM32F411 Black Pill Top View](img/black_pill_real.jpg)
 
-## Implementation
+## 2. Programming Interface (ST-Link v2)
 
-The Implementation of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+The primary method for deploying Mimic Firmware is via an ST-Link v2 programmer. The real-world hardware typically comes in a small USB-stick form factor as shown below.
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+![ST-Link V2 Mini Programmer](img/stlink_real.jpg)
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+### Connection Table
+| ST-Link Pin | Black Pill Pin | Description |
+| :--- | :--- | :--- |
+| 3.3V | 3.3V | Target Power |
+| GND | GND | Common Ground |
+| SWDIO | DIO / PA13 | Data Line |
+| SWCLK | CLK / PA14 | Clock Line |
 
-## Hardware Mapping
+<img src="img/mimic_pinout.png" alt="Mimic UART2 Pinout" style="max-width: 500px; width: 100%; height: auto; display: block; margin: 20px 0; border-radius: 8px; border: 1px solid #3a3a5c;">
 
-The Hardware Mapping of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+## 3. Host Communication via TTL (UART2)
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+In cases where the USB-C port is not used for host communication, a **USB-to-TTL converter** (typically using the CP2102 chip) can be connected to **UART2** to provide full CLI control.
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+### Bridge Connection (TTL)
+| Converter Pin | Black Pill Pin | Description |
+| :--- | :--- | :--- |
+| TX | PA3 (RX2) | Data from Host to MCU |
+| RX | PA2 (TX2) | Data from MCU to Host |
+| GND | GND | Common Ground |
 
-## Performance Metrics
+## 4. Peripheral Hardware Mapping
 
-The Performance Metrics of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+To emulate sensors correctly, ensure your Master device (e.g., Raspberry Pi or Arduino) is connected to the following hardware ports on the Black Pill:
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+### UART (GPS Emulation)
+- **TX (Master)** -> **RX (PA10)**
+- **RX (Master)** -> **TX (PA9)**
+- **GND** -> **GND**
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+### I2C (MPU6050 Emulation)
+- **SCL**: PB6
+- **SDA**: PB7
 
-## Communication Protocols
-
-The Communication Protocols of the WIRING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for WIRING focuses on providing a stable and extensible framework for wiring operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+### SPI (BMP280 Emulation)
+- **SCK**: PA5
+- **MISO**: PA6
+- **MOSI**: PA7
+- **CS**: PA4
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

@@ -1,60 +1,20 @@
-# LIMITATIONS
+# System Limitations
 
 ## Overview
 
-The Overview for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+While Mimic is a powerful tool for hardware emulation, it is important to understand its physical and logical limits to ensure accurate testing.
 
-## Requirements
+## Hardware Constraints
 
-The Requirements for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Logic Level:** Mimic operates at 3.3V. Interfacing with 5V systems without level shifters may damage the STM32.
+- **Max Frequency:** I2C is limited to 1 MHz and SPI to approximately 20 MHz due to CPU and DMA overhead.
+- **Pin Current:** GPIO pins have limited current sourcing/sinking capability (typically 20mA). Do not drive motors or high-power LEDs directly.
 
-## Implementation
+## Emulation Limits
 
-The Implementation of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the LIMITATIONS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for LIMITATIONS focuses on providing a stable and extensible framework for limitations operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Timing Jitter:** While minimal, some jitter is inherent in a software-driven emulation compared to physical ASIC hardware.
+- **Register Set:** Not all registers of every sensor are emulated. Only the most commonly used registers for data retrieval and configuration are typically supported.
+- **Analog Features:** Mimic is primarily a digital protocol emulator. It does not natively emulate complex analog sensor behaviors (like ADC noise characteristics) unless specifically modeled in the Python layer.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

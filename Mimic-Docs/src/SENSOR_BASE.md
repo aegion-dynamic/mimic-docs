@@ -1,60 +1,34 @@
-# SENSOR BASE
+# Abstract Sensor Base
 
 ## Overview
 
-The Overview for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The `AbstractSensorBase` is a Python class that serves as the foundation for all sensor emulation modules in Mimic. It provides the core logic for managing register maps and handling protocol-specific transactions.
 
-## Requirements
+## Core Responsibilities
 
-The Requirements for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Register Shadowing:** Maintains a virtual copy of the sensor's internal registers.
+- **Protocol Mapping:** Defines how register reads/writes translate to physical I2C or SPI transactions.
+- **Data Generation Hooks:** Provides methods for updating register values based on simulation logic (e.g., generating random noise for an accelerometer).
 
-## Implementation
+## Key Methods
 
-The Implementation of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+- `read_register(address)`: Returns the value currently stored in a virtual register.
+- `write_register(address, value)`: Updates a virtual register and triggers any associated side effects.
+- `update()`: A periodic hook used to calculate new sensor data (e.g., incrementing a counter or reading from a data file).
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+## Example Implementation
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+To create a new sensor, you simply need to inherit from this class and define your register map:
 
-## Hardware Mapping
-
-The Hardware Mapping of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the SENSOR_BASE module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for SENSOR_BASE focuses on providing a stable and extensible framework for sensor_base operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+```python
+class MyCustomSensor(AbstractSensorBase):
+    def __init__(self):
+        super().__init__()
+        self.registers = {
+            0x00: 0x45, # Device ID
+            0x01: 0x00  # Data Register
+        }
+```
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

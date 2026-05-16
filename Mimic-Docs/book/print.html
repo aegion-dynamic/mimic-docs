@@ -1,647 +1,845 @@
-<!DOCTYPE HTML>
-<html lang="en" class="light" dir="ltr">
-    <head>
-        <!-- Book generated using mdBook -->
-        <meta charset="UTF-8">
-        <title>MIMIC Documentation</title>
-        <meta name="robots" content="noindex">
+<!DOCTYPE html>
+<html lang="en" class="sidebar-visible no-js">
 
+<head>
+    <meta charset="UTF-8">
+    <title>MIMIC Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="theme/css/general.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var blocks = document.querySelectorAll("pre code.language-mermaid");
+          blocks.forEach(function(block) {
+              var pre = block.parentNode;
+              var div = document.createElement("div");
+              div.className = "mermaid";
+              div.textContent = block.textContent;
+              pre.parentNode.replaceChild(div, pre);
+          });
+          mermaid.initialize({
+              startOnLoad: true,
+              theme: "base",
+              themeVariables: {
+                  primaryColor: '#1a1a2e',
+                  primaryTextColor: '#ffffff',
+                  primaryBorderColor: '#3a3a5c',
+                  lineColor: '#5a5a7a',
+                  fontFamily: 'Space Mono, monospace',
+                  fontSize: '13px'
+              },
+              flowchart: { curve: 'basis' }
+          });
+      });
+    </script>
+</head>
 
-        <!-- Custom HTML head -->
-        
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff">
-
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
-
-        <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
-
-        <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
-
-        <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="theme/css/variables.css">
-        <link rel="stylesheet" href="theme/css/general.css">
-
-    </head>
-    <body class="sidebar-visible no-js">
-    <div id="body-container">
-        <!-- Provide site root to javascript -->
-        <script>
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
-        </script>
-
-        <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script>
-            try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
-
-                if (theme.startsWith('"') && theme.endsWith('"')) {
-                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
-                }
-
-                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
-                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
-                }
-            } catch (e) { }
-        </script>
-
-        <!-- Set the theme before any content is loaded, prevents flash -->
-        <script>
-            var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
-            if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('light')
-            html.classList.add(theme);
-            var body = document.querySelector('body');
-            body.classList.remove('no-js')
-            body.classList.add('js');
-        </script>
-
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
-
-        <!-- Hide / unhide sidebar before it is displayed -->
-        <script>
-            var body = document.querySelector('body');
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
-            if (document.body.clientWidth >= 1080) {
-                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
-                sidebar = sidebar || 'visible';
-            } else {
-                sidebar = 'hidden';
-            }
-            sidebar_toggle.checked = sidebar === 'visible';
-            body.classList.remove('sidebar-visible');
-            body.classList.add("sidebar-" + sidebar);
-        </script>
-
+<body>
+    <div id="container">
+        <!-- Sidebar -->
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded "><a href="USER_START_GUIDE.html"><strong aria-hidden="true">1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="ARCHITECTURE.html"><strong aria-hidden="true">2.</strong> Architecture Overview</a></li><li class="chapter-item expanded "><a href="COMMANDS.html"><strong aria-hidden="true">3.</strong> Command Reference</a></li><li class="chapter-item expanded "><a href="HARDWARE_GUIDE.html"><strong aria-hidden="true">4.</strong> Hardware Guide</a></li><li class="chapter-item expanded "><a href="WIRING_GUIDE.html"><strong aria-hidden="true">5.</strong> Wiring Diagrams</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Peripherals</li><li class="chapter-item expanded "><a href="GPIO_GUIDE.html"><strong aria-hidden="true">6.</strong> GPIO Manipulation</a></li><li class="chapter-item expanded "><a href="PROTOCOLS.html"><strong aria-hidden="true">7.</strong> Communication Protocols</a></li><li class="chapter-item expanded "><a href="SENSORS_API.html"><strong aria-hidden="true">8.</strong> Sensors API</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Advanced</li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> Limitations</a></li><li class="chapter-item expanded "><a href="ARCHITECTURE.html"><strong aria-hidden="true">10.</strong> System Architecture</a></li></ol>
+            <div class="sidebar-header">
+                <a href="../index.html" class="sidebar-logo">Mimic<span>_</span></a>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
-                <div class="sidebar-resize-indicator"></div>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">2.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">3.</strong> Getting Started & Requirements</a></li><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">4.</strong> System Architecture</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Firmware</li><li class="chapter-item expanded "><a href="FW_OVERVIEW.html"><strong aria-hidden="true">5.</strong> Firmware Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">5.1.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">5.2.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">5.3.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.4.</strong> Build System</a></li><li class="chapter-item expanded "><a href="PERIPHERALS.html"><strong aria-hidden="true">5.5.</strong> Peripheral Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">5.5.1.</strong> I2C Timing & Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">5.5.2.</strong> SPI Logic & DMA</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">5.5.3.</strong> UART Data Flow</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Bridge</li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> Bridge Overview & CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">6.1.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">6.2.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">6.3.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">6.4.</strong> Real-Time Diagnostics</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Sensors & Contribution</li><li class="chapter-item expanded "><a href="SENSORS_OVERVIEW.html"><strong aria-hidden="true">7.</strong> Sensors Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">7.1.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">7.2.</strong> MPU6050 Motion Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">7.2.1.</strong> MPU6050 Registers</a></li></ol></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">7.3.</strong> BMP280 Environment Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">7.3.1.</strong> BMP280 Calibration</a></li></ol></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">7.4.</strong> GPS Module</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">7.4.1.</strong> GPS Trajectory</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">8.</strong> Troubleshooting</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> System Limitations</a></li></ol>
             </div>
         </nav>
 
-        <!-- Track and set sidebar scroll position -->
-        <script>
-            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
-            sidebarScrollbox.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
-                }
-            }, { passive: true });
-            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
-            sessionStorage.removeItem('sidebar-scroll');
-            if (sidebarScrollTop) {
-                // preserve sidebar scroll position when navigating via links within sidebar
-                sidebarScrollbox.scrollTop = sidebarScrollTop;
-            } else {
-                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
-                var activeSection = document.querySelector('#sidebar .active');
-                if (activeSection) {
-                    activeSection.scrollIntoView({ block: 'center' });
-                }
-            }
-        </script>
-
-        <div id="page-wrapper" class="page-wrapper">
-
-            <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
-                    <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
-                        </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
-                        </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                        </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-
-                    <h1 class="menu-title">MIMIC Documentation</h1>
-
-                    <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
-                        </a>
-                        <a href="https://github.com/aegion-dynamic/mimic-docs" title="Git repository" aria-label="Git repository">
-                            <i id="git-repository-button" class="fa fa-github"></i>
-                        </a>
-
-                    </div>
-                </div>
-
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
-                    </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
-                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
-                    });
-                </script>
-
-                <div id="content" class="content">
-                    <main>
-                        <h1 id="mimic-system"><a class="header" href="#mimic-system">MIMIC System</a></h1>
-<div class="hero">
-  <h1 id="revolutionizing-peripheral-emulation"><a class="header" href="#revolutionizing-peripheral-emulation">Revolutionizing Peripheral Emulation</a></h1>
-  <p>An Applied Sciences R&D project for Deep Tech hardware validation.</p>
-</div>
-<p>MIMIC is a hardware-in-the-loop (HIL) emulation system that allows developers to simulate complex sensors and peripherals using standard STM32 hardware.</p>
-<h3 id="core-capabilities"><a class="header" href="#core-capabilities">Core Capabilities</a></h3>
-<ul>
-<li><strong>Zero-Latency Emulation</strong>: High-speed SPI and I2C slave simulation.</li>
-<li><strong>Protocol Bridge</strong>: Transparent UART to hardware peripheral mapping.</li>
-<li><strong>Deep Diagnostics</strong>: Real-time pin state and protocol analysis.</li>
-<li><strong>Extensible API</strong>: Python-based sensor modeling.</li>
-</ul>
-<hr />
-<p><a href="USER_START_GUIDE.html">Get Started</a> | <a href="COMMANDS.html">Command Reference</a> | <a href="HARDWARE_GUIDE.html">Hardware Guide</a></p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="mimic-user-start-guide"><a class="header" href="#mimic-user-start-guide">Mimic User Start Guide</a></h1>
-<p>Follow these steps to develop and test with Mimic.</p>
-<h2 id="1-programming-the-user-device-esp8266"><a class="header" href="#1-programming-the-user-device-esp8266">1. Programming the User Device (ESP8266)</a></h2>
-<p>Use the <code>arduino-cli</code> binary in the project root.</p>
-<p><strong>Compile &amp; Upload:</strong></p>
-<pre><code class="language-bash">./bin/arduino-cli compile --fqbn esp8266:esp8266:nodemcuv2 Esp-Test/MPU6050.ino &amp;&amp; \
-./bin/arduino-cli upload -p /dev/ttyUSB0 --fqbn esp8266:esp8266:nodemcuv2 Esp-Test/MPU6050.ino
-</code></pre>
-<p><strong>Monitor Output:</strong></p>
-<pre><code class="language-bash">./bin/arduino-cli monitor -p /dev/ttyUSB0 --config baudrate=115200
-</code></pre>
-<p><em>Note: Close the monitor (Ctrl+C) before uploading new code.</em></p>
-<hr />
-<h2 id="2-starting-the-sensor-simulation"><a class="header" href="#2-starting-the-sensor-simulation">2. Starting the Sensor Simulation</a></h2>
-<p>On your laptop, the <code>mimic</code> command acts as the "Brain" for the box.</p>
-<p><strong>Run MPU6050:</strong></p>
-<pre><code class="language-bash">sudo mimic mpu6050
-</code></pre>
-<hr />
-<h2 id="3-updating-the-mimic-box-stm32"><a class="header" href="#3-updating-the-mimic-box-stm32">3. Updating the Mimic Box (STM32)</a></h2>
-<p>If you modify the C code in <code>firmware/Core/Src/mimic.c</code>, you must re-flash the hardware.</p>
-<p><strong>Flash via ST-Link:</strong></p>
-<pre><code class="language-bash">cd firmware
-make clean &amp;&amp; make flash
-</code></pre>
-<hr />
-<h2 id="4-common-troubleshooting"><a class="header" href="#4-common-troubleshooting">4. Common Troubleshooting</a></h2>
-<ul>
-<li><strong>"No Mimic board found"</strong>: Unplug and re-plug the STM32 USB cable. It may have crashed the serial bridge or changed port names.</li>
-<li><strong>"Device or resource busy"</strong>: A Serial Monitor is already open. Close it.</li>
-<li><strong>Constant -57.80 readings</strong>: Signal wires are loose or disconnected. Mimic is serving "Ghost Data."</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="-architecture-overview"><a class="header" href="#-architecture-overview">🏛 Architecture Overview</a></h1>
-<p>Mimic v1 is built on a <strong>Command-Response Bridge</strong> architecture. It transforms complex, low-level hardware timings into human-readable string transactions.</p>
-<h2 id="-the-data-flow"><a class="header" href="#-the-data-flow">🔄 The Data Flow</a></h2>
-<ol>
-<li><strong>Host Request</strong>: The PC (Python) sends a UTF-8 string over UART (e.g., <code>PIN_HIGH A5\r\n</code>).</li>
-<li><strong>Firmware Parsing</strong>: The STM32 receives this via an interrupt-driven buffer. It tokensizes the command and arguments.</li>
-<li><strong>Action Execution</strong>: The internal <code>mimic.c</code> engine calls the relevant HAL function (e.g., <code>HAL_GPIO_WritePin</code>).</li>
-<li><strong>Hardware Response</strong>: The STM32 captures the result (Success, Data, or Error Code).</li>
-<li><strong>Host Response</strong>: The STM32 sends back a structured response string (e.g., <code>OK: Pin A5 set HIGH\r\n&gt; </code>).</li>
-</ol>
-<h2 id="-the-two-layers"><a class="header" href="#-the-two-layers">🛠 The Two Layers</a></h2>
-<h3 id="layer-1-the-c-engine-firmware"><a class="header" href="#layer-1-the-c-engine-firmware">Layer 1: The C-Engine (Firmware)</a></h3>
-<ul>
-<li><strong>Interrupt Managed</strong>: Keyboard input is handled via <code>USART1_IRQHandler</code>.</li>
-<li><strong>Blocking Transactions</strong>: Peripheral actions (I2C/SPI) are performed in blocking mode to ensure data integrity before responding to the PC.</li>
-<li><strong>Stateless logic</strong>: The firmware maintains the status of initialized peripherals but treats every GPIO command as an atomic operation.</li>
-</ul>
-<h3 id="layer-2-the-python-shell-mimiclib"><a class="header" href="#layer-2-the-python-shell-mimiclib">Layer 2: The Python-Shell (MimicLib)</a></h3>
-<ul>
-<li><strong>Auto-Discovery</strong>: Scans all <code>COM</code>/<code>tty</code> ports, sending a <code>VERSION</code> challenge to identify the Mimic signature.</li>
-<li><strong>Command Serialization</strong>: Converts high-level Python method calls into the exact string syntax required by the C-Engine.</li>
-<li><strong>Abstraction Layer</strong>: Provides specialized classes like <code>MPU6050Simulator</code> which act as state machines on the PC side, reacting to hardware events reported by the STM32.</li>
-</ul>
-<hr />
-<h2 id="-real-time-performance"><a class="header" href="#-real-time-performance">⚡ Real-time Performance</a></h2>
-<p>While the STM32 can toggle pins in nanoseconds, the bottleneck is the <strong>115200 Baud link</strong>. Commands take approx <strong>1-2ms</strong> to transmit and process. For high-speed logic, the "Sensor Mocking" mode is preferred, as it allows the STM32 to stretch the I2C clock and wait for the Python handler to respond.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="-command-encyclopedia"><a class="header" href="#-command-encyclopedia">📜 Command Encyclopedia</a></h1>
-<p>This document lists every supported command in Mimic v1. All commands are case-insensitive and must end with <code>\r\n</code>.</p>
-<hr />
-<h2 id="-gpio-general-purpose-io"><a class="header" href="#-gpio-general-purpose-io">🟢 GPIO (General Purpose I/O)</a></h2>
-<h3 id="pin_set_out-pin"><a class="header" href="#pin_set_out-pin"><code>PIN_SET_OUT &lt;PIN&gt;</code></a></h3>
-<p>Configures the specified pin as a Push-Pull Output.</p>
-<ul>
-<li><strong>Example</strong>: <code>PIN_SET_OUT A5</code></li>
-<li><strong>Response</strong>: <code>OK: Configured A5 as OUTPUT</code></li>
-</ul>
-<h3 id="pin_set_in-pin-pull"><a class="header" href="#pin_set_in-pin-pull"><code>PIN_SET_IN &lt;PIN&gt; [PULL]</code></a></h3>
-<p>Configures the specified pin as an Input.</p>
-<ul>
-<li><strong>PULL Options</strong>: <code>UP</code>, <code>DOWN</code>, <code>NONE</code> (default: <code>NONE</code>)</li>
-<li><strong>Example</strong>: <code>PIN_SET_IN B1 UP</code></li>
-</ul>
-<h3 id="pin_high-pin--pin_low-pin--pin_toggle-pin"><a class="header" href="#pin_high-pin--pin_low-pin--pin_toggle-pin"><code>PIN_HIGH &lt;PIN&gt;</code> / <code>PIN_LOW &lt;PIN&gt;</code> / <code>PIN_TOGGLE &lt;PIN&gt;</code></a></h3>
-<p>Controls the digital state of the pin.</p>
-<ul>
-<li><strong>Example</strong>: <code>PIN_HIGH C13</code> (Turns off the onboard LED on most BlackPills)</li>
-</ul>
-<h3 id="pin_read-pin"><a class="header" href="#pin_read-pin"><code>PIN_READ &lt;PIN&gt;</code></a></h3>
-<p>Returns the current digital state (0 or 1).</p>
-<hr />
-<h2 id="-uart-universal-asynchronous-rxtx"><a class="header" href="#-uart-universal-asynchronous-rxtx">📡 UART (Universal Asynchronous RX/TX)</a></h2>
-<h3 id="uart_init-instance-baud"><a class="header" href="#uart_init-instance-baud"><code>UART_INIT &lt;INSTANCE&gt; &lt;BAUD&gt;</code></a></h3>
-<p>Initializes a UART peripheral. Support instances: <code>1</code> (usually host), <code>2</code>, <code>6</code>.</p>
-<ul>
-<li><strong>Example</strong>: <code>UART_INIT 6 9600</code></li>
-</ul>
-<h3 id="uart_rs485-instance-de_pin"><a class="header" href="#uart_rs485-instance-de_pin"><code>UART_RS485 &lt;INSTANCE&gt; &lt;DE_PIN&gt;</code></a></h3>
-<p>Enables automatic Data Enable (DE) management for RS485 transceivers.</p>
-<ul>
-<li>The <code>DE_PIN</code> will go HIGH during transmission and LOW immediately after the last bit is sent.</li>
-<li><strong>Example</strong>: <code>UART_RS485 6 A15</code></li>
-</ul>
-<h3 id="uart_send-instance-data"><a class="header" href="#uart_send-instance-data"><code>UART_SEND &lt;INSTANCE&gt; &lt;DATA&gt;</code></a></h3>
-<p>Sends a string of data.</p>
-<hr />
-<h2 id="-i2c-inter-integrated-circuit"><a class="header" href="#-i2c-inter-integrated-circuit">🔗 I2C (Inter-Integrated Circuit)</a></h2>
-<h3 id="i2c_init-instance-mode-speedaddr"><a class="header" href="#i2c_init-instance-mode-speedaddr"><code>I2C_INIT &lt;INSTANCE&gt; &lt;MODE&gt; &lt;SPEED|ADDR&gt;</code></a></h3>
-<ul>
-<li><strong>MASTER Mode</strong>: <code>I2C_INIT 1 MASTER 100000</code> (init at 100kHz)</li>
-<li><strong>SLAVE Mode</strong>: <code>I2C_INIT 1 SLAVE 0x68</code> (init as slave at 0x68)</li>
-</ul>
-<h3 id="i2c_write-instance-addr-hex_data"><a class="header" href="#i2c_write-instance-addr-hex_data"><code>I2C_WRITE &lt;INSTANCE&gt; &lt;ADDR&gt; &lt;HEX_DATA&gt;</code></a></h3>
-<ul>
-<li><strong>Example</strong>: <code>I2C_WRITE 1 0x50 00 A1 B2</code></li>
-</ul>
-<h3 id="i2c_read-instance-addr-len"><a class="header" href="#i2c_read-instance-addr-len"><code>I2C_READ &lt;INSTANCE&gt; &lt;ADDR&gt; &lt;LEN&gt;</code></a></h3>
-<ul>
-<li>Reads <code>&lt;LEN&gt;</code> bytes from the master or slave.</li>
-</ul>
-<hr />
-<h2 id="-system-commands"><a class="header" href="#-system-commands">⚙️ System Commands</a></h2>
-<h3 id="status"><a class="header" href="#status"><code>STATUS</code></a></h3>
-<p>Displays a technical summary of the system, including:</p>
-<ul>
-<li>Active GPIO clocks.</li>
-<li>Peripherals currently initialized.</li>
-<li>Core clock frequency.</li>
-</ul>
-<h3 id="reset"><a class="header" href="#reset"><code>RESET</code></a></h3>
-<p>Performs a software reset of the STM32 (<code>NVIC_SystemReset</code>). Useful for starting fresh without unplugging the USB.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="-blackpill-hardware-guide"><a class="header" href="#-blackpill-hardware-guide">🔌 BlackPill Hardware Guide</a></h1>
-<p>This guide describes the physical interface of the Mimic board and safety precautions.</p>
-<h2 id="-pin-topology-f411ceu6"><a class="header" href="#-pin-topology-f411ceu6">📍 Pin Topology (F411CEU6)</a></h2>
-<h3 id="power-pins"><a class="header" href="#power-pins">Power Pins</a></h3>
-<ul>
-<li><strong>3V3</strong>: Output from the onboard regulator or Input if powering externally. <strong>Max 3.6V.</strong></li>
-<li><strong>5V</strong>: Power input (from USB or external). <strong>Do not connect to STM32 I/O pins.</strong></li>
-<li><strong>GND</strong>: Common ground reference.</li>
-</ul>
-<hr />
-<h3 id="critical-peripheral-pins"><a class="header" href="#critical-peripheral-pins">Critical Peripheral Pins</a></h3>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Pin</th><th style="text-align: left">Function</th><th style="text-align: left">5V Tolerant?</th><th style="text-align: left">Notes</th></tr></thead><tbody>
-<tr><td style="text-align: left"><strong>PA9</strong></td><td style="text-align: left">UART1 TX</td><td style="text-align: left"><strong>YES</strong></td><td style="text-align: left">Host Interface (Connect to Adapter RX)</td></tr>
-<tr><td style="text-align: left"><strong>PA10</strong></td><td style="text-align: left">UART1 RX</td><td style="text-align: left"><strong>YES</strong></td><td style="text-align: left">Host Interface (Connect to Adapter TX)</td></tr>
-<tr><td style="text-align: left"><strong>PB8</strong></td><td style="text-align: left">I2C1 SCL</td><td style="text-align: left"><strong>YES</strong></td><td style="text-align: left">Primary I2C Clock</td></tr>
-<tr><td style="text-align: left"><strong>PB9</strong></td><td style="text-align: left">I2C1 SDA</td><td style="text-align: left"><strong>YES</strong></td><td style="text-align: left">Primary I2C Data</td></tr>
-<tr><td style="text-align: left"><strong>PC13</strong></td><td style="text-align: left">Onboard LED</td><td style="text-align: left"><strong>NO</strong></td><td style="text-align: left">Active LOW (Low = ON)</td></tr>
-</tbody></table>
-</div>
-<hr />
-<h2 id="-electrical-safety"><a class="header" href="#-electrical-safety">⚡ Electrical Safety</a></h2>
-<h3 id="1-5v-tolerance"><a class="header" href="#1-5v-tolerance">1. 5V Tolerance</a></h3>
-<p>Many pins on the STM32F411 are <strong>5V tolerant</strong> (marked <code>FT</code> in the datasheet). However, PA4, PA5, and PB5 are NOT 5V tolerant on some packages.</p>
-<ul>
-<li><strong>Safest Practice</strong>: Always use 3.3V logic or level shifters when talking to 5V systems.</li>
-</ul>
-<h3 id="2-output-current"><a class="header" href="#2-output-current">2. Output Current</a></h3>
-<p>Each GPIO can source/sink approximately <strong>20mA</strong>.</p>
-<ul>
-<li><strong>Warning</strong>: Do not drive motors, solenoids, or high-power LEDs directly from the pins. Always use a MOSFET or transistor.</li>
-</ul>
-<h3 id="3-adc-range"><a class="header" href="#3-adc-range">3. ADC Range</a></h3>
-<p>If you implement ADC commands, remember the range is <strong>0V to 3.3V</strong>. Voltages above 3.3V will permanently damage the ADC circuitry.</p>
-<hr />
-<h2 id="-troubleshooting"><a class="header" href="#-troubleshooting">💡 Troubleshooting</a></h2>
-<ul>
-<li><strong>Board not detected</strong>: Ensure the Blue LED is on. This indicates the 3.3V regulator is working.</li>
-<li><strong>No Serial Response</strong>: Swap TX and RX wires. Check that your baud rate is exactly <code>115200</code>.</li>
-<li><strong>Stuck in Loop</strong>: Press the <strong>NRST</strong> (Reset) button on the board to restart the firmware.</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="mimic-wiring-guide"><a class="header" href="#mimic-wiring-guide">Mimic Wiring Guide</a></h1>
-<p>This guide ensures reliable electrical connection between Mimic (STM32) and your User Device (ESP8266/Arduino).</p>
-<h2 id="ground-rule-1-shared-ground"><a class="header" href="#ground-rule-1-shared-ground">Ground Rule #1: Shared Ground</a></h2>
-<p><strong>CRITICAL</strong>: You MUST connect a GND pin on the STM32 to a GND pin on the User Device. Without this, signal levels will float and data will be corrupted.</p>
-<hr />
-<h2 id="1-mpu6050-i2c-wiring"><a class="header" href="#1-mpu6050-i2c-wiring">1. MPU6050 (I2C) Wiring</a></h2>
-<p>The MPU6050 is emulated on I2C Instance 1.</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">STM32 Pin</th><th style="text-align: left">Function</th><th style="text-align: left">User Device Pin</th></tr></thead><tbody>
-<tr><td style="text-align: left"><strong>PB6</strong></td><td style="text-align: left">SCL (Clock)</td><td style="text-align: left">SCL (ESP8266 D1 / GPIO5)</td></tr>
-<tr><td style="text-align: left"><strong>PB7</strong></td><td style="text-align: left">SDA (Data)</td><td style="text-align: left">SDA (ESP8266 D2 / GPIO4)</td></tr>
-<tr><td style="text-align: left"><strong>GND</strong></td><td style="text-align: left">Ground</td><td style="text-align: left">GND</td></tr>
-</tbody></table>
-</div>
-<p><strong>Note on Resistors</strong>: Our firmware is optimized to work without resistors at 100kHz, but if you experience "Bus Errors," add a 4.7kΩ resistor from SDA to 3.3V and SCL to 3.3V.</p>
-<hr />
-<h2 id="2-bmp280-i2c-wiring"><a class="header" href="#2-bmp280-i2c-wiring">2. BMP280 (I2C) Wiring</a></h2>
-<p>The BMP280 uses the same pins as the MPU6050 but at a different address (0x76).</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">STM32 Pin</th><th style="text-align: left">Function</th><th style="text-align: left">User Device Pin</th></tr></thead><tbody>
-<tr><td style="text-align: left"><strong>PB6</strong></td><td style="text-align: left">SCL (Clock)</td><td style="text-align: left">SCL</td></tr>
-<tr><td style="text-align: left"><strong>PB7</strong></td><td style="text-align: left">SDA (Data)</td><td style="text-align: left">SDA</td></tr>
-<tr><td style="text-align: left"><strong>GND</strong></td><td style="text-align: left">Ground</td><td style="text-align: left">GND</td></tr>
-</tbody></table>
-</div>
-<hr />
-<h2 id="3-general-spi-wiring-preview"><a class="header" href="#3-general-spi-wiring-preview">3. General SPI Wiring (Preview)</a></h2>
-<p>When emulated, SPI follows this standard mapping:</p>
-<div class="table-wrapper"><table><thead><tr><th style="text-align: left">STM32 Pin</th><th style="text-align: left">Function</th><th style="text-align: left">User Device Pin</th></tr></thead><tbody>
-<tr><td style="text-align: left"><strong>PA5</strong></td><td style="text-align: left">SCK (Clock)</td><td style="text-align: left">SCK</td></tr>
-<tr><td style="text-align: left"><strong>PA6</strong></td><td style="text-align: left">MISO (Out)</td><td style="text-align: left">MISO</td></tr>
-<tr><td style="text-align: left"><strong>PA7</strong></td><td style="text-align: left">MOSI (In)</td><td style="text-align: left">MOSI</td></tr>
-<tr><td style="text-align: left"><strong>PA4</strong></td><td style="text-align: left">CS (Select)</td><td style="text-align: left">CS / SS</td></tr>
-<tr><td style="text-align: left"><strong>GND</strong></td><td style="text-align: left">Ground</td><td style="text-align: left">GND</td></tr>
-</tbody></table>
-</div><div style="break-before: page; page-break-before: always;"></div><h1 id="gpio-manipulation"><a class="header" href="#gpio-manipulation">GPIO Manipulation</a></h1>
-<p>MIMIC provides a high-level command interface to manipulate GPIO pins on the STM32 hardware.</p>
-<h2 id="pin-naming-convention"><a class="header" href="#pin-naming-convention">Pin Naming Convention</a></h2>
-<p>Pins are referenced by their Port and Number.</p>
-<ul>
-<li><code>A5</code> -&gt; Port A, Pin 5</li>
-<li><code>B12</code> -&gt; Port B, Pin 12</li>
-<li><code>C13</code> -&gt; Port C, Pin 13 (Built-in LED)</li>
-</ul>
-<h2 id="basic-setup"><a class="header" href="#basic-setup">Basic Setup</a></h2>
-<h3 id="set-as-output"><a class="header" href="#set-as-output">Set as Output</a></h3>
-<p>Configures a pin to drive external components.</p>
-<pre><code class="language-bash">PIN_SET_OUT &lt;PIN&gt;
-# Example
-PIN_SET_OUT A5
-</code></pre>
-<h3 id="set-as-input"><a class="header" href="#set-as-input">Set as Input</a></h3>
-<p>Configures a pin to read digital signals.</p>
-<pre><code class="language-bash">PIN_SET_IN &lt;PIN&gt; [PULL]
-# Example
-PIN_SET_IN B0 UP    # Pull-up resistor enabled
-PIN_SET_IN B0 DOWN  # Pull-down resistor enabled
-PIN_SET_IN B0 NONE  # Floating input
-</code></pre>
-<h2 id="controlling-outputs"><a class="header" href="#controlling-outputs">Controlling Outputs</a></h2>
-<h3 id="set-high-33v"><a class="header" href="#set-high-33v">Set High (3.3V)</a></h3>
-<pre><code class="language-bash">PIN_HIGH &lt;PIN&gt;
-# or short command
-PH &lt;PIN&gt;
-</code></pre>
-<h3 id="set-low-gnd"><a class="header" href="#set-low-gnd">Set Low (GND)</a></h3>
-<pre><code class="language-bash">PIN_LOW &lt;PIN&gt;
-# or short command
-PL &lt;PIN&gt;
-</code></pre>
-<h3 id="toggle-state"><a class="header" href="#toggle-state">Toggle State</a></h3>
-<pre><code class="language-bash">PIN_TOGGLE &lt;PIN&gt;
-# or short command
-PT &lt;PIN&gt;
-</code></pre>
-<h2 id="reading-inputs"><a class="header" href="#reading-inputs">Reading Inputs</a></h2>
-<h3 id="read-logic-level"><a class="header" href="#read-logic-level">Read Logic Level</a></h3>
-<pre><code class="language-bash">PIN_READ &lt;PIN&gt;
-# or short command
-PR &lt;PIN&gt;
-</code></pre>
-<p>Response: <code>HIGH</code> or <code>LOW</code>.</p>
-<h2 id="advanced-configuration"><a class="header" href="#advanced-configuration">Advanced Configuration</a></h2>
-<h3 id="pin-mode"><a class="header" href="#pin-mode">Pin Mode</a></h3>
-<p>Manually set the hardware mode of the pin.</p>
-<pre><code class="language-bash">PIN_MODE &lt;PIN&gt; &lt;IN|OUT|AF|AN&gt;
-</code></pre>
-<ul>
-<li><code>IN</code>: Input</li>
-<li><code>OUT</code>: Output</li>
-<li><code>AF</code>: Alternate Function (for I2C, SPI, etc.)</li>
-<li><code>AN</code>: Analog (for ADC/DAC)</li>
-</ul>
-<h3 id="pin-status"><a class="header" href="#pin-status">Pin Status</a></h3>
-<p>View the complete internal configuration of a pin.</p>
-<pre><code class="language-bash">PIN_STATUS &lt;PIN&gt;
-# or short command
-PS &lt;PIN&gt;
-</code></pre>
-<p>Example Output:</p>
-<pre><code class="language-text">PIN A5:
-  Mode:   OUTPUT
-  Type:   PUSH_PULL
-  Speed:  LOW
-  Pull:   NONE
-  State:  LOW
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="-protocol-specifications"><a class="header" href="#-protocol-specifications">🧬 Protocol Specifications</a></h1>
-<p>Detailed technical specifications for communication protocols supported by Mimic v1.</p>
-<hr />
-<h2 id="-i2c-inter-integrated-circuit-1"><a class="header" href="#-i2c-inter-integrated-circuit-1">🟦 I2C (Inter-Integrated Circuit)</a></h2>
-<h3 id="implementation"><a class="header" href="#implementation">Implementation</a></h3>
-<p>Mimic uses the STM32 Hardware I2C peripheral.</p>
-<ul>
-<li><strong>Standard Mode</strong>: 100 kHz (Recommended)</li>
-<li><strong>Fast Mode</strong>: Up to 400 kHz (Supported, but stability depends on cable length and pull-ups).</li>
-<li><strong>Slave Mode</strong>: Supports clock stretching. If the Python host is slow to respond, the STM32 will hold the SCL line LOW to pause the master.</li>
-</ul>
-<h3 id="wiring"><a class="header" href="#wiring">Wiring</a></h3>
-<ul>
-<li><strong>I2C1</strong>: SCL (PB8), SDA (PB9)</li>
-<li><strong>Voltage</strong>: 3.3V logic.</li>
-<li><strong>Pull-ups</strong>: The STM32 enables internal pull-ups, but for reliable communication (especially at 400kHz), <strong>external 4.7kΩ resistors</strong> to 3.3V are strongly recommended.</li>
-</ul>
-<hr />
-<h2 id="-spi-serial-peripheral-interface"><a class="header" href="#-spi-serial-peripheral-interface">🟧 SPI (Serial Peripheral Interface)</a></h2>
-<h3 id="implementation-1"><a class="header" href="#implementation-1">Implementation</a></h3>
-<ul>
-<li><strong>Clock Polarity (CPOL)</strong>: 0 or 1</li>
-<li><strong>Clock Phase (CPHA)</strong>: 0 or 1</li>
-<li><strong>Data Size</strong>: 8-bit or 16-bit</li>
-<li><strong>Bit Order</strong>: MSB First (Standard) or LSB First.</li>
-</ul>
-<h3 id="wiring-1"><a class="header" href="#wiring-1">Wiring</a></h3>
-<ul>
-<li><strong>SPI1</strong>: SCK (PA5), MISO (PA6), MOSI (PA7).</li>
-<li><strong>CS</strong>: Any GPIO can be used as Chip Select via the <code>SPI_CS</code> command.</li>
-</ul>
-<hr />
-<h2 id="-uart--rs485"><a class="header" href="#-uart--rs485">🟩 UART &amp; RS485</a></h2>
-<h3 id="hardware-de-management"><a class="header" href="#hardware-de-management">Hardware DE Management</a></h3>
-<p>The RS485 implementation is hardware-assisted.</p>
-<ol>
-<li>When <code>UART_SEND</code> is called, the DE pin is pulled HIGH.</li>
-<li>The UART data is streamed.</li>
-<li>The firmware waits for the <code>TC</code> (Transmission Complete) flag in the hardware register to ensure the last bit has physically left the pin.</li>
-<li>The DE pin is pulled LOW.</li>
-</ol>
-<p>This ensures zero-latency switching between transmit and receive modes, essential for half-duplex RS485 communication.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="-sensors-api-writing-your-own-mock"><a class="header" href="#-sensors-api-writing-your-own-mock">🛠 Sensors API: Writing Your Own Mock</a></h1>
-<p>One of the most powerful features of Mimic is the ability to write your own sensor simulation classes. This allows you to "mock" any I2C or SPI device.</p>
-<h2 id="-the-simulator-structure"><a class="header" href="#-the-simulator-structure">🧱 The Simulator Structure</a></h2>
-<p>New sensors should be placed in <code>mimic/sensors/</code> and should follow this pattern:</p>
-<pre><code class="language-python">import logging
-from mimic.bridge import I2CSlave, MimicBridge
-
-class MyNewSensor:
-    def __init__(self, bridge: MimicBridge, address: int):
-        self.i2c = I2CSlave(bridge)
-        self.address = address
-        # 1. Define your internal registers
-        self.registers = {
-            0x01: [0x55], # Status Reg
-            0x02: [0x00, 0x00] # Data Reg
-        }
-
-    def start(self):
-        # 2. Init the hardware
-        self.i2c.init(self.address)
-        
-        while True:
-            # 3. Wait for the Master to talk
-            received = self.i2c.wait_for_write(1)
-            
-            if received:
-                reg = received[0]
-                
-                # Handle Writes
-                if len(received) &gt; 1:
-                    self.registers[reg] = received[1:]
-                    continue
-                
-                # Handle Reads
-                data = self.registers.get(reg, [0xFF])
-                self.i2c.respond(data)
-</code></pre>
-<h2 id="-best-practices"><a class="header" href="#-best-practices">📋 Best Practices</a></h2>
-<ol>
-<li><strong>Block Sizes</strong>: Keep your internal register lists as byte arrays.</li>
-<li><strong>Clock Stretching</strong>: The <code>wait_for_write</code> method is blocking. This is good because it triggers I2C clock stretching on the STM32, ensuring the master waits for your Python code to process the logic.</li>
-<li><strong>Real-time Data</strong>: You can update your internal registers from a separate thread or based on another input, and the Master will get the "live" value on the next I2C read.</li>
-</ol>
-<h2 id="-adding-to-cli"><a class="header" href="#-adding-to-cli">🚀 Adding to CLI</a></h2>
-<p>To make your new sensor available in the <code>mimic-sim</code> command, add it to the choice list in <code>mimic/cli.py</code>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="mimic-system-limitations"><a class="header" href="#mimic-system-limitations">Mimic System Limitations</a></h1>
-<p>Mimic uses an STM32F401 (Black Pill) coupled with a Python-based Host Bridge. While powerful, it has specific physical and timing constraints.</p>
-<h3 id="1-i2c-inter-integrated-circuit"><a class="header" href="#1-i2c-inter-integrated-circuit">1. I2C (Inter-Integrated Circuit)</a></h3>
-<ul>
-<li><strong>Max Speed (Standard)</strong>: 100 kHz.</li>
-<li><strong>Max Speed (Fast)</strong>: 400 kHz (Requires physical 4.7kΩ pull-up resistors).</li>
-<li><strong>No-Resistor Operation</strong>: Stable at 100 kHz due to firmware-level interrupt optimization, but requires short jumper wires (&lt; 15cm).</li>
-<li><strong>Slave Address</strong>: Supports any 7-bit address (configured via simulation script).</li>
-</ul>
-<h3 id="2-spi-serial-peripheral-interface"><a class="header" href="#2-spi-serial-peripheral-interface">2. SPI (Serial Peripheral Interface)</a></h3>
-<ul>
-<li><strong>Mode</strong>: Slave Only.</li>
-<li><strong>Max Clock</strong>: 18 MHz (Tested).</li>
-<li><strong>Constraints</strong>: Requires a dedicated Chip Select (CS) pin. Extremely sensitive to wire length at speeds above 1MHz.</li>
-</ul>
-<h3 id="3-host-to-mimic-bridge-serial"><a class="header" href="#3-host-to-mimic-bridge-serial">3. Host-to-Mimic Bridge (Serial)</a></h3>
-<ul>
-<li><strong>Standard Baudrate</strong>: 115200 bps.</li>
-<li><strong>Update Latency</strong>: ~1.5ms per register update.</li>
-<li><strong>Buffer Depth</strong>: 256-byte Shadow Register Map. The STM32 serves data instantly from RAM, but updates from the Laptop are subject to OS serial scheduling.</li>
-</ul>
-<h3 id="4-hardware-constraints"><a class="header" href="#4-hardware-constraints">4. Hardware Constraints</a></h3>
-<ul>
-<li><strong>Logic Level</strong>: 3.3V Only. Connecting to 5V devices (like older Arduino Unos) requires a logic level shifter.</li>
-<li><strong>Internal Pull-ups</strong>: ~40kΩ. Significant for I2C; not recommended for high-speed operation without external support.</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="-architecture-overview-1"><a class="header" href="#-architecture-overview-1">🏛 Architecture Overview</a></h1>
-<p>Mimic v1 is built on a <strong>Command-Response Bridge</strong> architecture. It transforms complex, low-level hardware timings into human-readable string transactions.</p>
-<h2 id="-the-data-flow-1"><a class="header" href="#-the-data-flow-1">🔄 The Data Flow</a></h2>
-<ol>
-<li><strong>Host Request</strong>: The PC (Python) sends a UTF-8 string over UART (e.g., <code>PIN_HIGH A5\r\n</code>).</li>
-<li><strong>Firmware Parsing</strong>: The STM32 receives this via an interrupt-driven buffer. It tokensizes the command and arguments.</li>
-<li><strong>Action Execution</strong>: The internal <code>mimic.c</code> engine calls the relevant HAL function (e.g., <code>HAL_GPIO_WritePin</code>).</li>
-<li><strong>Hardware Response</strong>: The STM32 captures the result (Success, Data, or Error Code).</li>
-<li><strong>Host Response</strong>: The STM32 sends back a structured response string (e.g., <code>OK: Pin A5 set HIGH\r\n&gt; </code>).</li>
-</ol>
-<h2 id="-the-two-layers-1"><a class="header" href="#-the-two-layers-1">🛠 The Two Layers</a></h2>
-<h3 id="layer-1-the-c-engine-firmware-1"><a class="header" href="#layer-1-the-c-engine-firmware-1">Layer 1: The C-Engine (Firmware)</a></h3>
-<ul>
-<li><strong>Interrupt Managed</strong>: Keyboard input is handled via <code>USART1_IRQHandler</code>.</li>
-<li><strong>Blocking Transactions</strong>: Peripheral actions (I2C/SPI) are performed in blocking mode to ensure data integrity before responding to the PC.</li>
-<li><strong>Stateless logic</strong>: The firmware maintains the status of initialized peripherals but treats every GPIO command as an atomic operation.</li>
-</ul>
-<h3 id="layer-2-the-python-shell-mimiclib-1"><a class="header" href="#layer-2-the-python-shell-mimiclib-1">Layer 2: The Python-Shell (MimicLib)</a></h3>
-<ul>
-<li><strong>Auto-Discovery</strong>: Scans all <code>COM</code>/<code>tty</code> ports, sending a <code>VERSION</code> challenge to identify the Mimic signature.</li>
-<li><strong>Command Serialization</strong>: Converts high-level Python method calls into the exact string syntax required by the C-Engine.</li>
-<li><strong>Abstraction Layer</strong>: Provides specialized classes like <code>MPU6050Simulator</code> which act as state machines on the PC side, reacting to hardware events reported by the STM32.</li>
-</ul>
-<hr />
-<h2 id="-real-time-performance-1"><a class="header" href="#-real-time-performance-1">⚡ Real-time Performance</a></h2>
-<p>While the STM32 can toggle pins in nanoseconds, the bottleneck is the <strong>115200 Baud link</strong>. Commands take approx <strong>1-2ms</strong> to transmit and process. For high-speed logic, the "Sensor Mocking" mode is preferred, as it allows the STM32 to stretch the I2C clock and wait for the Python handler to respond.</p>
-
-                    </main>
-
-                    <nav class="nav-wrapper" aria-label="Page navigation">
-                        <!-- Mobile navigation buttons -->
-
-
-                        <div style="clear: both"></div>
-                    </nav>
+        <!-- Main Content -->
+        <main id="main">
+            <div class="top-bar">
+                <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
+                    <span>☰</span>
+                </button>
+                <div class="top-bar-title">MIMIC Documentation</div>
+                <div class="top-bar-links">
+                    <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
                 </div>
             </div>
 
-            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <div id="content" class="content">
+                <h1 id="welcome-to-mimic"><a class="header" href="#welcome-to-mimic">Welcome to MIMIC</a></h1>
+<p>Mimic is a framework designed to bridge the gap between software development and physical hardware by emulating sensor behavior. It allows a host computer to interact with a microcontroller that "mimics" the protocols and data streams of actual hardware peripherals.</p>
+<h2 id="core-concept"><a class="header" href="#core-concept">Core Concept</a></h2>
+<p>The primary purpose of Mimic is to provide a functional replacement for sensors during development or when hardware is unavailable. The system uses a dedicated microcontroller to act as a sensor proxy, supporting multiple communication protocols including <strong>I2C, SPI, UART, RS485, and RS232</strong>.</p>
+<h3 id="hardware-platform"><a class="header" href="#hardware-platform">Hardware Platform</a></h3>
+<p>Mimic Firmware is developed specifically for the <strong>STM32F411CEU6 (Black Pill)</strong> development board. It is designed to run exclusively on this platform to ensure consistent peripheral timing and protocol accuracy.</p>
+<h2 id="system-architecture"><a class="header" href="#system-architecture">System Architecture</a></h2>
+<p>The framework is divided into three distinct layers:</p>
+<h3 id="1-mimic-firmware"><a class="header" href="#1-mimic-firmware">1. Mimic Firmware</a></h3>
+<p>Written in C, the firmware resides on the STM32 MCU. It is responsible for parsing commands received from the host computer and executing them on the hardware level. It manages the low-level peripheral configuration required to emulate different sensor interfaces.</p>
+<h3 id="2-mimic-bridge--cli"><a class="header" href="#2-mimic-bridge--cli">2. Mimic Bridge &amp; CLI</a></h3>
+<p>The <strong>Mimic Bridge</strong> is a Domain Specific Language (DSL) implemented in Python. It provides the interface for the computer to communicate with and program the Mimic MCU in real-time.</p>
+<p>Accompanying the bridge is the <strong>Mimic CLI</strong>, which allows for direct hardware interaction. You can use the CLI to:</p>
+<ul>
+<li>Manually control the MCU pinout.</li>
+<li>Query the real-time status of GPIO pins.</li>
+<li>Execute protocol commands directly from the terminal.</li>
+</ul>
+<h3 id="3-mimic-sensors"><a class="header" href="#3-mimic-sensors">3. Mimic Sensors</a></h3>
+<p><strong>Mimic Sensors</strong> contains the actual emulation logic for specific hardware. This is where the behavior of a sensor (such as an MPU6050 or BMP280) is defined. This layer is designed for community contribution, allowing users to write and add new sensor profiles to the ecosystem.</p>
+<hr />
+<p><em>Select a topic from the sidebar to explore the documentation for each specific module.</em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wiring--connectivity"><a class="header" href="#wiring--connectivity">Wiring &amp; Connectivity</a></h1>
+<p>This chapter details the physical connections required to interface the STM32F411 (Black Pill) with your host machine and external hardware master devices.</p>
+<h2 id="1-hardware-overview"><a class="header" href="#1-hardware-overview">1. Hardware Overview</a></h2>
+<p>The <strong>STM32F411CEU6 Black Pill</strong> is the core processing unit for Mimic. Below is a real-world view of the board's top side, showing the MCU, crystal, and breakout pins.</p>
+<p><img src="img/black_pill_real.jpg" alt="STM32F411 Black Pill Top View" /></p>
+<h2 id="2-programming-interface-st-link-v2"><a class="header" href="#2-programming-interface-st-link-v2">2. Programming Interface (ST-Link v2)</a></h2>
+<p>The primary method for deploying Mimic Firmware is via an ST-Link v2 programmer. The real-world hardware typically comes in a small USB-stick form factor as shown below.</p>
+<p><img src="img/stlink_real.jpg" alt="ST-Link V2 Mini Programmer" /></p>
+<h3 id="connection-table"><a class="header" href="#connection-table">Connection Table</a></h3>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">ST-Link Pin</th><th style="text-align: left">Black Pill Pin</th><th style="text-align: left">Description</th></tr></thead><tbody>
+<tr><td style="text-align: left">3.3V</td><td style="text-align: left">3.3V</td><td style="text-align: left">Target Power</td></tr>
+<tr><td style="text-align: left">GND</td><td style="text-align: left">GND</td><td style="text-align: left">Common Ground</td></tr>
+<tr><td style="text-align: left">SWDIO</td><td style="text-align: left">DIO / PA13</td><td style="text-align: left">Data Line</td></tr>
+<tr><td style="text-align: left">SWCLK</td><td style="text-align: left">CLK / PA14</td><td style="text-align: left">Clock Line</td></tr>
+</tbody></table>
+</div><img src="img/mimic_pinout.png" alt="Mimic UART2 Pinout" style="max-width: 500px; width: 100%; height: auto; display: block; margin: 20px 0; border-radius: 8px; border: 1px solid #3a3a5c;">
+<h2 id="3-host-communication-via-ttl-uart2"><a class="header" href="#3-host-communication-via-ttl-uart2">3. Host Communication via TTL (UART2)</a></h2>
+<p>In cases where the USB-C port is not used for host communication, a <strong>USB-to-TTL converter</strong> (typically using the CP2102 chip) can be connected to <strong>UART2</strong> to provide full CLI control.</p>
+<h3 id="bridge-connection-ttl"><a class="header" href="#bridge-connection-ttl">Bridge Connection (TTL)</a></h3>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Converter Pin</th><th style="text-align: left">Black Pill Pin</th><th style="text-align: left">Description</th></tr></thead><tbody>
+<tr><td style="text-align: left">TX</td><td style="text-align: left">PA3 (RX2)</td><td style="text-align: left">Data from Host to MCU</td></tr>
+<tr><td style="text-align: left">RX</td><td style="text-align: left">PA2 (TX2)</td><td style="text-align: left">Data from MCU to Host</td></tr>
+<tr><td style="text-align: left">GND</td><td style="text-align: left">GND</td><td style="text-align: left">Common Ground</td></tr>
+</tbody></table>
+</div>
+<h2 id="4-peripheral-hardware-mapping"><a class="header" href="#4-peripheral-hardware-mapping">4. Peripheral Hardware Mapping</a></h2>
+<p>To emulate sensors correctly, ensure your Master device (e.g., Raspberry Pi or Arduino) is connected to the following hardware ports on the Black Pill:</p>
+<h3 id="uart-gps-emulation"><a class="header" href="#uart-gps-emulation">UART (GPS Emulation)</a></h3>
+<ul>
+<li><strong>TX (Master)</strong> -&gt; <strong>RX (PA10)</strong></li>
+<li><strong>RX (Master)</strong> -&gt; <strong>TX (PA9)</strong></li>
+<li><strong>GND</strong> -&gt; <strong>GND</strong></li>
+</ul>
+<h3 id="i2c-mpu6050-emulation"><a class="header" href="#i2c-mpu6050-emulation">I2C (MPU6050 Emulation)</a></h3>
+<ul>
+<li><strong>SCL</strong>: PB6</li>
+<li><strong>SDA</strong>: PB7</li>
+</ul>
+<h3 id="spi-bmp280-emulation"><a class="header" href="#spi-bmp280-emulation">SPI (BMP280 Emulation)</a></h3>
+<ul>
+<li><strong>SCK</strong>: PA5</li>
+<li><strong>MISO</strong>: PA6</li>
+<li><strong>MOSI</strong>: PA7</li>
+<li><strong>CS</strong>: PA4</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="environment-setup--getting-started"><a class="header" href="#environment-setup--getting-started">Environment Setup &amp; Getting Started</a></h1>
+<p>This guide provides the technical requirements and procedures for setting up the Mimic environment, compiling the firmware, and establishing communication with the STM32 hardware.</p>
+<p><strong>Maintainer:</strong> Karthik Sarvan</p>
+<h2 id="1-required-hardware"><a class="header" href="#1-required-hardware">1. Required Hardware</a></h2>
+<p>To deploy and utilize the Mimic framework, the following hardware is required:</p>
+<ul>
+<li><strong>MCU Development Board:</strong> STM32F411CEU6 (<strong>Black Pill</strong>).</li>
+<li><strong>Programmer:</strong> ST-Link V2 (USB dongle).</li>
+<li><strong>Peripherals (Optional):</strong> Jumper wires and standard sensors for emulation testing (e.g., MPU6050, BMP280, GPS).</li>
+</ul>
+<h2 id="2-cloning-the-source"><a class="header" href="#2-cloning-the-source">2. Cloning the Source</a></h2>
+<p>Clone the primary firmware repository from the Aegion Dynamic organization:</p>
+<pre><code class="language-bash">git clone https://github.com/aegion-dynamic/Mimic-Firmware.git
+cd Mimic-Firmware/STM32
+</code></pre>
+<h2 id="3-compiling-the-firmware"><a class="header" href="#3-compiling-the-firmware">3. Compiling the Firmware</a></h2>
+<p>Compilation requires the <code>arm-none-eabi-gcc</code> toolchain and the <code>make</code> utility.</p>
+<p>Execute the build process:</p>
+<pre><code class="language-bash">make
+</code></pre>
+<p>The build system will generate <code>mimic.bin</code>, <code>mimic.hex</code>, and <code>mimic.elf</code> binaries within the <code>build/</code> directory.</p>
+<h2 id="4-hardware-injection"><a class="header" href="#4-hardware-injection">4. Hardware Injection</a></h2>
+<ol>
+<li>Interface the <strong>ST-Link V2</strong> with the Black Pill:
+<ul>
+<li><code>3.3V</code> -&gt; <code>3.3V</code></li>
+<li><code>GND</code> -&gt; <code>GND</code></li>
+<li><code>SWDIO</code> -&gt; <code>DIO</code></li>
+<li><code>SWCLK</code> -&gt; <code>CLK</code></li>
+</ul>
+</li>
+<li>Connect the ST-Link to your host machine.</li>
+<li>Deploy the binary using the <code>st-flash</code> utility:</li>
+</ol>
+<pre><code class="language-bash">st-flash write build/mimic.bin 0x8000000
+</code></pre>
+<p><em>Note: After successful deployment, disconnect the ST-Link and connect the Black Pill directly via USB-C to begin host communication.</em></p>
+<h2 id="5-verification-onboard-diagnostics"><a class="header" href="#5-verification-onboard-diagnostics">5. Verification: Onboard Diagnostics</a></h2>
+<p>Once flashed, verify the bridge communication using the Python client. The onboard LED (mapped to <code>PC13</code>) serves as the default diagnostic indicator.</p>
+<p>Ensure the Python environment is configured:</p>
+<pre><code class="language-bash">pip install mimic-fw
+</code></pre>
+<p>Initialize the interactive hardware shell:</p>
+<pre><code class="language-bash">mimic
+</code></pre>
+<p>Execute the following commands to test GPIO control:</p>
+<pre><code class="language-text">&gt; PIN_HIGH PC13
+OK
+&gt; PIN_LOW PC13
+OK
+</code></pre>
+<p>If the onboard LED responds to these commands, the Mimic Hardware Bridge is correctly initialized and ready for sensor emulation.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="system-architecture-1"><a class="header" href="#system-architecture-1">System Architecture</a></h1>
+<p>The Mimic framework bridges a host computer to physical hardware peripherals. The core architecture relies on an STM32-based hardware component running the Mimic Firmware, connected to a Python-based host bridge over a serial protocol.</p>
+<h2 id="high-level-architecture"><a class="header" href="#high-level-architecture">High-Level Architecture</a></h2>
+<p>The following block diagram illustrates the flow of data from the host machine to the hardware peripherals:</p>
+<pre><code class="language-mermaid">%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#1a1a2e',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#3a3a5c',
+    'lineColor': '#5a5a7a',
+    'secondaryColor': '#16213e',
+    'tertiaryColor': '#0f3460',
+    'fontFamily': 'Space Mono, monospace',
+    'fontSize': '13px',
+    'noteBkgColor': '#1a1a2e',
+    'noteTextColor': '#ffffff'
+  },
+  'flowchart': {
+    'padding': 24,
+    'nodeSpacing': 50,
+    'rankSpacing': 50,
+    'curve': 'basis'
+  }
+}}%%
+graph TD
+    classDef host fill:#1b3a4b,stroke:#4a90a4,stroke-width:1.5px,color:#e0e0e0
+    classDef core fill:#4a2040,stroke:#9b4dca,stroke-width:2px,color:#ffffff
+    classDef iface fill:#2d4a22,stroke:#6dae4f,stroke-width:1.5px,color:#e0e0e0
+    classDef sensor fill:#4a3520,stroke:#d4915a,stroke-width:1.5px,color:#e0e0e0
 
+    CLI["Mimic CLI"]:::host
+    PyLib["MimicBridge Library"]:::host
+    Sensors["MimicSensors Modules"]:::host
+
+    Core["Mimic Firmware Core"]:::core
+
+    I2C["I2C Emulation"]:::iface
+    SPI["SPI Emulation"]:::iface
+    UART["UART Interface"]:::iface
+    GPIO["GPIO Control"]:::iface
+
+    MPU["MPU6050"]:::sensor
+    BMP["BMP280"]:::sensor
+    GPS["GPS NMEA"]:::sensor
+    LED["LED / GPIO"]:::sensor
+
+    CLI --&gt; PyLib
+    Sensors --&gt; PyLib
+    PyLib --&gt;|USB CDC| Core
+    Core --&gt; I2C
+    Core --&gt; SPI
+    Core --&gt; UART
+    Core --&gt; GPIO
+    I2C --&gt; MPU
+    SPI --&gt; BMP
+    UART --&gt; GPS
+    GPIO --&gt; LED
+</code></pre>
+<h2 id="how-it-works"><a class="header" href="#how-it-works">How It Works</a></h2>
+<ol>
+<li><strong>Python Bridge:</strong> The user sends a command (e.g., <code>PIN_HIGH PC13</code> or <code>simulate mpu6050</code>) using the Python library (<code>mimic-fw</code>).</li>
+<li><strong>Serial Transmission:</strong> The <code>MimicBridge</code> translates this into a compact string protocol and transmits it over USB.</li>
+<li><strong>Firmware Execution:</strong> The STM32F411 micro-controller interprets the packet. It bypasses heavy abstractions (like standard HALs where necessary) to maintain high-precision, low-latency emulation logic.</li>
+<li><strong>Peripheral Activity:</strong> Signal levels are changed on GPIOs, or dummy register shadows are updated to fool the Master device into thinking a real MPU6050 or BMP280 is connected.</li>
+</ol>
+<h2 id="command-execution-flow"><a class="header" href="#command-execution-flow">Command Execution Flow</a></h2>
+<pre><code class="language-mermaid">%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#1b3a4b',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#4a90a4',
+    'lineColor': '#5a5a7a',
+    'secondaryColor': '#4a2040',
+    'tertiaryColor': '#2d4a22',
+    'fontFamily': 'Space Mono, monospace',
+    'fontSize': '13px'
+  }
+}}%%
+sequenceDiagram
+    box #1b3a4b Host Machine (Python)
+    participant User as User / Script
+    participant Bridge as Python Bridge
+    end
+    box #4a2040 STM32 Core
+    participant MCU as STM32 Firmware
+    end
+    box #2d4a22 Peripherals
+    participant HW as Hardware Pins
+    end
+
+    User-&gt;&gt;Bridge: bridge.pin_high('PC13')
+    Bridge-&gt;&gt;MCU: "PIN_HIGH PC13\n"
+    Note over MCU: Parse Command
+    MCU-&gt;&gt;HW: Set PC13 to HIGH
+    HW--&gt;&gt;MCU: Pin State Updated
+    MCU--&gt;&gt;Bridge: "OK\n"
+    Bridge--&gt;&gt;User: True
+</code></pre>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="firmware-overview"><a class="header" href="#firmware-overview">Firmware Overview</a></h1>
+<p>The MimicFirmware is the core embedded component of the Mimic system. It runs on an STM32F411CEU6 (BlackPill) microcontroller and is responsible for interpreting host commands, driving peripheral emulation, and maintaining real-time communication with the Python bridge.</p>
+<h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
+<p>The firmware is structured as a bare-metal application with the following core modules:</p>
+<ul>
+<li><strong>Command Parser</strong> — Receives and tokenizes incoming serial packets from the USB CDC interface or the secondary UART2 (TTL) bridge.</li>
+<li><strong>GPIO Controller</strong> — Manages pin state changes for digital output, input reading, and interrupt-driven monitoring.</li>
+<li><strong>I2C Slave Engine</strong> — Emulates I2C slave devices by shadowing register maps and responding to master transactions.</li>
+<li><strong>SPI Slave Engine</strong> — Handles SPI communication for sensors like the BMP280.</li>
+<li><strong>UART Bridge</strong> — Provides NMEA sentence streaming for GPS emulation.</li>
+</ul>
+<h2 id="execution-model"><a class="header" href="#execution-model">Execution Model</a></h2>
+<p>The firmware operates on a single-threaded super-loop model with interrupt-driven peripherals:</p>
+<ol>
+<li>The main loop polls the USB CDC receive buffer for incoming commands.</li>
+<li>Commands are parsed and dispatched to the appropriate peripheral handler.</li>
+<li>Hardware timers and DMA channels handle time-critical operations independently of the main loop.</li>
+</ol>
+<h2 id="memory-layout"><a class="header" href="#memory-layout">Memory Layout</a></h2>
+<p>The STM32F411 provides 512KB of Flash and 128KB of SRAM. The firmware memory is partitioned as:</p>
+<ul>
+<li><strong>Flash (0x08000000)</strong> — Application code and constant data.</li>
+<li><strong>SRAM (0x20000000)</strong> — Stack, heap, and peripheral register shadows.</li>
+</ul>
+<h2 id="build-targets"><a class="header" href="#build-targets">Build Targets</a></h2>
+<p>The firmware supports multiple build configurations:</p>
+<ul>
+<li><code>make</code> — Default release build with optimizations.</li>
+<li><code>make debug</code> — Debug build with symbols and no optimization.</li>
+<li><code>make flash</code> — Build and flash in one step (requires ST-Link).</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gpio-mapping"><a class="header" href="#gpio-mapping">GPIO Mapping</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>GPIO Mapping defines how the logical pins in the Mimic firmware are connected to the physical pins on the STM32F411 Black Pill. This mapping ensures that commands from the host reach the correct physical hardware.</p>
+<h2 id="pin-configuration"><a class="header" href="#pin-configuration">Pin Configuration</a></h2>
+<p>The firmware uses a standard mapping for peripheral functions:</p>
+<ul>
+<li><strong>I2C1:</strong> SCL (PB6), SDA (PB7)</li>
+<li><strong>SPI1:</strong> SCK (PA5), MISO (PA6), MOSI (PA7), CS (PA4)</li>
+<li><strong>UART1 (GPS):</strong> TX (PA9), RX (PA10)</li>
+<li><strong>UART2 (Bridge):</strong> TX (PA2), RX (PA3)</li>
+<li><strong>User LED:</strong> PC13</li>
+</ul>
+<h2 id="custom-mapping"><a class="header" href="#custom-mapping">Custom Mapping</a></h2>
+<p>While the default mapping is recommended, users can modify the <code>gpio_map.h</code> file in the firmware source to reassign pins if their specific hardware setup requires it.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="interrupt-processing"><a class="header" href="#interrupt-processing">Interrupt Processing</a></h1>
+<h2 id="overview-1"><a class="header" href="#overview-1">Overview</a></h2>
+<p>The Mimic firmware uses interrupt-driven processing to handle time-critical peripheral events. This ensures that protocol timing for I2C and SPI remains consistent even when the main loop is busy parsing commands from the host.</p>
+<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
+<ul>
+<li><strong>External Interrupts (EXTI):</strong> Used for monitoring GPIO state changes and triggering protocol responses.</li>
+<li><strong>Peripheral Interrupts:</strong> Dedicated handlers for I2C and SPI bus events (Start, Stop, Address Match, Data Transmit/Receive).</li>
+<li><strong>Prioritization:</strong> Critical bus timing interrupts are assigned higher priority to prevent data loss or bus timeouts.</li>
+</ul>
+<h2 id="execution-flow"><a class="header" href="#execution-flow">Execution Flow</a></h2>
+<ol>
+<li>A hardware event (e.g., I2C Start condition) triggers a peripheral interrupt.</li>
+<li>The CPU pauses the main loop and executes the associated Interrupt Service Routine (ISR).</li>
+<li>The ISR handles the immediate hardware requirement (e.g., loading a data register).</li>
+<li>Control returns to the main loop to handle higher-level logic.</li>
+</ol>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="memory-management"><a class="header" href="#memory-management">Memory Management</a></h1>
+<h2 id="overview-2"><a class="header" href="#overview-2">Overview</a></h2>
+<p>Mimic manages memory by partitioning the STM32's internal SRAM for different system requirements. The goal is to provide enough space for large sensor register shadows while maintaining a stable stack for firmware execution.</p>
+<h2 id="memory-partitioning"><a class="header" href="#memory-partitioning">Memory Partitioning</a></h2>
+<ul>
+<li><strong>Static Allocation:</strong> Core system structures and peripheral configurations are allocated at boot time.</li>
+<li><strong>Register Shadows:</strong> A dedicated section of SRAM is used to store the virtual register maps for emulated sensors (MPU6050, BMP280, etc.).</li>
+<li><strong>Command Buffers:</strong> Circular buffers handle incoming and outgoing serial data to prevent blocking during host communication.</li>
+</ul>
+<h2 id="memory-layout-1"><a class="header" href="#memory-layout-1">Memory Layout</a></h2>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Section</th><th style="text-align: left">Description</th></tr></thead><tbody>
+<tr><td style="text-align: left"><strong>Flash</strong></td><td style="text-align: left">Persistent storage for firmware code and default sensor configurations.</td></tr>
+<tr><td style="text-align: left"><strong>SRAM</strong></td><td style="text-align: left">Runtime data, including sensor registers and communication buffers.</td></tr>
+<tr><td style="text-align: left"><strong>Stack</strong></td><td style="text-align: left">Used for local variables and interrupt context saving.</td></tr>
+</tbody></table>
+</div>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="build-system"><a class="header" href="#build-system">Build System</a></h1>
+<h2 id="overview-3"><a class="header" href="#overview-3">Overview</a></h2>
+<p>The Mimic firmware uses a standard Makefile-based build system designed for the GNU Arm Embedded Toolchain. This ensures that the code can be compiled and deployed from any standard Linux, macOS, or Windows terminal.</p>
+<h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
+<p>To build the firmware, you need:</p>
+<ul>
+<li><strong>arm-none-eabi-gcc:</strong> The cross-compiler for ARM Cortex-M microcontrollers.</li>
+<li><strong>make:</strong> The build automation tool.</li>
+<li><strong>st-flash (or OpenOCD):</strong> For uploading the binary to the STM32 board.</li>
+</ul>
+<h2 id="compilation-commands"><a class="header" href="#compilation-commands">Compilation Commands</a></h2>
+<ul>
+<li><strong><code>make</code></strong> — Compiles the source files and generates the binary image.</li>
+<li><strong><code>make clean</code></strong> — Removes all compiled objects and binaries.</li>
+<li><strong><code>make flash</code></strong> — Compiles and uploads the code to the connected STM32 via an ST-Link.</li>
+</ul>
+<h2 id="output-files"><a class="header" href="#output-files">Output Files</a></h2>
+<p>The build process produces several files in the <code>build/</code> directory:</p>
+<ul>
+<li><code>mimic.bin</code> — The raw binary image for flashing.</li>
+<li><code>mimic.elf</code> — The executable file containing debug symbols.</li>
+<li><code>mimic.hex</code> — The Intel Hex format version of the binary.</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="peripheral-control"><a class="header" href="#peripheral-control">Peripheral Control</a></h1>
+<h2 id="overview-4"><a class="header" href="#overview-4">Overview</a></h2>
+<p>Mimic provides direct control over the STM32's hardware peripherals through its bridge protocol. This allows the host to configure and interact with low-level hardware without writing new C code.</p>
+<h2 id="supported-peripherals"><a class="header" href="#supported-peripherals">Supported Peripherals</a></h2>
+<ul>
+<li><strong>GPIO:</strong> Read and write digital states on any available MCU pin.</li>
+<li><strong>I2C:</strong> Emulate slave devices or act as a master to control external hardware.</li>
+<li><strong>SPI:</strong> Support for high-speed sensor emulation and data streaming.</li>
+<li><strong>UART:</strong> Stream serial data or act as a bridge between different serial protocols.</li>
+</ul>
+<h2 id="control-logic"><a class="header" href="#control-logic">Control Logic</a></h2>
+<p>Peripherals are managed by a dedicated driver layer in the firmware. When a command is received from the host (e.g., <code>PIN_HIGH PC13</code>), the firmware identifies the correct peripheral register and updates it to reflect the desired state.</p>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<p>Default peripheral mappings are defined in the firmware's header files. These can be overridden at runtime using the CLI or Python API to adapt to different hardware setups.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="i2c-timing--speed"><a class="header" href="#i2c-timing--speed">I2C Timing &amp; Speed</a></h1>
+<h2 id="overview-5"><a class="header" href="#overview-5">Overview</a></h2>
+<p>Accurate timing is critical for I2C communication. Mimic provides fine-grained control over the bus frequency and signal timing to ensure compatibility with a wide range of master devices.</p>
+<h2 id="supported-speeds"><a class="header" href="#supported-speeds">Supported Speeds</a></h2>
+<ul>
+<li><strong>Standard Mode:</strong> 100 kHz</li>
+<li><strong>Fast Mode:</strong> 400 kHz</li>
+<li><strong>Fast Mode Plus:</strong> Up to 1 MHz (hardware dependent)</li>
+</ul>
+<h2 id="timing-accuracy"><a class="header" href="#timing-accuracy">Timing Accuracy</a></h2>
+<p>The firmware utilizes the STM32's internal peripheral clock to generate I2C signals. By configuring the rise and fall time parameters, the system can emulate the characteristics of different sensor hardware.</p>
+<h2 id="clock-stretching"><a class="header" href="#clock-stretching">Clock Stretching</a></h2>
+<p>If the host bridge is slow to provide data for a transaction, the firmware can use I2C clock stretching to pause the master until the data is ready, preventing bus errors.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="spi-logic--protocol"><a class="header" href="#spi-logic--protocol">SPI Logic &amp; Protocol</a></h1>
+<h2 id="overview-6"><a class="header" href="#overview-6">Overview</a></h2>
+<p>SPI is a high-speed synchronous serial protocol. Mimic emulates SPI slave devices by monitoring the Chip Select (CS) and Clock (SCK) lines and responding with data on the MISO line.</p>
+<h2 id="supported-modes"><a class="header" href="#supported-modes">Supported Modes</a></h2>
+<p>Mimic supports all four standard SPI modes:</p>
+<ul>
+<li><strong>Mode 0:</strong> CPOL=0, CPHA=0</li>
+<li><strong>Mode 1:</strong> CPOL=0, CPHA=1</li>
+<li><strong>Mode 2:</strong> CPOL=1, CPHA=0</li>
+<li><strong>Mode 3:</strong> CPOL=1, CPHA=1</li>
+</ul>
+<h2 id="transaction-handling"><a class="header" href="#transaction-handling">Transaction Handling</a></h2>
+<p>When the CS line is pulled low, the firmware prepares for a transaction. It uses hardware interrupts to ensure that data is shifted out on the MISO line in perfect sync with the master's clock signal.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="uart-data-flow"><a class="header" href="#uart-data-flow">UART Data Flow</a></h1>
+<h2 id="overview-7"><a class="header" href="#overview-7">Overview</a></h2>
+<p>The UART interface is used for both host communication (USB CDC) and peripheral emulation (e.g., GPS sentences). Mimic manages the flow of data to ensure that serial buffers do not overflow.</p>
+<h2 id="host-communication"><a class="header" href="#host-communication">Host Communication</a></h2>
+<p>Data from the host can be received via:</p>
+<ol>
+<li><strong>USB-C Port:</strong> Using the USB CDC protocol.</li>
+<li><strong>UART2 (TTL):</strong> Using PA2 (TX) and PA3 (RX) for external TTL control.</li>
+</ol>
+<p>The firmware uses a circular buffer to store incoming characters until they can be parsed by the command engine.</p>
+<h2 id="peripheral-emulation"><a class="header" href="#peripheral-emulation">Peripheral Emulation</a></h2>
+<p>When emulating a UART device like a GPS module:</p>
+<ul>
+<li>The firmware generates data packets (e.g., NMEA sentences).</li>
+<li>These packets are transmitted via <strong>UART1</strong> using the physical TX pin (<strong>PA9</strong>).</li>
+<li>A background process ensures that data is streamed at the correct baud rate (typically 9600 for GPS).</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="command-line-interface-cli"><a class="header" href="#command-line-interface-cli">Command Line Interface (CLI)</a></h1>
+<p>The Mimic framework provides a standardized CLI and Python library structure (<code>mimic-fw</code>) to interface seamlessly with Mimic hardware.</p>
+<p>The CLI is powered by the Python <code>click</code> module, establishing a centralized entry point. Running <code>mimic</code> without arguments attempts an automatic discovery of the connected board and enters an interactive Gruvbox-themed shell.</p>
+<h2 id="basic-usage"><a class="header" href="#basic-usage">Basic Usage</a></h2>
+<h3 id="auto-discovery-shell"><a class="header" href="#auto-discovery-shell">Auto-Discovery Shell</a></h3>
+<p>Launch the shell and let the library automatically detect the connected BlackPill:</p>
+<pre><code class="language-bash">mimic
+</code></pre>
+<h3 id="specifying-hardware-ports"><a class="header" href="#specifying-hardware-ports">Specifying Hardware Ports</a></h3>
+<p>If you have multiple devices connected, specify the USB port explicitly:</p>
+<pre><code class="language-bash"># Linux/macOS
+mimic --port /dev/ttyUSB0
+
+# Windows
+mimic --port COM3
+</code></pre>
+<h2 id="common-board-commands"><a class="header" href="#common-board-commands">Common Board Commands</a></h2>
+<p>Once inside the interactive terminal, you can manually type out protocol instructions to the STM32 board. Some common commands include:</p>
+<ul>
+<li><strong><code>STATUS</code></strong> - Retrieves the current MCU system state.</li>
+<li><strong><code>VERSION</code></strong> - Retrieves firmware build date and internal version.</li>
+<li><strong><code>PIN_HIGH [PIN]</code></strong> - Configures the specified GPIO pin (e.g. <code>PC13</code>) to logical HIGH.</li>
+<li><strong><code>PIN_LOW [PIN]</code></strong> - Configures the specified GPIO pin to logical LOW.</li>
+<li><strong><code>RESET</code></strong> - Soft-reboots the hardware.</li>
+</ul>
+<h2 id="quick-simulations"><a class="header" href="#quick-simulations">Quick Simulations</a></h2>
+<p>The CLI supports rapid spawning of Mock Sensor data. This is useful if you are developing another application on an external Master device (e.g., Raspberry Pi) and need the BlackPill to pretend to be a sensor.</p>
+<pre><code class="language-bash"># Starts mimicking an MPU6050 Accelerometer
+mimic simulate mpu6050
+
+# Starts mimicking a BMP280 over I2C instead of SPI
+mimic simulate bmp280 --protocol i2c
+
+# Emulates a running GPS over UART NMEA sentences
+mimic simulate gps
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="python-bridge-serial"><a class="header" href="#python-bridge-serial">Python Bridge: Serial</a></h1>
+<h2 id="overview-8"><a class="header" href="#overview-8">Overview</a></h2>
+<p>The Serial Bridge is the primary communication link between the host computer and the Mimic hardware. It uses the USB CDC (Communication Device Class) interface to transmit commands and receive sensor data.</p>
+<h2 id="communication-protocol"><a class="header" href="#communication-protocol">Communication Protocol</a></h2>
+<p>Mimic uses a text-based protocol for simplicity and ease of debugging. Each command is sent as a string terminated by a newline character.</p>
+<ul>
+<li><strong>Request:</strong> <code>PIN_HIGH PC13\n</code></li>
+<li><strong>Response:</strong> <code>OK\n</code></li>
+</ul>
+<h2 id="serial-configuration"><a class="header" href="#serial-configuration">Serial Configuration</a></h2>
+<p>The bridge automatically configures the serial port with the following settings:</p>
+<ul>
+<li><strong>Baud Rate:</strong> 115200 (default)</li>
+<li><strong>Data Bits:</strong> 8</li>
+<li><strong>Parity:</strong> None</li>
+<li><strong>Stop Bits:</strong> 1</li>
+</ul>
+<h2 id="usage-in-python"><a class="header" href="#usage-in-python">Usage in Python</a></h2>
+<p>The <code>MimicBridge</code> class abstracts the serial communication. You can connect via the USB-C port (typically <code>ttyACM0</code>) or a TTL adapter on UART2 (typically <code>ttyUSB0</code>):</p>
+<pre><code class="language-python">from mimic import MimicBridge
+
+# Connect via onboard USB CDC
+bridge = MimicBridge(port='/dev/ttyACM0')
+
+# OR Connect via UART2 (TTL Adapter)
+# bridge = MimicBridge(port='/dev/ttyUSB0')
+
+bridge.pin_high('PC13')
+</code></pre>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="python-bridge-async"><a class="header" href="#python-bridge-async">Python Bridge: Async</a></h1>
+<h2 id="overview-9"><a class="header" href="#overview-9">Overview</a></h2>
+<p>For applications requiring high-frequency data logging or simultaneous control of multiple peripherals, Mimic provides an asynchronous API based on Python's <code>asyncio</code> library.</p>
+<h2 id="why-use-async"><a class="header" href="#why-use-async">Why Use Async?</a></h2>
+<p>Traditional serial communication is synchronous, meaning the program waits for a response after every command. This can limit performance during complex simulations. The Async Bridge allows you to:</p>
+<ul>
+<li>Send multiple commands without waiting for immediate responses.</li>
+<li>Continuously stream sensor data in the background.</li>
+<li>Build responsive user interfaces that don't freeze during hardware I/O.</li>
+</ul>
+<h2 id="usage-example"><a class="header" href="#usage-example">Usage Example</a></h2>
+<pre><code class="language-python">import asyncio
+from mimic import AsyncMimicBridge
+
+async def main():
+    bridge = AsyncMimicBridge(port='/dev/ttyUSB0')
+    await bridge.connect()
+    
+    # Task 1: Blink an LED
+    asyncio.create_task(bridge.blink('PC13', interval=0.5))
+    
+    # Task 2: Read sensor data
+    while True:
+        data = await bridge.read_sensor('mpu6050')
+        print(f"Accel: {data}")
+        await asyncio.sleep(0.1)
+
+asyncio.run(main())
+</code></pre>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="hil-synchronization"><a class="header" href="#hil-synchronization">HIL Synchronization</a></h1>
+<h2 id="overview-10"><a class="header" href="#overview-10">Overview</a></h2>
+<p>Hardware-in-the-Loop (HIL) synchronization ensures that the simulation time on the host computer is aligned with the physical clock on the Mimic hardware. This is crucial for accurate sensor emulation and control system testing.</p>
+<h2 id="mechanism"><a class="header" href="#mechanism">Mechanism</a></h2>
+<p>Mimic uses a heartbeat-based synchronization protocol:</p>
+<ol>
+<li>The hardware MCU generates a stable clock signal or heartbeat packet.</li>
+<li>The Python bridge monitors this heartbeat to adjust its internal timing.</li>
+<li>If the host falls behind (e.g., due to system load), it can request a state synchronization from the MCU to catch up.</li>
+</ol>
+<h2 id="key-features"><a class="header" href="#key-features">Key Features</a></h2>
+<ul>
+<li><strong>Drift Correction:</strong> Automatically compensates for the small differences between the host and MCU oscillators.</li>
+<li><strong>Timestamping:</strong> Every packet sent from the hardware includes a high-resolution timestamp (in microseconds) relative to the system boot.</li>
+<li><strong>Latency Monitoring:</strong> The bridge measures the round-trip time of commands to provide an estimate of the communication latency.</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="real-time-diagnostics"><a class="header" href="#real-time-diagnostics">Real-Time Diagnostics</a></h1>
+<h2 id="overview-11"><a class="header" href="#overview-11">Overview</a></h2>
+<p>Mimic includes a diagnostic layer that monitors the health and performance of the system in real-time. This helps in identifying communication issues, protocol errors, or hardware failures during development.</p>
+<h2 id="monitored-metrics"><a class="header" href="#monitored-metrics">Monitored Metrics</a></h2>
+<ul>
+<li><strong>Bus Load:</strong> The percentage of available bandwidth being used on the I2C or SPI bus.</li>
+<li><strong>Packet Loss:</strong> The number of commands sent by the host that failed to receive a valid acknowledgement.</li>
+<li><strong>Timing Jitter:</strong> Variations in the execution time of periodic tasks (e.g., sensor data updates).</li>
+<li><strong>MCU Temperature:</strong> The internal temperature of the STM32 chip.</li>
+</ul>
+<h2 id="diagnostic-commands"><a class="header" href="#diagnostic-commands">Diagnostic Commands</a></h2>
+<p>You can query the diagnostic state using the CLI:</p>
+<pre><code class="language-bash"># Get a summary of the system health
+mimic diagnostics status
+
+# Monitor bus activity in real-time
+mimic diagnostics monitor --bus i2c1
+</code></pre>
+<h2 id="logging"><a class="header" href="#logging">Logging</a></h2>
+<p>Diagnostic data can be exported to a CSV file or streamed to a dashboard for long-term analysis of hardware stability.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="sensors-overview"><a class="header" href="#sensors-overview">Sensors Overview</a></h1>
+<p>The MimicSensors package provides Python-based sensor emulation modules. Each module simulates the behavior and register map of a real-world sensor, allowing the Mimic hardware bridge to present itself as a genuine device on I2C, SPI, or UART buses.</p>
+<h2 id="supported-sensors"><a class="header" href="#supported-sensors">Supported Sensors</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Sensor</th><th>Protocol</th><th>Description</th></tr></thead><tbody>
+<tr><td>MPU6050</td><td>I2C</td><td>6-axis accelerometer and gyroscope</td></tr>
+<tr><td>BMP280</td><td>SPI / I2C</td><td>Barometric pressure and temperature sensor</td></tr>
+<tr><td>GPS (NMEA)</td><td>UART</td><td>GPS receiver outputting standard NMEA sentences</td></tr>
+</tbody></table>
+</div>
+<h2 id="architecture-1"><a class="header" href="#architecture-1">Architecture</a></h2>
+<p>All sensor modules inherit from the <code>AbstractSensorBase</code> class, which provides:</p>
+<ul>
+<li><strong>Register Map Management</strong> — A dictionary-based register shadow with read/write hooks.</li>
+<li><strong>Data Generation</strong> — Configurable data patterns (static, sinusoidal, random, file-based).</li>
+<li><strong>Update Loop</strong> — A timer-driven update mechanism that refreshes sensor values at configurable rates.</li>
+</ul>
+<h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<pre><code class="language-bash"># Emulate an MPU6050 with default settings
+mimic simulate mpu6050
+
+# Emulate a BMP280 at a custom update rate
+mimic simulate bmp280 --rate 100
+
+# Stream GPS NMEA sentences
+mimic simulate gps --trajectory default
+</code></pre>
+<h2 id="adding-custom-sensors"><a class="header" href="#adding-custom-sensors">Adding Custom Sensors</a></h2>
+<p>To create a new sensor module, extend <code>AbstractSensorBase</code> and implement the required methods:</p>
+<ol>
+<li>Define the register map</li>
+<li>Implement the data generation logic</li>
+<li>Register the sensor with the CLI plugin system</li>
+</ol>
+<p>See the <a href="./SENSOR_BASE.html">Abstract Sensor Base</a> chapter for the full API reference.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="abstract-sensor-base"><a class="header" href="#abstract-sensor-base">Abstract Sensor Base</a></h1>
+<h2 id="overview-12"><a class="header" href="#overview-12">Overview</a></h2>
+<p>The <code>AbstractSensorBase</code> is a Python class that serves as the foundation for all sensor emulation modules in Mimic. It provides the core logic for managing register maps and handling protocol-specific transactions.</p>
+<h2 id="core-responsibilities"><a class="header" href="#core-responsibilities">Core Responsibilities</a></h2>
+<ul>
+<li><strong>Register Shadowing:</strong> Maintains a virtual copy of the sensor's internal registers.</li>
+<li><strong>Protocol Mapping:</strong> Defines how register reads/writes translate to physical I2C or SPI transactions.</li>
+<li><strong>Data Generation Hooks:</strong> Provides methods for updating register values based on simulation logic (e.g., generating random noise for an accelerometer).</li>
+</ul>
+<h2 id="key-methods"><a class="header" href="#key-methods">Key Methods</a></h2>
+<ul>
+<li><code>read_register(address)</code>: Returns the value currently stored in a virtual register.</li>
+<li><code>write_register(address, value)</code>: Updates a virtual register and triggers any associated side effects.</li>
+<li><code>update()</code>: A periodic hook used to calculate new sensor data (e.g., incrementing a counter or reading from a data file).</li>
+</ul>
+<h2 id="example-implementation"><a class="header" href="#example-implementation">Example Implementation</a></h2>
+<p>To create a new sensor, you simply need to inherit from this class and define your register map:</p>
+<pre><code class="language-python">class MyCustomSensor(AbstractSensorBase):
+    def __init__(self):
+        super().__init__()
+        self.registers = {
+            0x00: 0x45, # Device ID
+            0x01: 0x00  # Data Register
+        }
+</code></pre>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mpu6050-motion-sensor"><a class="header" href="#mpu6050-motion-sensor">MPU6050 Motion Sensor</a></h1>
+<h2 id="overview-13"><a class="header" href="#overview-13">Overview</a></h2>
+<p>The MPU6050 is a widely used 6-axis motion tracking device that combines a 3-axis gyroscope and a 3-axis accelerometer. Mimic emulates the I2C interface and register structure of this sensor, allowing you to test flight controllers or navigation algorithms without physical hardware.</p>
+<h2 id="emulated-features"><a class="header" href="#emulated-features">Emulated Features</a></h2>
+<ul>
+<li><strong>Accelerometer:</strong> X, Y, and Z axis readings with configurable sensitivity.</li>
+<li><strong>Gyroscope:</strong> Angular velocity readings for all three axes.</li>
+<li><strong>Temperature:</strong> Internal die temperature register.</li>
+<li><strong>Interrupts:</strong> Emulation of the Data Ready (DRDY) interrupt signal on a physical GPIO pin.</li>
+</ul>
+<h2 id="default-configuration"><a class="header" href="#default-configuration">Default Configuration</a></h2>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: left">Parameter</th><th style="text-align: left">Value</th></tr></thead><tbody>
+<tr><td style="text-align: left"><strong>I2C Address</strong></td><td style="text-align: left">0x68 (default)</td></tr>
+<tr><td style="text-align: left"><strong>Update Rate</strong></td><td style="text-align: left">100 Hz</td></tr>
+<tr><td style="text-align: left"><strong>Resolution</strong></td><td style="text-align: left">16-bit</td></tr>
+</tbody></table>
+</div>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<p>Start the MPU6050 emulation using the CLI:</p>
+<pre><code class="language-bash">mimic simulate mpu6050
+</code></pre>
+<p>Once running, the Mimic hardware will respond to I2C requests from a Master device as if a real MPU6050 were connected to pins <strong>PB6 (SCL)</strong> and <strong>PB7 (SDA)</strong>.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mpu6050-register-map"><a class="header" href="#mpu6050-register-map">MPU6050 Register Map</a></h1>
+<h2 id="overview-14"><a class="header" href="#overview-14">Overview</a></h2>
+<p>The MPU6050 emulation includes a complete register map that mimics the physical device. This allows your software to configure the "virtual" sensor just as it would a real one.</p>
+<h2 id="key-registers"><a class="header" href="#key-registers">Key Registers</a></h2>
+<ul>
+<li><strong>0x75 (WHO_AM_I):</strong> Returns <code>0x68</code> to confirm device identity.</li>
+<li><strong>0x3B - 0x40 (ACCEL_XOUT):</strong> 16-bit accelerometer readings.</li>
+<li><strong>0x43 - 0x48 (GYRO_XOUT):</strong> 16-bit gyroscope readings.</li>
+<li><strong>0x6B (PWR_MGMT_1):</strong> Controls the device's power state and clock source.</li>
+</ul>
+<h2 id="interaction"><a class="header" href="#interaction">Interaction</a></h2>
+<p>When your master device writes to a register, Mimic updates the internal shadow. For example, writing to the <code>GYRO_CONFIG</code> register will change how the emulation calculates angular velocity data.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bmp280-environment-sensor"><a class="header" href="#bmp280-environment-sensor">BMP280 Environment Sensor</a></h1>
+<h2 id="overview-15"><a class="header" href="#overview-15">Overview</a></h2>
+<p>The BMP280 is an absolute barometric pressure sensor designed for mobile applications. Mimic provides a highly accurate emulation of its SPI and I2C interfaces, supporting both pressure and temperature readings.</p>
+<h2 id="emulated-features-1"><a class="header" href="#emulated-features-1">Emulated Features</a></h2>
+<ul>
+<li><strong>Pressure Sensing:</strong> Supports various oversampling modes to simulate different levels of noise and resolution.</li>
+<li><strong>Temperature Sensing:</strong> Integrated temperature register for thermal compensation logic testing.</li>
+<li><strong>Protocol Support:</strong> Can be configured to respond over either I2C or SPI depending on your test requirements.</li>
+</ul>
+<h2 id="pin-mapping-spi-mode"><a class="header" href="#pin-mapping-spi-mode">Pin Mapping (SPI Mode)</a></h2>
+<ul>
+<li><strong>SCK:</strong> PA5</li>
+<li><strong>MISO:</strong> PA6</li>
+<li><strong>MOSI:</strong> PA7</li>
+<li><strong>CS:</strong> PA4</li>
+</ul>
+<h2 id="usage-1"><a class="header" href="#usage-1">Usage</a></h2>
+<p>Start the BMP280 emulation in SPI mode:</p>
+<pre><code class="language-bash">mimic simulate bmp280 --protocol spi
+</code></pre>
+<p>The emulation includes the factory calibration registers, ensuring that your driver's compensation formulas can be fully validated.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bmp280-calibration-data"><a class="header" href="#bmp280-calibration-data">BMP280 Calibration Data</a></h1>
+<h2 id="overview-16"><a class="header" href="#overview-16">Overview</a></h2>
+<p>The BMP280 sensor requires specific calibration coefficients to convert raw pressure and temperature readings into meaningful engineering units. Mimic emulates these factory-programmed coefficients.</p>
+<h2 id="calibration-coefficients"><a class="header" href="#calibration-coefficients">Calibration Coefficients</a></h2>
+<p>Upon power-up, the sensor's read-only memory (0x88 to 0xA1) contains 12 coefficients (<code>dig_T1</code> to <code>dig_P9</code>).
+Mimic provides default values for these coefficients that match a typical BMP280 device.</p>
+<h2 id="why-it-matters"><a class="header" href="#why-it-matters">Why it Matters</a></h2>
+<p>Emulating these coefficients is essential for testing the compensation math in your driver. Without accurate calibration data, the raw pressure values cannot be converted to altitude or weather data correctly.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gps-module-nmea"><a class="header" href="#gps-module-nmea">GPS Module (NMEA)</a></h1>
+<h2 id="overview-17"><a class="header" href="#overview-17">Overview</a></h2>
+<p>Mimic emulates a standard GPS receiver by streaming NMEA 0183 sentences over a UART interface. This allows you to test GPS parsing libraries and navigation software using simulated or pre-recorded trajectories.</p>
+<h2 id="supported-sentences"><a class="header" href="#supported-sentences">Supported Sentences</a></h2>
+<p>The emulation module can generate the following standard NMEA messages:</p>
+<ul>
+<li><strong>$GPRMC:</strong> Recommended Minimum Specific GNSS Data.</li>
+<li><strong>$GPGGA:</strong> Global Positioning System Fix Data.</li>
+<li><strong>$GPGSV:</strong> GNSS Satellites in View.</li>
+<li><strong>$GPGLL:</strong> Geographic Position - Latitude/Longitude.</li>
+</ul>
+<h2 id="trajectory-simulation"><a class="header" href="#trajectory-simulation">Trajectory Simulation</a></h2>
+<p>You can provide a CSV file containing a list of coordinates, and Mimic will "travel" along that path, updating the NMEA stream in real-time to match the simulated movement.</p>
+<h2 id="usage-2"><a class="header" href="#usage-2">Usage</a></h2>
+<p>Start the GPS emulation on the default UART pins (<strong>PA9/PA10</strong>):</p>
+<pre><code class="language-bash">mimic simulate gps --trajectory my_trajectory.csv
+</code></pre>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gps-trajectory-simulation"><a class="header" href="#gps-trajectory-simulation">GPS Trajectory Simulation</a></h1>
+<h2 id="overview-18"><a class="header" href="#overview-18">Overview</a></h2>
+<p>Mimic can simulate movement by following a pre-defined trajectory. This is useful for testing geofencing, navigation algorithms, or route tracking software.</p>
+<h2 id="trajectory-formats"><a class="header" href="#trajectory-formats">Trajectory Formats</a></h2>
+<p>The Python bridge supports loading trajectories from:</p>
+<ul>
+<li><strong>CSV Files:</strong> A simple list of Latitude, Longitude, and Altitude.</li>
+<li><strong>KML/GPX Files:</strong> Standard map route formats.</li>
+<li><strong>Dynamic Generation:</strong> Real-time generation of paths (e.g., circular or random walk) via Python scripts.</li>
+</ul>
+<h2 id="real-time-updates"><a class="header" href="#real-time-updates">Real-Time Updates</a></h2>
+<p>As the simulation progresses, the Python bridge calculates the current position and sends the corresponding coordinates to the Mimic hardware. The hardware then packages these into NMEA sentences for the UART interface.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h1>
+<h2 id="common-issues"><a class="header" href="#common-issues">Common Issues</a></h2>
+<h3 id="1-board-not-detected"><a class="header" href="#1-board-not-detected">1. Board Not Detected</a></h3>
+<ul>
+<li><strong>Symptoms:</strong> The CLI returns <code>No device found</code> or <code>Access Denied</code>.</li>
+<li><strong>Solutions:</strong>
+<ul>
+<li>Check the USB-C cable connection.</li>
+<li>Ensure you have the correct permissions to access the serial port (on Linux, check if your user is in the <code>dialout</code> group).</li>
+<li>Try specifying the port explicitly using <code>--port</code>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-protocol-timeouts"><a class="header" href="#2-protocol-timeouts">2. Protocol Timeouts</a></h3>
+<ul>
+<li><strong>Symptoms:</strong> I2C or SPI transactions fail with a "Timeout" error.</li>
+<li><strong>Solutions:</strong>
+<ul>
+<li>Verify that the Master device and Mimic share a common Ground (GND).</li>
+<li>Check the wiring between the Master device and the BlackPill pins.</li>
+<li>Reduce the bus speed on the Master device (e.g., lower the I2C frequency to 100kHz).</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-firmware-flashing-fails"><a class="header" href="#3-firmware-flashing-fails">3. Firmware Flashing Fails</a></h3>
+<ul>
+<li><strong>Symptoms:</strong> <code>make flash</code> returns an error or fails to connect to the ST-Link.</li>
+<li><strong>Solutions:</strong>
+<ul>
+<li>Ensure the ST-Link is properly connected to the SWD pins (3.3V, GND, SWDIO, SWCLK).</li>
+<li>Check that the ST-Link drivers are installed correctly on your host machine.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="system-limitations"><a class="header" href="#system-limitations">System Limitations</a></h1>
+<h2 id="overview-19"><a class="header" href="#overview-19">Overview</a></h2>
+<p>While Mimic is a powerful tool for hardware emulation, it is important to understand its physical and logical limits to ensure accurate testing.</p>
+<h2 id="hardware-constraints"><a class="header" href="#hardware-constraints">Hardware Constraints</a></h2>
+<ul>
+<li><strong>Logic Level:</strong> Mimic operates at 3.3V. Interfacing with 5V systems without level shifters may damage the STM32.</li>
+<li><strong>Max Frequency:</strong> I2C is limited to 1 MHz and SPI to approximately 20 MHz due to CPU and DMA overhead.</li>
+<li><strong>Pin Current:</strong> GPIO pins have limited current sourcing/sinking capability (typically 20mA). Do not drive motors or high-power LEDs directly.</li>
+</ul>
+<h2 id="emulation-limits"><a class="header" href="#emulation-limits">Emulation Limits</a></h2>
+<ul>
+<li><strong>Timing Jitter:</strong> While minimal, some jitter is inherent in a software-driven emulation compared to physical ASIC hardware.</li>
+<li><strong>Register Set:</strong> Not all registers of every sensor are emulated. Only the most commonly used registers for data retrieval and configuration are typically supported.</li>
+<li><strong>Analog Features:</strong> Mimic is primarily a digital protocol emulator. It does not natively emulate complex analog sensor behaviors (like ADC noise characteristics) unless specifically modeled in the Python layer.</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+
+            </div>
+
+            <!-- Navigation -->
+            <nav class="nav-wrapper" aria-label="Page navigation">
             </nav>
-
-        </div>
-
-
-
-
-        <script>
-            window.playground_copyable = true;
-        </script>
-
-
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
-
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
-
-        <!-- Custom JS scripts -->
-
-        <script>
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
-
+        </main>
     </div>
-    </body>
+
+    <script>
+        // Sidebar Toggle
+        const toggle = document.getElementById('sidebar-toggle');
+        const body = document.body;
+
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('sidebar-hidden');
+        });
+
+        // Mobile: auto-hide sidebar
+        if (window.innerWidth < 1080) {
+            body.classList.add('sidebar-hidden');
+        }
+    </script>
+</body>
+
 </html>
