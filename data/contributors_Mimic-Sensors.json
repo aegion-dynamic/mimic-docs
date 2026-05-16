@@ -1,0 +1,5 @@
+{
+  "message": "The 'aegion-dynamic' organization forbids access via a fine-grained personal access tokens if the token's lifetime is greater than 366 days. Please adjust your token's lifetime at the following URL: https://github.com/settings/personal-access-tokens/14699002",
+  "documentation_url": "https://docs.github.com/rest/repos/repos#list-repository-contributors",
+  "status": "403"
+}
