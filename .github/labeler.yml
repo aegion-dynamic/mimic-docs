@@ -1,0 +1,25 @@
+# Auto-label configuration for actions/labeler
+# Labels PRs based on which files were changed
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'Mimic-Docs/**'
+      - '*.md'
+      - 'Mimic-Landing/docs/**'
+
+landing-page:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'Mimic-Landing/**'
+      - '!Mimic-Landing/docs/**'
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**'
+
+styles:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.css'

@@ -15,7 +15,7 @@ The framework is divided into three distinct layers:
 Written in C, the firmware resides on the STM32 MCU. It is responsible for parsing commands received from the host computer and executing them on the hardware level. It manages the low-level peripheral configuration required to emulate different sensor interfaces.
 
 ### 2. Mimic Bridge & CLI
-The **Mimic Bridge** is a Domain Specific Language (DSL) implemented in Python. It provides the interface for the computer to communicate with and program the Mimic MCU in real-time. 
+The **Mimic Bridge** is a simulation ecosystem implemented in Python. It provides the interface for the computer to communicate with and program the Mimic MCU in real-time. 
 
 Accompanying the bridge is the **Mimic CLI**, which allows for direct hardware interaction. You can use the CLI to:
 - Manually control the MCU pinout.
