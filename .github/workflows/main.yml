@@ -23,13 +23,21 @@ jobs:
           cd Mimic-Docs
           mdbook build && mdbook test
           cd ..
-          mkdir -p public
+          mkdir -p public/data
+          
+          # Securely fetch contributor data using the secret
+          for repo in Mimic-Firmware Mimic-Bridge Mimic-Sensors; do
+            curl -H "Authorization: Bearer ${{ secrets.GIT_PAT_MIMIC }}" \
+                 "https://api.github.com/repos/aegion-dynamic/$repo/contributors?anon=1" \
+                 > "public/data/contributors_$repo.json"
+          done
+          
           cp -r Mimic-Landing/* public/
           rm -rf public/docs
           cp -r Mimic-Docs/book public/docs
           echo "mimic.aegiondynamic.com" > public/CNAME
           touch public/.nojekyll
-      - uses: JamesIves/github-pages-deploy-action@4.1.7
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: public # The folder the action should deploy.
