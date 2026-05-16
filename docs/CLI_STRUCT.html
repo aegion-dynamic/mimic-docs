@@ -3,11 +3,37 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CLI Structure - MIMIC Documentation</title>
+    <title>Bridge Overview &amp; CLI - MIMIC Documentation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="theme/css/general.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var blocks = document.querySelectorAll("pre code.language-mermaid");
+          blocks.forEach(function(block) {
+              var pre = block.parentNode;
+              var div = document.createElement("div");
+              div.className = "mermaid";
+              div.textContent = block.textContent;
+              pre.parentNode.replaceChild(div, pre);
+          });
+          mermaid.initialize({
+              startOnLoad: true,
+              theme: "base",
+              themeVariables: {
+                  primaryColor: '#1a1a2e',
+                  primaryTextColor: '#ffffff',
+                  primaryBorderColor: '#3a3a5c',
+                  lineColor: '#5a5a7a',
+                  fontFamily: 'Space Mono, monospace',
+                  fontSize: '13px'
+              },
+              flowchart: { curve: 'basis' }
+          });
+      });
+    </script>
 </head>
 
 <body>
@@ -15,10 +41,10 @@
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-header">
-                <img src="logo.svg" alt="Logo">
+                <a href="../index.html" class="sidebar-logo">Mimic<span>_</span></a>
             </div>
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">1.</strong> System Architecture</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">2.</strong> Environment Setup</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">3.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">4.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.</strong> Build System</a></li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> CLI Structure</a></li><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">7.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">8.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">9.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="GPIO_INTERRUPTS.html"><strong aria-hidden="true">10.</strong> GPIO Interrupts</a></li><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">11.</strong> I2C Timing</a></li><li class="chapter-item expanded "><a href="I2C_REGISTERS.html"><strong aria-hidden="true">12.</strong> I2C Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">13.</strong> SPI Logic</a></li><li class="chapter-item expanded "><a href="SPI_DMA.html"><strong aria-hidden="true">14.</strong> SPI DMA Transfers</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">15.</strong> UART Flow Control</a></li><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">16.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">17.</strong> MPU6050: Motion Fusion</a></li><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">18.</strong> MPU6050: Register Map</a></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">19.</strong> BMP280: Pressure Models</a></li><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">20.</strong> BMP280: Calibration</a></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">21.</strong> GPS: NMEA Generation</a></li><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">22.</strong> GPS: Trajectories</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">23.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">24.</strong> Real-Time Diagnostics</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">25.</strong> System Limitations</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">26.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">27.</strong> Troubleshooting</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">2.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">3.</strong> Getting Started &amp; Requirements</a></li><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">4.</strong> System Architecture</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Firmware</li><li class="chapter-item expanded "><a href="FW_OVERVIEW.html"><strong aria-hidden="true">5.</strong> Firmware Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">5.1.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">5.2.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">5.3.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.4.</strong> Build System</a></li><li class="chapter-item expanded "><a href="PERIPHERALS.html"><strong aria-hidden="true">5.5.</strong> Peripheral Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">5.5.1.</strong> I2C Timing &amp; Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">5.5.2.</strong> SPI Logic &amp; DMA</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">5.5.3.</strong> UART Data Flow</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Bridge</li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> Bridge Overview &amp; CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">6.1.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">6.2.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">6.3.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">6.4.</strong> Real-Time Diagnostics</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Sensors &amp; Contribution</li><li class="chapter-item expanded "><a href="SENSORS_OVERVIEW.html"><strong aria-hidden="true">7.</strong> Sensors Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">7.1.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">7.2.</strong> MPU6050 Motion Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">7.2.1.</strong> MPU6050 Registers</a></li></ol></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">7.3.</strong> BMP280 Environment Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">7.3.1.</strong> BMP280 Calibration</a></li></ol></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">7.4.</strong> GPS Module</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">7.4.1.</strong> GPS Trajectory</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">8.</strong> Troubleshooting</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> System Limitations</a></li></ol>
             </div>
         </nav>
 
@@ -28,57 +54,62 @@
                 <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
                     <span>☰</span>
                 </button>
-                <div class="top-bar-title">CLI Structure - MIMIC Documentation</div>
+                <div class="top-bar-title">Bridge Overview &amp; CLI - MIMIC Documentation</div>
                 <div class="top-bar-links">
                     <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
                 </div>
             </div>
 
             <div id="content" class="content">
-                <h1 id="cli-struct"><a class="header" href="#cli-struct">CLI STRUCT</a></h1>
-<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
-<p>The Overview for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
-<p>The Requirements for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="implementation"><a class="header" href="#implementation">Implementation</a></h2>
-<p>The Implementation of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="hardware-mapping"><a class="header" href="#hardware-mapping">Hardware Mapping</a></h2>
-<p>The Hardware Mapping of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="performance-metrics"><a class="header" href="#performance-metrics">Performance Metrics</a></h2>
-<p>The Performance Metrics of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="communication-protocols"><a class="header" href="#communication-protocols">Communication Protocols</a></h2>
-<p>The Communication Protocols of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.</p>
-<p>On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.</p>
-<p>For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.</p>
-<h2 id="error-states"><a class="header" href="#error-states">Error States</a></h2>
-<p>The Error States for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="integration-example"><a class="header" href="#integration-example">Integration Example</a></h2>
-<p>The Integration Example for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="constraints--limitations"><a class="header" href="#constraints--limitations">Constraints &amp; Limitations</a></h2>
-<p>The Constraints &amp; Limitations for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<h2 id="roadmap"><a class="header" href="#roadmap">Roadmap</a></h2>
-<p>The Roadmap for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.</p>
-<hr />
-<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+                <h1 id="command-line-interface-cli"><a class="header" href="#command-line-interface-cli">Command Line Interface (CLI)</a></h1>
+<p>The Mimic framework provides a standardized CLI and Python library structure (<code>mimic-fw</code>) to interface seamlessly with Mimic hardware.</p>
+<p>The CLI is powered by the Python <code>click</code> module, establishing a centralized entry point. Running <code>mimic</code> without arguments attempts an automatic discovery of the connected board and enters an interactive Gruvbox-themed shell.</p>
+<h2 id="basic-usage"><a class="header" href="#basic-usage">Basic Usage</a></h2>
+<h3 id="auto-discovery-shell"><a class="header" href="#auto-discovery-shell">Auto-Discovery Shell</a></h3>
+<p>Launch the shell and let the library automatically detect the connected BlackPill:</p>
+<pre><code class="language-bash">mimic
+</code></pre>
+<h3 id="specifying-hardware-ports"><a class="header" href="#specifying-hardware-ports">Specifying Hardware Ports</a></h3>
+<p>If you have multiple devices connected, specify the USB port explicitly:</p>
+<pre><code class="language-bash"># Linux/macOS
+mimic --port /dev/ttyUSB0
+
+# Windows
+mimic --port COM3
+</code></pre>
+<h2 id="common-board-commands"><a class="header" href="#common-board-commands">Common Board Commands</a></h2>
+<p>Once inside the interactive terminal, you can manually type out protocol instructions to the STM32 board. Some common commands include:</p>
+<ul>
+<li><strong><code>STATUS</code></strong> - Retrieves the current MCU system state.</li>
+<li><strong><code>VERSION</code></strong> - Retrieves firmware build date and internal version.</li>
+<li><strong><code>PIN_HIGH [PIN]</code></strong> - Configures the specified GPIO pin (e.g. <code>PC13</code>) to logical HIGH.</li>
+<li><strong><code>PIN_LOW [PIN]</code></strong> - Configures the specified GPIO pin to logical LOW.</li>
+<li><strong><code>RESET</code></strong> - Soft-reboots the hardware.</li>
+</ul>
+<h2 id="quick-simulations"><a class="header" href="#quick-simulations">Quick Simulations</a></h2>
+<p>The CLI supports rapid spawning of Mock Sensor data. This is useful if you are developing another application on an external Master device (e.g., Raspberry Pi) and need the BlackPill to pretend to be a sensor.</p>
+<pre><code class="language-bash"># Starts mimicking an MPU6050 Accelerometer
+mimic simulate mpu6050
+
+# Starts mimicking a BMP280 over I2C instead of SPI
+mimic simulate bmp280 --protocol i2c
+
+# Emulates a running GPS over UART NMEA sentences
+mimic simulate gps
+</code></pre>
 
             </div>
 
             <!-- Navigation -->
             <nav class="nav-wrapper" aria-label="Page navigation">
-                <a href="BUILD_SYSTEM.html" class="nav-chapters previous">←</a>
+                <a href="UART_FLOW.html" class="nav-chapters previous">←</a>
                 <a href="BRIDGE_SERIAL.html" class="nav-chapters next">→</a>
             </nav>
         </main>
     </div>
 
     <script>
-        // Simple Sidebar Toggle
+        // Sidebar Toggle
         const toggle = document.getElementById('sidebar-toggle');
         const body = document.body;
 
@@ -86,7 +117,7 @@
             body.classList.toggle('sidebar-hidden');
         });
 
-        // Handle Mobile Auto-hide
+        // Mobile: auto-hide sidebar
         if (window.innerWidth < 1080) {
             body.classList.add('sidebar-hidden');
         }

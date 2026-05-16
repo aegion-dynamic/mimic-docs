@@ -1,37 +1,36 @@
+/* ═══════════════════════════════════════════════════════════════
+   MIMIC Theme Variables
+   Overrides mdBook's default CSS variables.
+   ═══════════════════════════════════════════════════════════════ */
+
 :root {
-    /* Color Palette */
-    --bg-dark-charcoal: #2c2c2c;
-    --bg-pitch-black: #000000;
-    --accent-orange: #fb7b5a;
-    --accent-purple: #ceadff;
-    --text-primary: #ffffff;
-    --text-muted: #cccccc;
-    --border-color: #333333;
+    /* mdBook Theme Overrides — force dark everywhere */
+    --bg: #0a0a0a;
+    --fg: #e0e0e0;
+    --sidebar-bg: #0a0a0a;
+    --sidebar-fg: #888888;
+    --sidebar-active: #fb7b5a;
+    --sidebar-spacer: #2a2a2a;
+    --link-color: #fb7b5a;
+    --links: #fb7b5a;
+    --inline-code-color: #fb7b5a;
 
-    /* mdBook Theme Overrides */
-    --bg: var(--bg-pitch-black);
-    --fg: var(--text-primary);
-    --sidebar-bg: var(--bg-pitch-black);
-    --sidebar-fg: var(--text-muted);
-    --sidebar-active: var(--accent-orange);
-    --sidebar-spacer: var(--border-color);
-    --link-color: #ffffff;
-    --links: #ffffff;
-    
     /* Code Blocks */
-    --code-bg: #000000;
-    --code-fg: #ffffff;
-    
-    /* Search */
-    --searchbar-bg: #000000;
-    --searchbar-fg: #ffffff;
-    --searchbar-border: var(--border-color);
-    --searchresults-bg: #000000;
-    --searchresults-fg: #ffffff;
+    --code-bg: #161616;
+    --code-fg: #ebdbb2;
 
-    /* Grid Effect */
-    --grid-bg: 
-      linear-gradient(#222 1px, transparent 1px),
-      linear-gradient(90deg, #222 1px, transparent 1px);
-    --grid-size: 20px 20px;
+    /* Search */
+    --searchbar-bg: #111111;
+    --searchbar-fg: #e0e0e0;
+    --searchbar-border: #2a2a2a;
+    --searchresults-bg: #111111;
+    --searchresults-fg: #e0e0e0;
+
+    /* Table */
+    --table-border-color: #2a2a2a;
+    --table-header-bg: #111111;
+    --table-alternate-bg: transparent;
+
+    /* Scrollbar */
+    --scrollbar: #333333;
 }

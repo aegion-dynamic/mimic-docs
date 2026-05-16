@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Getting Started &amp; Requirements - MIMIC Documentation</title>
+    <title>Peripheral Control - MIMIC Documentation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="theme/css/general.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -54,72 +54,36 @@
                 <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
                     <span>☰</span>
                 </button>
-                <div class="top-bar-title">Getting Started &amp; Requirements - MIMIC Documentation</div>
+                <div class="top-bar-title">Peripheral Control - MIMIC Documentation</div>
                 <div class="top-bar-links">
                     <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
                 </div>
             </div>
 
             <div id="content" class="content">
-                <h1 id="environment-setup--getting-started"><a class="header" href="#environment-setup--getting-started">Environment Setup &amp; Getting Started</a></h1>
-<p>This guide provides the technical requirements and procedures for setting up the Mimic environment, compiling the firmware, and establishing communication with the STM32 hardware.</p>
-<p><strong>Maintainer:</strong> Karthik Sarvan</p>
-<h2 id="1-required-hardware"><a class="header" href="#1-required-hardware">1. Required Hardware</a></h2>
-<p>To deploy and utilize the Mimic framework, the following hardware is required:</p>
+                <h1 id="peripheral-control"><a class="header" href="#peripheral-control">Peripheral Control</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Mimic provides direct control over the STM32's hardware peripherals through its bridge protocol. This allows the host to configure and interact with low-level hardware without writing new C code.</p>
+<h2 id="supported-peripherals"><a class="header" href="#supported-peripherals">Supported Peripherals</a></h2>
 <ul>
-<li><strong>MCU Development Board:</strong> STM32F411CEU6 (<strong>Black Pill</strong>).</li>
-<li><strong>Programmer:</strong> ST-Link V2 (USB dongle).</li>
-<li><strong>Peripherals (Optional):</strong> Jumper wires and standard sensors for emulation testing (e.g., MPU6050, BMP280, GPS).</li>
+<li><strong>GPIO:</strong> Read and write digital states on any available MCU pin.</li>
+<li><strong>I2C:</strong> Emulate slave devices or act as a master to control external hardware.</li>
+<li><strong>SPI:</strong> Support for high-speed sensor emulation and data streaming.</li>
+<li><strong>UART:</strong> Stream serial data or act as a bridge between different serial protocols.</li>
 </ul>
-<h2 id="2-cloning-the-source"><a class="header" href="#2-cloning-the-source">2. Cloning the Source</a></h2>
-<p>Clone the primary firmware repository from the Aegion Dynamic organization:</p>
-<pre><code class="language-bash">git clone https://github.com/aegion-dynamic/Mimic-Firmware.git
-cd Mimic-Firmware/STM32
-</code></pre>
-<h2 id="3-compiling-the-firmware"><a class="header" href="#3-compiling-the-firmware">3. Compiling the Firmware</a></h2>
-<p>Compilation requires the <code>arm-none-eabi-gcc</code> toolchain and the <code>make</code> utility.</p>
-<p>Execute the build process:</p>
-<pre><code class="language-bash">make
-</code></pre>
-<p>The build system will generate <code>mimic.bin</code>, <code>mimic.hex</code>, and <code>mimic.elf</code> binaries within the <code>build/</code> directory.</p>
-<h2 id="4-hardware-injection"><a class="header" href="#4-hardware-injection">4. Hardware Injection</a></h2>
-<ol>
-<li>Interface the <strong>ST-Link V2</strong> with the Black Pill:
-<ul>
-<li><code>3.3V</code> -&gt; <code>3.3V</code></li>
-<li><code>GND</code> -&gt; <code>GND</code></li>
-<li><code>SWDIO</code> -&gt; <code>DIO</code></li>
-<li><code>SWCLK</code> -&gt; <code>CLK</code></li>
-</ul>
-</li>
-<li>Connect the ST-Link to your host machine.</li>
-<li>Deploy the binary using the <code>st-flash</code> utility:</li>
-</ol>
-<pre><code class="language-bash">st-flash write build/mimic.bin 0x8000000
-</code></pre>
-<p><em>Note: After successful deployment, disconnect the ST-Link and connect the Black Pill directly via USB-C to begin host communication.</em></p>
-<h2 id="5-verification-onboard-diagnostics"><a class="header" href="#5-verification-onboard-diagnostics">5. Verification: Onboard Diagnostics</a></h2>
-<p>Once flashed, verify the bridge communication using the Python client. The onboard LED (mapped to <code>PC13</code>) serves as the default diagnostic indicator.</p>
-<p>Ensure the Python environment is configured:</p>
-<pre><code class="language-bash">pip install mimic-fw
-</code></pre>
-<p>Initialize the interactive hardware shell:</p>
-<pre><code class="language-bash">mimic
-</code></pre>
-<p>Execute the following commands to test GPIO control:</p>
-<pre><code class="language-text">&gt; PIN_HIGH PC13
-OK
-&gt; PIN_LOW PC13
-OK
-</code></pre>
-<p>If the onboard LED responds to these commands, the Mimic Hardware Bridge is correctly initialized and ready for sensor emulation.</p>
+<h2 id="control-logic"><a class="header" href="#control-logic">Control Logic</a></h2>
+<p>Peripherals are managed by a dedicated driver layer in the firmware. When a command is received from the host (e.g., <code>PIN_HIGH PC13</code>), the firmware identifies the correct peripheral register and updates it to reflect the desired state.</p>
+<h2 id="configuration"><a class="header" href="#configuration">Configuration</a></h2>
+<p>Default peripheral mappings are defined in the firmware's header files. These can be overridden at runtime using the CLI or Python API to adapt to different hardware setups.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
 
             </div>
 
             <!-- Navigation -->
             <nav class="nav-wrapper" aria-label="Page navigation">
-                <a href="WIRING.html" class="nav-chapters previous">←</a>
-                <a href="ARCH.html" class="nav-chapters next">→</a>
+                <a href="BUILD_SYSTEM.html" class="nav-chapters previous">←</a>
+                <a href="I2C_TIMING.html" class="nav-chapters next">→</a>
             </nav>
         </main>
     </div>

@@ -36,7 +36,7 @@
             <div class="hero-content">
                 <div class="hero-tag">DEEP TECH // R&D DIVISION</div>
                 <h1>MIMIC<span>_</span></h1>
-                <p>Hardware Emulation Suite for High-Fidelity Aerospace and IoT Prototyping.</p>
+                <p>Hardware Emulation Suite for Aerospace and IoT Prototyping.</p>
                 <div class="hero-btns">
                     <a href="docs/index.html" class="btn">Launch Technical Docs</a>
                     <a href="https://github.com/aegion-dynamic/mimic-docs" class="btn btn-outline">Github</a>
@@ -68,15 +68,18 @@
             <div class="about-grid">
                 <div class="about-card">
                     <h3>Hardware Bridge</h3>
-                    <p>Connect your desktop environment directly to physical MCU pins. Mimic acts as a transparent bridge, allowing high-level control of low-level signals.</p>
+                    <p>Connect your desktop environment directly to physical MCU pins. Mimic acts as a transparent
+                        bridge, allowing high-level control of low-level signals.</p>
                 </div>
                 <div class="about-card">
                     <h3>Sensor Mocking</h3>
-                    <p>Simulate complex I2C/SPI sensors without having the physical hardware. Perfect for developing firmware drivers and application logic in parallel.</p>
+                    <p>Simulate complex I2C/SPI sensors without having the physical hardware. Perfect for developing
+                        firmware drivers and application logic in parallel.</p>
                 </div>
                 <div class="about-card">
                     <h3>Open Architecture</h3>
-                    <p>Built for the community. Add your own protocol drivers or sensor models using our extensible Python framework.</p>
+                    <p>Built for the community. Add your own protocol drivers or sensor models using our extensible
+                        Python framework.</p>
                 </div>
             </div>
         </section>
@@ -94,7 +97,8 @@
                 </div>
             </div>
             <div class="contributors-cta">
-                <p>Join the Mimic project! We're looking for developers to help with protocol implementations and sensor modeling.</p>
+                <p>Join the Mimic project! We're looking for developers to help with protocol implementations and sensor
+                    modeling.</p>
                 <a href="https://github.com/aegion-dynamic/mimic-docs" class="btn btn-outline">View on GitHub</a>
             </div>
         </section>
@@ -105,31 +109,38 @@
             <div class="faq-container">
                 <div class="faq-item">
                     <h3>What hardware do I need?</h3>
-                    <p>Currently, Mimic is optimized for the STM32F411 BlackPill. You'll also need a USB-TTL adapter for the host connection.</p>
+                    <p>Currently, Mimic is optimized for the STM32F411 BlackPill. You'll also need a USB-TTL adapter for
+                        the host connection.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Is it really zero-latency?</h3>
-                    <p>While serial communication has some overhead, the core firmware handles protocol timing at hardware speeds, ensuring high-fidelity emulation.</p>
+                    <p>While serial communication has some overhead, the core firmware handles protocol timing at
+                        hardware speeds, ensuring accurate emulation.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Can I add my own sensors?</h3>
-                    <p>Yes. Mimic is designed to be extensible. You can define new sensor behaviors in Python and have them mapped to hardware pins instantly.</p>
+                    <p>Yes. Mimic is designed to be extensible. You can define new sensor behaviors in Python and have
+                        them mapped to hardware pins instantly.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Which protocols are supported?</h3>
-                    <p>Mimic supports I2C (Master/Slave), SPI (Master/Slave), UART (including RS485), and general-purpose GPIO control.</p>
+                    <p>Mimic supports I2C (Master/Slave), SPI (Master/Slave), UART (including RS485), and
+                        general-purpose GPIO control.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Can I use Mimic for CI/CD?</h3>
-                    <p>Absolutely. The Python Bridge API is built for automation, allowing you to run hardware-in-the-loop tests as part of your integration pipeline.</p>
+                    <p>Absolutely. The Python Bridge API is built for automation, allowing you to run
+                        hardware-in-the-loop tests as part of your integration pipeline.</p>
                 </div>
                 <div class="faq-item">
                     <h3>What is the logic voltage?</h3>
-                    <p>Mimic operates at 3.3V logic. While some pins on the STM32 are 5V tolerant, we recommend using level shifters when interfacing with 5V systems.</p>
+                    <p>Mimic operates at 3.3V logic. While some pins on the STM32 are 5V tolerant, we recommend using
+                        level shifters when interfacing with 5V systems.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Is there a GUI available?</h3>
-                    <p>Mimic is intentionally CLI and API-first to ensure maximum speed and ease of integration into developer workflows and automated scripts.</p>
+                    <p>Mimic is intentionally CLI and API-first to ensure maximum speed and ease of integration into
+                        developer workflows and automated scripts.</p>
                 </div>
             </div>
         </section>
@@ -140,7 +151,8 @@
             <div class="footer-info">
                 <h2>Contact Us</h2>
                 <p>hello@aegiondynamic.com</p>
-                <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">&copy; 2026 Aegion Dynamic Solutions LLP</p>
+                <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">&copy; 2026 Aegion Dynamic Solutions LLP
+                </p>
             </div>
             <div class="footer-links">
                 <h4>Location</h4>
@@ -152,22 +164,22 @@
             </div>
         </div>
     </footer>
-    
+
     <script>
         // Hamburger menu toggle
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('navMenu');
-        
+
         if (hamburger) {
-            hamburger.addEventListener('click', function() {
+            hamburger.addEventListener('click', function () {
                 hamburger.classList.toggle('active');
                 navMenu.classList.toggle('active');
             });
-            
+
             // Close menu when a link is clicked
             const navLinks = navMenu.querySelectorAll('a');
             navLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function () {
                     hamburger.classList.remove('active');
                     navMenu.classList.remove('active');
                 });
