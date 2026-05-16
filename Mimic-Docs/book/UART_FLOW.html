@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" class="sidebar-visible no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <title>UART Data Flow - MIMIC Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="theme/css/general.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var blocks = document.querySelectorAll("pre code.language-mermaid");
+          blocks.forEach(function(block) {
+              var pre = block.parentNode;
+              var div = document.createElement("div");
+              div.className = "mermaid";
+              div.textContent = block.textContent;
+              pre.parentNode.replaceChild(div, pre);
+          });
+          mermaid.initialize({
+              startOnLoad: true,
+              theme: "base",
+              themeVariables: {
+                  primaryColor: '#1a1a2e',
+                  primaryTextColor: '#ffffff',
+                  primaryBorderColor: '#3a3a5c',
+                  lineColor: '#5a5a7a',
+                  fontFamily: 'Space Mono, monospace',
+                  fontSize: '13px'
+              },
+              flowchart: { curve: 'basis' }
+          });
+      });
+    </script>
+</head>
+
+<body>
+    <div id="container">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-header">
+                <a href="../index.html" class="sidebar-logo">Mimic<span>_</span></a>
+            </div>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">2.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">3.</strong> Getting Started & Requirements</a></li><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">4.</strong> System Architecture</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Firmware</li><li class="chapter-item expanded "><a href="FW_OVERVIEW.html"><strong aria-hidden="true">5.</strong> Firmware Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">5.1.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">5.2.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">5.3.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.4.</strong> Build System</a></li><li class="chapter-item expanded "><a href="PERIPHERALS.html"><strong aria-hidden="true">5.5.</strong> Peripheral Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">5.5.1.</strong> I2C Timing & Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">5.5.2.</strong> SPI Logic & DMA</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html" class="active"><strong aria-hidden="true">5.5.3.</strong> UART Data Flow</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Bridge</li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> Bridge Overview & CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">6.1.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">6.2.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">6.3.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">6.4.</strong> Real-Time Diagnostics</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Sensors & Contribution</li><li class="chapter-item expanded "><a href="SENSORS_OVERVIEW.html"><strong aria-hidden="true">7.</strong> Sensors Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">7.1.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">7.2.</strong> MPU6050 Motion Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">7.2.1.</strong> MPU6050 Registers</a></li></ol></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">7.3.</strong> BMP280 Environment Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">7.3.1.</strong> BMP280 Calibration</a></li></ol></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">7.4.</strong> GPS Module</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">7.4.1.</strong> GPS Trajectory</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">8.</strong> Troubleshooting</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> System Limitations</a></li></ol>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main">
+            <div class="top-bar">
+                <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
+                    <span>☰</span>
+                </button>
+                <div class="top-bar-title">UART Data Flow - MIMIC Documentation</div>
+                <div class="top-bar-links">
+                    <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
+                </div>
+            </div>
+
+            <div id="content" class="content">
+                <h1 id="uart-data-flow"><a class="header" href="#uart-data-flow">UART Data Flow</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>The UART interface is used for both host communication (USB CDC) and peripheral emulation (e.g., GPS sentences). Mimic manages the flow of data to ensure that serial buffers do not overflow.</p>
+<h2 id="host-communication"><a class="header" href="#host-communication">Host Communication</a></h2>
+<p>Data from the host can be received via:</p>
+<ol>
+<li><strong>USB-C Port:</strong> Using the USB CDC protocol.</li>
+<li><strong>UART2 (TTL):</strong> Using PA2 (TX) and PA3 (RX) for external TTL control.</li>
+</ol>
+<p>The firmware uses a circular buffer to store incoming characters until they can be parsed by the command engine.</p>
+<h2 id="peripheral-emulation"><a class="header" href="#peripheral-emulation">Peripheral Emulation</a></h2>
+<p>When emulating a UART device like a GPS module:</p>
+<ul>
+<li>The firmware generates data packets (e.g., NMEA sentences).</li>
+<li>These packets are transmitted via <strong>UART1</strong> using the physical TX pin (<strong>PA9</strong>).</li>
+<li>A background process ensures that data is streamed at the correct baud rate (typically 9600 for GPS).</li>
+</ul>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+
+            </div>
+
+            <!-- Navigation -->
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <a href="SPI_LOGIC.html" class="nav-chapters previous">←</a>
+                <a href="CLI_STRUCT.html" class="nav-chapters next">→</a>
+            </nav>
+        </main>
+    </div>
+
+    <script>
+        // Sidebar Toggle
+        const toggle = document.getElementById('sidebar-toggle');
+        const body = document.body;
+
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('sidebar-hidden');
+        });
+
+        // Mobile: auto-hide sidebar
+        if (window.innerWidth < 1080) {
+            body.classList.add('sidebar-hidden');
+        }
+    </script>
+</body>
+
+</html>
