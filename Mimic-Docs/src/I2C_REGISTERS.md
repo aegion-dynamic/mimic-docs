@@ -1,60 +1,18 @@
-# I2C REGISTERS
+# I2C Register Emulation
 
 ## Overview
 
-The Overview for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic's core strength is its ability to emulate the register-based behavior of I2C sensors. It maintains a virtual register map that responds to standard I2C read and write transactions.
 
-## Requirements
+## Register Shadowing
 
-The Requirements for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The firmware keeps an array in SRAM that mirrors the registers of the sensor being emulated.
+- **Master Write:** The master sends an address and data; the firmware updates the corresponding shadow register.
+- **Master Read:** The master requests data from an address; the firmware retrieves the value from the shadow register and transmits it.
 
-## Implementation
+## Auto-Increment
 
-The Implementation of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the I2C_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for I2C_REGISTERS focuses on providing a stable and extensible framework for i2c_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The emulation supports auto-incrementing addresses, allowing the master to read multiple sequential registers (e.g., Accelerometer X, Y, Z values) in a single transaction.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

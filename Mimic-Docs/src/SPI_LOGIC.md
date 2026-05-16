@@ -1,60 +1,20 @@
-# SPI LOGIC
+# SPI Logic & Protocol
 
 ## Overview
 
-The Overview for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+SPI is a high-speed synchronous serial protocol. Mimic emulates SPI slave devices by monitoring the Chip Select (CS) and Clock (SCK) lines and responding with data on the MISO line.
 
-## Requirements
+## Supported Modes
 
-The Requirements for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic supports all four standard SPI modes:
+- **Mode 0:** CPOL=0, CPHA=0
+- **Mode 1:** CPOL=0, CPHA=1
+- **Mode 2:** CPOL=1, CPHA=0
+- **Mode 3:** CPOL=1, CPHA=1
 
-## Implementation
+## Transaction Handling
 
-The Implementation of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the SPI_LOGIC module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for SPI_LOGIC focuses on providing a stable and extensible framework for spi_logic operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+When the CS line is pulled low, the firmware prepares for a transaction. It uses hardware interrupts to ensure that data is shifted out on the MISO line in perfect sync with the master's clock signal.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

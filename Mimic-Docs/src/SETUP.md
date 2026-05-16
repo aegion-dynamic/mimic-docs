@@ -1,60 +1,72 @@
-# SETUP
+# Environment Setup & Getting Started
 
-## Overview
+This guide provides the technical requirements and procedures for setting up the Mimic environment, compiling the firmware, and establishing communication with the STM32 hardware.
 
-The Overview for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+**Maintainer:** Karthik Sarvan
 
-## Requirements
 
-The Requirements for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+## 1. Required Hardware
 
-## Implementation
+To deploy and utilize the Mimic framework, the following hardware is required:
+*   **MCU Development Board:** STM32F411CEU6 (**Black Pill**).
+*   **Programmer:** ST-Link V2 (USB dongle).
+*   **Peripherals (Optional):** Jumper wires and standard sensors for emulation testing (e.g., MPU6050, BMP280, GPS).
 
-The Implementation of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+## 2. Cloning the Source
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+Clone the primary firmware repository from the Aegion Dynamic organization:
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+```bash
+git clone https://github.com/aegion-dynamic/Mimic-Firmware.git
+cd Mimic-Firmware/STM32
+```
 
-## Hardware Mapping
+## 3. Compiling the Firmware
 
-The Hardware Mapping of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+Compilation requires the `arm-none-eabi-gcc` toolchain and the `make` utility.
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+Execute the build process:
+```bash
+make
+```
+The build system will generate `mimic.bin`, `mimic.hex`, and `mimic.elf` binaries within the `build/` directory.
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+## 4. Hardware Injection
 
-## Performance Metrics
+1. Interface the **ST-Link V2** with the Black Pill:
+   *   `3.3V` -> `3.3V`
+   *   `GND` -> `GND`
+   *   `SWDIO` -> `DIO`
+   *   `SWCLK` -> `CLK`
+2. Connect the ST-Link to your host machine.
+3. Deploy the binary using the `st-flash` utility:
 
-The Performance Metrics of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+```bash
+st-flash write build/mimic.bin 0x8000000
+```
+*Note: After successful deployment, disconnect the ST-Link and connect the Black Pill directly via USB-C to begin host communication.*
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+## 5. Verification: Onboard Diagnostics
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+Once flashed, verify the bridge communication using the Python client. The onboard LED (mapped to `PC13`) serves as the default diagnostic indicator.
 
-## Communication Protocols
+Ensure the Python environment is configured:
+```bash
+pip install mimic-fw
+```
 
-The Communication Protocols of the SETUP module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+Initialize the interactive hardware shell:
+```bash
+mimic
+```
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+Execute the following commands to test GPIO control:
+```text
+> PIN_HIGH PC13
+OK
+> PIN_LOW PC13
+OK
+```
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+If the onboard LED responds to these commands, the Mimic Hardware Bridge is correctly initialized and ready for sensor emulation.
 
-## Error States
-
-The Error States for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for SETUP focuses on providing a stable and extensible framework for setup operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
----
-*© [Aegion Dynamic](https://aegiondynamic.com)*

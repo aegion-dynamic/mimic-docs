@@ -1,60 +1,32 @@
-# MPU MOTION
+# MPU6050 Motion Sensor
 
 ## Overview
 
-The Overview for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The MPU6050 is a widely used 6-axis motion tracking device that combines a 3-axis gyroscope and a 3-axis accelerometer. Mimic emulates the I2C interface and register structure of this sensor, allowing you to test flight controllers or navigation algorithms without physical hardware.
 
-## Requirements
+## Emulated Features
 
-The Requirements for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Accelerometer:** X, Y, and Z axis readings with configurable sensitivity.
+- **Gyroscope:** Angular velocity readings for all three axes.
+- **Temperature:** Internal die temperature register.
+- **Interrupts:** Emulation of the Data Ready (DRDY) interrupt signal on a physical GPIO pin.
 
-## Implementation
+## Default Configuration
 
-The Implementation of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+| Parameter | Value |
+| :--- | :--- |
+| **I2C Address** | 0x68 (default) |
+| **Update Rate** | 100 Hz |
+| **Resolution** | 16-bit |
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+## Usage
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+Start the MPU6050 emulation using the CLI:
+```bash
+mimic simulate mpu6050
+```
 
-## Hardware Mapping
-
-The Hardware Mapping of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the MPU_MOTION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for MPU_MOTION focuses on providing a stable and extensible framework for mpu_motion operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Once running, the Mimic hardware will respond to I2C requests from a Master device as if a real MPU6050 were connected to pins **PB6 (SCL)** and **PB7 (SDA)**.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

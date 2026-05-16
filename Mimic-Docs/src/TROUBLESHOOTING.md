@@ -1,60 +1,26 @@
-# TROUBLESHOOTING
+# Troubleshooting
 
-## Overview
+## Common Issues
 
-The Overview for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+### 1. Board Not Detected
+- **Symptoms:** The CLI returns `No device found` or `Access Denied`.
+- **Solutions:**
+  - Check the USB-C cable connection.
+  - Ensure you have the correct permissions to access the serial port (on Linux, check if your user is in the `dialout` group).
+  - Try specifying the port explicitly using `--port`.
 
-## Requirements
+### 2. Protocol Timeouts
+- **Symptoms:** I2C or SPI transactions fail with a "Timeout" error.
+- **Solutions:**
+  - Verify that the Master device and Mimic share a common Ground (GND).
+  - Check the wiring between the Master device and the BlackPill pins.
+  - Reduce the bus speed on the Master device (e.g., lower the I2C frequency to 100kHz).
 
-The Requirements for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Implementation
-
-The Implementation of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the TROUBLESHOOTING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for TROUBLESHOOTING focuses on providing a stable and extensible framework for troubleshooting operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+### 3. Firmware Flashing Fails
+- **Symptoms:** `make flash` returns an error or fails to connect to the ST-Link.
+- **Solutions:**
+  - Ensure the ST-Link is properly connected to the SWD pins (3.3V, GND, SWDIO, SWCLK).
+  - Check that the ST-Link drivers are installed correctly on your host machine.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

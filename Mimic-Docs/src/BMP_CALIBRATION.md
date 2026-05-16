@@ -1,60 +1,17 @@
-# BMP CALIBRATION
+# BMP280 Calibration Data
 
 ## Overview
 
-The Overview for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The BMP280 sensor requires specific calibration coefficients to convert raw pressure and temperature readings into meaningful engineering units. Mimic emulates these factory-programmed coefficients.
 
-## Requirements
+## Calibration Coefficients
 
-The Requirements for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Upon power-up, the sensor's read-only memory (0x88 to 0xA1) contains 12 coefficients (`dig_T1` to `dig_P9`).
+Mimic provides default values for these coefficients that match a typical BMP280 device.
 
-## Implementation
+## Why it Matters
 
-The Implementation of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the BMP_CALIBRATION module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for BMP_CALIBRATION focuses on providing a stable and extensible framework for bmp_calibration operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Emulating these coefficients is essential for testing the compensation math in your driver. Without accurate calibration data, the raw pressure values cannot be converted to altitude or weather data correctly.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

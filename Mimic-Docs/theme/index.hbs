@@ -8,6 +8,32 @@
     <link rel="stylesheet" href="{{ path_to_root }}theme/css/general.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     {{{ head }}}
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var blocks = document.querySelectorAll("pre code.language-mermaid");
+          blocks.forEach(function(block) {
+              var pre = block.parentNode;
+              var div = document.createElement("div");
+              div.className = "mermaid";
+              div.textContent = block.textContent;
+              pre.parentNode.replaceChild(div, pre);
+          });
+          mermaid.initialize({
+              startOnLoad: true,
+              theme: "base",
+              themeVariables: {
+                  primaryColor: '#1a1a2e',
+                  primaryTextColor: '#ffffff',
+                  primaryBorderColor: '#3a3a5c',
+                  lineColor: '#5a5a7a',
+                  fontFamily: 'Space Mono, monospace',
+                  fontSize: '13px'
+              },
+              flowchart: { curve: 'basis' }
+          });
+      });
+    </script>
 </head>
 
 <body>
@@ -15,7 +41,7 @@
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-header">
-                <img src="{{ path_to_root }}logo.svg" alt="Logo">
+                <a href="{{ path_to_root }}../index.html" class="sidebar-logo">Mimic<span>_</span></a>
             </div>
             <div class="sidebar-scrollbox">
                 {{{ toc }}}
@@ -51,7 +77,7 @@
     </div>
 
     <script>
-        // Simple Sidebar Toggle
+        // Sidebar Toggle
         const toggle = document.getElementById('sidebar-toggle');
         const body = document.body;
 
@@ -59,7 +85,7 @@
             body.classList.toggle('sidebar-hidden');
         });
 
-        // Handle Mobile Auto-hide
+        // Mobile: auto-hide sidebar
         if (window.innerWidth < 1080) {
             body.classList.add('sidebar-hidden');
         }

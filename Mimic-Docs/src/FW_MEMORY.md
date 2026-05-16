@@ -1,60 +1,22 @@
-# FW MEMORY
+# Memory Management
 
 ## Overview
 
-The Overview for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic manages memory by partitioning the STM32's internal SRAM for different system requirements. The goal is to provide enough space for large sensor register shadows while maintaining a stable stack for firmware execution.
 
-## Requirements
+## Memory Partitioning
 
-The Requirements for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **Static Allocation:** Core system structures and peripheral configurations are allocated at boot time.
+- **Register Shadows:** A dedicated section of SRAM is used to store the virtual register maps for emulated sensors (MPU6050, BMP280, etc.).
+- **Command Buffers:** Circular buffers handle incoming and outgoing serial data to prevent blocking during host communication.
 
-## Implementation
+## Memory Layout
 
-The Implementation of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the FW_MEMORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for FW_MEMORY focuses on providing a stable and extensible framework for fw_memory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+| Section | Description |
+| :--- | :--- |
+| **Flash** | Persistent storage for firmware code and default sensor configurations. |
+| **SRAM** | Runtime data, including sensor registers and communication buffers. |
+| **Stack** | Used for local variables and interrupt context saving. |
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

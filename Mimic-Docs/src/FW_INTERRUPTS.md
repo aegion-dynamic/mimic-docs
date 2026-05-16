@@ -1,60 +1,21 @@
-# FW INTERRUPTS
+# Interrupt Processing
 
 ## Overview
 
-The Overview for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Requirements
-
-The Requirements for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The Mimic firmware uses interrupt-driven processing to handle time-critical peripheral events. This ensures that protocol timing for I2C and SPI remains consistent even when the main loop is busy parsing commands from the host.
 
 ## Implementation
 
-The Implementation of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+- **External Interrupts (EXTI):** Used for monitoring GPIO state changes and triggering protocol responses.
+- **Peripheral Interrupts:** Dedicated handlers for I2C and SPI bus events (Start, Stop, Address Match, Data Transmit/Receive).
+- **Prioritization:** Critical bus timing interrupts are assigned higher priority to prevent data loss or bus timeouts.
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+## Execution Flow
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the FW_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for FW_INTERRUPTS focuses on providing a stable and extensible framework for fw_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+1. A hardware event (e.g., I2C Start condition) triggers a peripheral interrupt.
+2. The CPU pauses the main loop and executes the associated Interrupt Service Routine (ISR).
+3. The ISR handles the immediate hardware requirement (e.g., loading a data register).
+4. Control returns to the main loop to handle higher-level logic.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

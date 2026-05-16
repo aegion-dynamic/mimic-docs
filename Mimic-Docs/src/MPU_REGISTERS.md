@@ -1,60 +1,19 @@
-# MPU REGISTERS
+# MPU6050 Register Map
 
 ## Overview
 
-The Overview for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The MPU6050 emulation includes a complete register map that mimics the physical device. This allows your software to configure the "virtual" sensor just as it would a real one.
 
-## Requirements
+## Key Registers
 
-The Requirements for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+- **0x75 (WHO_AM_I):** Returns `0x68` to confirm device identity.
+- **0x3B - 0x40 (ACCEL_XOUT):** 16-bit accelerometer readings.
+- **0x43 - 0x48 (GYRO_XOUT):** 16-bit gyroscope readings.
+- **0x6B (PWR_MGMT_1):** Controls the device's power state and clock source.
 
-## Implementation
+## Interaction
 
-The Implementation of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the MPU_REGISTERS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for MPU_REGISTERS focuses on providing a stable and extensible framework for mpu_registers operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+When your master device writes to a register, Mimic updates the internal shadow. For example, writing to the `GYRO_CONFIG` register will change how the emulation calculates angular velocity data.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

@@ -1,60 +1,27 @@
-# GPS NMEA
+# GPS Module (NMEA)
 
 ## Overview
 
-The Overview for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic emulates a standard GPS receiver by streaming NMEA 0183 sentences over a UART interface. This allows you to test GPS parsing libraries and navigation software using simulated or pre-recorded trajectories.
 
-## Requirements
+## Supported Sentences
 
-The Requirements for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The emulation module can generate the following standard NMEA messages:
+- **$GPRMC:** Recommended Minimum Specific GNSS Data.
+- **$GPGGA:** Global Positioning System Fix Data.
+- **$GPGSV:** GNSS Satellites in View.
+- **$GPGLL:** Geographic Position - Latitude/Longitude.
 
-## Implementation
+## Trajectory Simulation
 
-The Implementation of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+You can provide a CSV file containing a list of coordinates, and Mimic will "travel" along that path, updating the NMEA stream in real-time to match the simulated movement.
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+## Usage
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the GPS_NMEA module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for GPS_NMEA focuses on providing a stable and extensible framework for gps_nmea operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Start the GPS emulation on the default UART pins (**PA9/PA10**):
+```bash
+mimic simulate gps --trajectory my_trajectory.csv
+```
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

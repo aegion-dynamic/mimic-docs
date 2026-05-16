@@ -1,60 +1,21 @@
-# GPIO MAPPING
+# GPIO Mapping
 
 ## Overview
 
-The Overview for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+GPIO Mapping defines how the logical pins in the Mimic firmware are connected to the physical pins on the STM32F411 Black Pill. This mapping ensures that commands from the host reach the correct physical hardware.
 
-## Requirements
+## Pin Configuration
 
-The Requirements for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The firmware uses a standard mapping for peripheral functions:
+- **I2C1:** SCL (PB6), SDA (PB7)
+- **SPI1:** SCK (PA5), MISO (PA6), MOSI (PA7), CS (PA4)
+- **UART1 (GPS):** TX (PA9), RX (PA10)
+- **UART2 (Bridge):** TX (PA2), RX (PA3)
+- **User LED:** PC13
 
-## Implementation
+## Custom Mapping
 
-The Implementation of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the GPIO_MAPPING module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for GPIO_MAPPING focuses on providing a stable and extensible framework for gpio_mapping operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+While the default mapping is recommended, users can modify the `gpio_map.h` file in the firmware source to reassign pins if their specific hardware setup requires it.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

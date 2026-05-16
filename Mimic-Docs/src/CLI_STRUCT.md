@@ -1,60 +1,47 @@
-# CLI STRUCT
+# Command Line Interface (CLI)
 
-## Overview
+The Mimic framework provides a standardized CLI and Python library structure (`mimic-fw`) to interface seamlessly with Mimic hardware. 
 
-The Overview for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The CLI is powered by the Python `click` module, establishing a centralized entry point. Running `mimic` without arguments attempts an automatic discovery of the connected board and enters an interactive Gruvbox-themed shell.
 
-## Requirements
+## Basic Usage
 
-The Requirements for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+### Auto-Discovery Shell
+Launch the shell and let the library automatically detect the connected BlackPill:
+```bash
+mimic
+```
 
-## Implementation
+### Specifying Hardware Ports
+If you have multiple devices connected, specify the USB port explicitly:
+```bash
+# Linux/macOS
+mimic --port /dev/ttyUSB0
 
-The Implementation of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+# Windows
+mimic --port COM3
+```
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+## Common Board Commands
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+Once inside the interactive terminal, you can manually type out protocol instructions to the STM32 board. Some common commands include:
 
-## Hardware Mapping
+*   **`STATUS`** - Retrieves the current MCU system state.
+*   **`VERSION`** - Retrieves firmware build date and internal version.
+*   **`PIN_HIGH [PIN]`** - Configures the specified GPIO pin (e.g. `PC13`) to logical HIGH.
+*   **`PIN_LOW [PIN]`** - Configures the specified GPIO pin to logical LOW.
+*   **`RESET`** - Soft-reboots the hardware.
 
-The Hardware Mapping of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+## Quick Simulations
+The CLI supports rapid spawning of Mock Sensor data. This is useful if you are developing another application on an external Master device (e.g., Raspberry Pi) and need the BlackPill to pretend to be a sensor.
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+```bash
+# Starts mimicking an MPU6050 Accelerometer
+mimic simulate mpu6050
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+# Starts mimicking a BMP280 over I2C instead of SPI
+mimic simulate bmp280 --protocol i2c
 
-## Performance Metrics
-
-The Performance Metrics of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the CLI_STRUCT module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for CLI_STRUCT focuses on providing a stable and extensible framework for cli_struct operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
----
-*© [Aegion Dynamic](https://aegiondynamic.com)*
+# Emulates a running GPS over UART NMEA sentences
+mimic simulate gps
+```

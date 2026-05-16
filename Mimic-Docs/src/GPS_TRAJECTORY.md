@@ -1,60 +1,19 @@
-# GPS TRAJECTORY
+# GPS Trajectory Simulation
 
 ## Overview
 
-The Overview for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic can simulate movement by following a pre-defined trajectory. This is useful for testing geofencing, navigation algorithms, or route tracking software.
 
-## Requirements
+## Trajectory Formats
 
-The Requirements for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The Python bridge supports loading trajectories from:
+- **CSV Files:** A simple list of Latitude, Longitude, and Altitude.
+- **KML/GPX Files:** Standard map route formats.
+- **Dynamic Generation:** Real-time generation of paths (e.g., circular or random walk) via Python scripts.
 
-## Implementation
+## Real-Time Updates
 
-The Implementation of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the GPS_TRAJECTORY module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for GPS_TRAJECTORY focuses on providing a stable and extensible framework for gps_trajectory operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+As the simulation progresses, the Python bridge calculates the current position and sends the corresponding coordinates to the Mimic hardware. The hardware then packages these into NMEA sentences for the UART interface.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

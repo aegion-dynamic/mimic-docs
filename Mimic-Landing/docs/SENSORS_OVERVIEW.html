@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" class="sidebar-visible no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sensors Overview - MIMIC Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="theme/css/general.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var blocks = document.querySelectorAll("pre code.language-mermaid");
+          blocks.forEach(function(block) {
+              var pre = block.parentNode;
+              var div = document.createElement("div");
+              div.className = "mermaid";
+              div.textContent = block.textContent;
+              pre.parentNode.replaceChild(div, pre);
+          });
+          mermaid.initialize({
+              startOnLoad: true,
+              theme: "base",
+              themeVariables: {
+                  primaryColor: '#1a1a2e',
+                  primaryTextColor: '#ffffff',
+                  primaryBorderColor: '#3a3a5c',
+                  lineColor: '#5a5a7a',
+                  fontFamily: 'Space Mono, monospace',
+                  fontSize: '13px'
+              },
+              flowchart: { curve: 'basis' }
+          });
+      });
+    </script>
+</head>
+
+<body>
+    <div id="container">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-header">
+                <a href="../index.html" class="sidebar-logo">Mimic<span>_</span></a>
+            </div>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="WIRING.html"><strong aria-hidden="true">2.</strong> Wiring Guide</a></li><li class="chapter-item expanded "><a href="SETUP.html"><strong aria-hidden="true">3.</strong> Getting Started & Requirements</a></li><li class="chapter-item expanded "><a href="ARCH.html"><strong aria-hidden="true">4.</strong> System Architecture</a></li><li class="chapter-item expanded affix "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Firmware</li><li class="chapter-item expanded "><a href="FW_OVERVIEW.html"><strong aria-hidden="true">5.</strong> Firmware Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPIO_MAPPING.html"><strong aria-hidden="true">5.1.</strong> GPIO Mapping</a></li><li class="chapter-item expanded "><a href="FW_INTERRUPTS.html"><strong aria-hidden="true">5.2.</strong> Interrupt Processing</a></li><li class="chapter-item expanded "><a href="FW_MEMORY.html"><strong aria-hidden="true">5.3.</strong> Memory Management</a></li><li class="chapter-item expanded "><a href="BUILD_SYSTEM.html"><strong aria-hidden="true">5.4.</strong> Build System</a></li><li class="chapter-item expanded "><a href="PERIPHERALS.html"><strong aria-hidden="true">5.5.</strong> Peripheral Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="I2C_TIMING.html"><strong aria-hidden="true">5.5.1.</strong> I2C Timing & Registers</a></li><li class="chapter-item expanded "><a href="SPI_LOGIC.html"><strong aria-hidden="true">5.5.2.</strong> SPI Logic & DMA</a></li><li class="chapter-item expanded "><a href="UART_FLOW.html"><strong aria-hidden="true">5.5.3.</strong> UART Data Flow</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Bridge</li><li class="chapter-item expanded "><a href="CLI_STRUCT.html"><strong aria-hidden="true">6.</strong> Bridge Overview & CLI</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BRIDGE_SERIAL.html"><strong aria-hidden="true">6.1.</strong> Python Bridge: Serial</a></li><li class="chapter-item expanded "><a href="BRIDGE_ASYNC.html"><strong aria-hidden="true">6.2.</strong> Python Bridge: Async</a></li><li class="chapter-item expanded "><a href="HIL_SYNC.html"><strong aria-hidden="true">6.3.</strong> HIL Synchronization</a></li><li class="chapter-item expanded "><a href="DIAGNOSTICS.html"><strong aria-hidden="true">6.4.</strong> Real-Time Diagnostics</a></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">MIMIC Sensors & Contribution</li><li class="chapter-item expanded "><a href="SENSORS_OVERVIEW.html" class="active"><strong aria-hidden="true">7.</strong> Sensors Overview</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="SENSOR_BASE.html"><strong aria-hidden="true">7.1.</strong> Abstract Sensor Base</a></li><li class="chapter-item expanded "><a href="MPU_MOTION.html"><strong aria-hidden="true">7.2.</strong> MPU6050 Motion Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="MPU_REGISTERS.html"><strong aria-hidden="true">7.2.1.</strong> MPU6050 Registers</a></li></ol></li><li class="chapter-item expanded "><a href="BMP_PRESSURE.html"><strong aria-hidden="true">7.3.</strong> BMP280 Environment Sensor</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="BMP_CALIBRATION.html"><strong aria-hidden="true">7.3.1.</strong> BMP280 Calibration</a></li></ol></li><li class="chapter-item expanded "><a href="GPS_NMEA.html"><strong aria-hidden="true">7.4.</strong> GPS Module</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="GPS_TRAJECTORY.html"><strong aria-hidden="true">7.4.1.</strong> GPS Trajectory</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Appendix</li><li class="chapter-item expanded "><a href="TROUBLESHOOTING.html"><strong aria-hidden="true">8.</strong> Troubleshooting</a></li><li class="chapter-item expanded "><a href="LIMITATIONS.html"><strong aria-hidden="true">9.</strong> System Limitations</a></li></ol>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main">
+            <div class="top-bar">
+                <button id="sidebar-toggle" class="icon-button" aria-label="Toggle Table of Contents">
+                    <span>☰</span>
+                </button>
+                <div class="top-bar-title">Sensors Overview - MIMIC Documentation</div>
+                <div class="top-bar-links">
+                    <a href="https://github.com/aegion-dynamic/mimic-Docs" class="icon-button">GitHub</a>
+                </div>
+            </div>
+
+            <div id="content" class="content">
+                <h1 id="sensors-overview"><a class="header" href="#sensors-overview">Sensors Overview</a></h1>
+<p>The MimicSensors package provides Python-based sensor emulation modules. Each module simulates the behavior and register map of a real-world sensor, allowing the Mimic hardware bridge to present itself as a genuine device on I2C, SPI, or UART buses.</p>
+<h2 id="supported-sensors"><a class="header" href="#supported-sensors">Supported Sensors</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Sensor</th><th>Protocol</th><th>Description</th></tr></thead><tbody>
+<tr><td>MPU6050</td><td>I2C</td><td>6-axis accelerometer and gyroscope</td></tr>
+<tr><td>BMP280</td><td>SPI / I2C</td><td>Barometric pressure and temperature sensor</td></tr>
+<tr><td>GPS (NMEA)</td><td>UART</td><td>GPS receiver outputting standard NMEA sentences</td></tr>
+</tbody></table>
+</div>
+<h2 id="architecture"><a class="header" href="#architecture">Architecture</a></h2>
+<p>All sensor modules inherit from the <code>AbstractSensorBase</code> class, which provides:</p>
+<ul>
+<li><strong>Register Map Management</strong> — A dictionary-based register shadow with read/write hooks.</li>
+<li><strong>Data Generation</strong> — Configurable data patterns (static, sinusoidal, random, file-based).</li>
+<li><strong>Update Loop</strong> — A timer-driven update mechanism that refreshes sensor values at configurable rates.</li>
+</ul>
+<h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<pre><code class="language-bash"># Emulate an MPU6050 with default settings
+mimic simulate mpu6050
+
+# Emulate a BMP280 at a custom update rate
+mimic simulate bmp280 --rate 100
+
+# Stream GPS NMEA sentences
+mimic simulate gps --trajectory default
+</code></pre>
+<h2 id="adding-custom-sensors"><a class="header" href="#adding-custom-sensors">Adding Custom Sensors</a></h2>
+<p>To create a new sensor module, extend <code>AbstractSensorBase</code> and implement the required methods:</p>
+<ol>
+<li>Define the register map</li>
+<li>Implement the data generation logic</li>
+<li>Register the sensor with the CLI plugin system</li>
+</ol>
+<p>See the <a href="./SENSOR_BASE.html">Abstract Sensor Base</a> chapter for the full API reference.</p>
+<hr />
+<p><em>© <a href="https://aegiondynamic.com">Aegion Dynamic</a></em></p>
+
+            </div>
+
+            <!-- Navigation -->
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <a href="DIAGNOSTICS.html" class="nav-chapters previous">←</a>
+                <a href="SENSOR_BASE.html" class="nav-chapters next">→</a>
+            </nav>
+        </main>
+    </div>
+
+    <script>
+        // Sidebar Toggle
+        const toggle = document.getElementById('sidebar-toggle');
+        const body = document.body;
+
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('sidebar-hidden');
+        });
+
+        // Mobile: auto-hide sidebar
+        if (window.innerWidth < 1080) {
+            body.classList.add('sidebar-hidden');
+        }
+    </script>
+</body>
+
+</html>

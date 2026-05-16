@@ -1,60 +1,18 @@
-# GPIO INTERRUPTS
+# GPIO Interrupts
 
 ## Overview
 
-The Overview for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic can monitor state changes on any digital input pin using hardware interrupts. This is used for capturing external events such as button presses, sensor signals, or protocol handshake lines.
 
-## Requirements
+## How it Works
 
-The Requirements for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+1. **Configuration:** The user specifies which pin to monitor and the trigger condition (Rising, Falling, or Both edges).
+2. **Detection:** When the condition is met, the STM32's EXTI (External Interrupt) controller triggers a handler.
+3. **Reporting:** The firmware logs the event and sends a notification packet to the host bridge.
 
-## Implementation
+## Performance
 
-The Implementation of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Hardware Mapping
-
-The Hardware Mapping of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Performance Metrics
-
-The Performance Metrics of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the GPIO_INTERRUPTS module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for GPIO_INTERRUPTS focuses on providing a stable and extensible framework for gpio_interrupts operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The use of hardware interrupts ensures that even very brief pulses (in the microsecond range) are captured reliably without polling the pin state in the main loop.
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

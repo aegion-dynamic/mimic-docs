@@ -1,60 +1,111 @@
-# ARCH
+# System Architecture
 
-## Overview
+The Mimic framework bridges a host computer to physical hardware peripherals. The core architecture relies on an STM32-based hardware component running the Mimic Firmware, connected to a Python-based host bridge over a serial protocol.
 
-The Overview for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+## High-Level Architecture
 
-## Requirements
+The following block diagram illustrates the flow of data from the host machine to the hardware peripherals:
 
-The Requirements for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#1a1a2e',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#3a3a5c',
+    'lineColor': '#5a5a7a',
+    'secondaryColor': '#16213e',
+    'tertiaryColor': '#0f3460',
+    'fontFamily': 'Space Mono, monospace',
+    'fontSize': '13px',
+    'noteBkgColor': '#1a1a2e',
+    'noteTextColor': '#ffffff'
+  },
+  'flowchart': {
+    'padding': 24,
+    'nodeSpacing': 50,
+    'rankSpacing': 50,
+    'curve': 'basis'
+  }
+}}%%
+graph TD
+    classDef host fill:#1b3a4b,stroke:#4a90a4,stroke-width:1.5px,color:#e0e0e0
+    classDef core fill:#4a2040,stroke:#9b4dca,stroke-width:2px,color:#ffffff
+    classDef iface fill:#2d4a22,stroke:#6dae4f,stroke-width:1.5px,color:#e0e0e0
+    classDef sensor fill:#4a3520,stroke:#d4915a,stroke-width:1.5px,color:#e0e0e0
 
-## Implementation
+    CLI["Mimic CLI"]:::host
+    PyLib["MimicBridge Library"]:::host
+    Sensors["MimicSensors Modules"]:::host
 
-The Implementation of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+    Core["Mimic Firmware Core"]:::core
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+    I2C["I2C Emulation"]:::iface
+    SPI["SPI Emulation"]:::iface
+    UART["UART Interface"]:::iface
+    GPIO["GPIO Control"]:::iface
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+    MPU["MPU6050"]:::sensor
+    BMP["BMP280"]:::sensor
+    GPS["GPS NMEA"]:::sensor
+    LED["LED / GPIO"]:::sensor
 
-## Hardware Mapping
+    CLI --> PyLib
+    Sensors --> PyLib
+    PyLib -->|USB CDC| Core
+    Core --> I2C
+    Core --> SPI
+    Core --> UART
+    Core --> GPIO
+    I2C --> MPU
+    SPI --> BMP
+    UART --> GPS
+    GPIO --> LED
+```
 
-The Hardware Mapping of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+## How It Works
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+1. **Python Bridge:** The user sends a command (e.g., `PIN_HIGH PC13` or `simulate mpu6050`) using the Python library (`mimic-fw`).
+2. **Serial Transmission:** The `MimicBridge` translates this into a compact string protocol and transmits it over USB.
+3. **Firmware Execution:** The STM32F411 micro-controller interprets the packet. It bypasses heavy abstractions (like standard HALs where necessary) to maintain high-precision, low-latency emulation logic.
+4. **Peripheral Activity:** Signal levels are changed on GPIOs, or dummy register shadows are updated to fool the Master device into thinking a real MPU6050 or BMP280 is connected.
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+## Command Execution Flow
 
-## Performance Metrics
+```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#1b3a4b',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#4a90a4',
+    'lineColor': '#5a5a7a',
+    'secondaryColor': '#4a2040',
+    'tertiaryColor': '#2d4a22',
+    'fontFamily': 'Space Mono, monospace',
+    'fontSize': '13px'
+  }
+}}%%
+sequenceDiagram
+    box #1b3a4b Host Machine (Python)
+    participant User as User / Script
+    participant Bridge as Python Bridge
+    end
+    box #4a2040 STM32 Core
+    participant MCU as STM32 Firmware
+    end
+    box #2d4a22 Peripherals
+    participant HW as Hardware Pins
+    end
 
-The Performance Metrics of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the ARCH module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for ARCH focuses on providing a stable and extensible framework for arch operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+    User->>Bridge: bridge.pin_high('PC13')
+    Bridge->>MCU: "PIN_HIGH PC13\n"
+    Note over MCU: Parse Command
+    MCU->>HW: Set PC13 to HIGH
+    HW-->>MCU: Pin State Updated
+    MCU-->>Bridge: "OK\n"
+    Bridge-->>User: True
+```
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*

@@ -1,60 +1,39 @@
-# BRIDGE SERIAL
+# Python Bridge: Serial
 
 ## Overview
 
-The Overview for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+The Serial Bridge is the primary communication link between the host computer and the Mimic hardware. It uses the USB CDC (Communication Device Class) interface to transmit commands and receive sensor data.
 
-## Requirements
+## Communication Protocol
 
-The Requirements for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+Mimic uses a text-based protocol for simplicity and ease of debugging. Each command is sent as a string terminated by a newline character.
 
-## Implementation
+- **Request:** `PIN_HIGH PC13\n`
+- **Response:** `OK\n`
 
-The Implementation of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+## Serial Configuration
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+The bridge automatically configures the serial port with the following settings:
+- **Baud Rate:** 115200 (default)
+- **Data Bits:** 8
+- **Parity:** None
+- **Stop Bits:** 1
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+## Usage in Python
 
-## Hardware Mapping
+The `MimicBridge` class abstracts the serial communication. You can connect via the USB-C port (typically `ttyACM0`) or a TTL adapter on UART2 (typically `ttyUSB0`):
 
-The Hardware Mapping of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
+```python
+from mimic import MimicBridge
 
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
+# Connect via onboard USB CDC
+bridge = MimicBridge(port='/dev/ttyACM0')
 
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
+# OR Connect via UART2 (TTL Adapter)
+# bridge = MimicBridge(port='/dev/ttyUSB0')
 
-## Performance Metrics
-
-The Performance Metrics of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Communication Protocols
-
-The Communication Protocols of the BRIDGE_SERIAL module is engineered for high-fidelity response. We utilize a dedicated hardware timer to ensure that all transitions are aligned with the 100MHz system clock, minimizing jitter during sensitive peripheral emulation.
-
-On the firmware side, this involves a non-blocking state machine that interacts directly with the STM32's register bank. By bypassing standard HAL overhead in critical sections, we achieve transaction speeds that match real-world sensor hardware.
-
-For the Python bridge, we maintain a persistent buffer that allows for asynchronous data retrieval. This ensures that even during high-frequency bus activity, the host can capture every byte without dropping frames.
-
-## Error States
-
-The Error States for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Integration Example
-
-The Integration Example for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Constraints & Limitations
-
-The Constraints & Limitations for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
-
-## Roadmap
-
-The Roadmap for BRIDGE_SERIAL focuses on providing a stable and extensible framework for bridge_serial operations. This includes detailed validation of input parameters and real-time monitoring of the bridge state to ensure deterministic behavior across all test scenarios.
+bridge.pin_high('PC13')
+```
 
 ---
 *© [Aegion Dynamic](https://aegiondynamic.com)*
